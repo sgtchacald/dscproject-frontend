@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {AdminRoutingModule} from "./admin-routing.module";
+import {NbThemeModule} from "@nebular/theme";
 
 
 
@@ -11,7 +12,8 @@ import {AdminRoutingModule} from "./admin-routing.module";
   ],
   imports: [
     CommonModule,
-    AdminRoutingModule
+    AdminRoutingModule,
+    NbThemeModule.forRoot(),
   ]
 })
 export class AdminModule { }
