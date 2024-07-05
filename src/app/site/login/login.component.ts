@@ -1,6 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {UsuarioService} from "../../../services/usuario/usuario.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {MessageService} from "primeng/api";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-login',
@@ -20,9 +22,12 @@ export class LoginComponent implements OnInit{
     senha: ['', [Validators.required]]
   });
 
+  loading: boolean = false;
+
   constructor(
     private usuarioService: UsuarioService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private messageService: MessageService
   ) {}
 
   ngAfterViewInit() {
@@ -48,16 +53,21 @@ export class LoginComponent implements OnInit{
 
         // Adiciona o atributo 'autocomplete' novamente
         campoSenha.setAttribute('type', 'password');
+
       }
     }, 1000);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const bodyElement = document.querySelector('body');
+    if(bodyElement != null) {
+      bodyElement.classList.add('overflow-hidden');
+    }
+  }
 
   onSubmit() {
     this.formInvalid = false;
     if (!this.formLogin.valid) {
-      alert('Please fill all the required fields to create a super hero!');
       return false;
     } else {
       return console.log(this.formLogin.value);
@@ -70,18 +80,41 @@ export class LoginComponent implements OnInit{
 
   efetuarLogin(){
 
-    let login: any = this.form['login'];
-    let senha: any = this.form['senha'];
+    let login: any = this.form['login'].value;
+    let senha: any = this.form['senha'].value;
+
+    console.log(login);
+    console.log(senha);
 
     this.usuarioService.autenticar(login, senha).subscribe(
       () => {
-        console.log('Login Efetuado com sucesso, redirecionando para rota');
-        window.location.href = "/administracao";
-      },(error) => {
-        const servidorDesconectado = "O servidor está desconectado";
-        this.erro = error.status == 504 ? servidorDesconectado : error.error.message;
+        this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Login Efetuado com sucesso! Redirecionando para o Dashboard.'});
+       //window.location.href = "/administracao";
+      },(error: HttpErrorResponse) => {
+
+        if(error.status === 504){
+          this.erro = "O servidor está desconectado";
+        }else{
+          this.erro = error.error.message;
+        }
+
+        if(this.erro != null || this.erro != "" || this.erro!= undefined){} {
+          this.messageService.add({severity: 'error', summary: 'Erro', detail: this.erro});
+        }
       }
     )
+
+
+
+
+  }
+
+  load() {
+    this.loading = true;
+
+    setTimeout(() => {
+      this.loading = false
+    }, 2000);
   }
 
 

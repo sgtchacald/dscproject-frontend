@@ -1,2 +1,10 @@
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
+@import "node_modules/bootstrap/dist/css/bootstrap.css";
+
+
+.custom-toast .p-toast-message-content {
+  max-width: 700px !important; /* Ajuste o valor conforme necessário */
+  word-wrap: break-word; /* Permite quebra de linha */
+  white-space: normal; /* Garante que o texto pode quebrar linha */
+}

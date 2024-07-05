@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home/home.component';
 import {SiteRoutingModule} from "./site-routing.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MensagemModule} from "../../componentes/mensagem/mensagem.module";
 import { LoginComponent } from './login/login.component';
 import {PasswordModule} from "primeng/password";
 import {CheckboxModule} from "primeng/checkbox";
@@ -22,7 +21,6 @@ import {MessageModule} from "primeng/message";
         CommonModule,
         SiteRoutingModule,
         ReactiveFormsModule,
-        MensagemModule,
         FormsModule,
         PasswordModule,
         CheckboxModule,

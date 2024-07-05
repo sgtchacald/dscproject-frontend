@@ -1,42 +1,50 @@
-<section id="formulario-login">
-  <div class="m-3">
-    <h5 class="mb-4">DSCPROJECT</h5>
-    <div class="p-fluid">
-      <form id="form-login" [formGroup]="formLogin" (ngSubmit)="onSubmit()" novalidate>
-        <div class="p-field mb-4">
-          <label for="login">Login</label>
-          <input pInputText id="login" formControlName="login"/>
-          <small [hidden]="!(form['login'].errors && form['login'].touched)" class="p-error">Login é Obrigatório.</small>
-        </div>
+<section id="formulario-login"  class="login-section bg-secondary.bg-gradient">
+  <div class="container">
+    <div class="row justify-content-center align-items-center vh-100">
+      <div class="card p-5 login-box">
+          <h5 class="mb-4 text-center">DSCPROJECT</h5>
+          <div class="p-fluid">
+            <form id="form-login" [formGroup]="formLogin" (ngSubmit)="onSubmit()" novalidate>
+              <div class="p-field mb-4">
+                <label for="login">Login</label>
+                <input pInputText
+                       id="login"
+                       formControlName="login"
+                       [ngClass]="{
+                          'ng-invalid ng-dirty' : (form['login'].errors && form['login'].touched)
+                       }"/>
+                <p>
+                  <small [hidden]="!(form['login'].errors && form['login'].touched)" class="p-error">Login é Obrigatório.</small>
+                </p>
+              </div>
 
-        <div class="p-field mb-4">
-          <label for="login">Senha</label>
-          <p-password id="senha" name="senha" formControlName="senha">
-            <ng-template pTemplate="header">
-              <h6>Digite uma senha</h6>
-            </ng-template>
-            <ng-template pTemplate="footer">
-              <p-divider></p-divider>
-              <p class="mt-2">Sugestão de senha forte</p>
-              <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                <li>Pelo menos uma letra minúscula.</li>
-                <li>Pelo menos uma letra maiúscula</li>
-                <li>Pelo menos um número</li>
-                <li>No mínimo 8 caracteres</li>
-              </ul>
-            </ng-template>
-          </p-password>
-          <small [hidden]="!(form['senha'].errors && form['senha'].touched)" class="p-error">Senha é Obrigatória.</small>
-        </div>
+              <div class="p-field mb-4">
+                <label for="login">Senha</label>
+                <p-password id="senha"
+                            formControlName="senha"
+                            promptLabel="Digite a Senha"
+                            weakLabel="Sua senha é fraca"
+                            mediumLabel="Sua senha é média"
+                            strongLabel="Sua senha é forte"
+                            [toggleMask]="true"
+                            [ngClass]="{
+                              'ng-invalid ng-dirty' : (form['login'].errors && form['login'].touched)
+                            }">
+                </p-password>
+                <small [hidden]="!(form['senha'].errors && form['senha'].touched)" class="p-error w-25">Senha é Obrigatória.</small>
+              </div>
 
-        <div class="p-field mb-4">
-          <a [routerLink]="['/usuario/esqueci-a-senha']">Esqueceu a senha?</a>
-        </div>
+              <div class="p-field mb-4">
+                <a [routerLink]="['/usuario/esqueci-a-senha']">Esqueceu a senha?</a>
+              </div>
 
-        <div class="p-field mb-4">
-          <p-button severity="info" label="Entrar" [disabled]="formLogin.invalid" />
+              <div class="p-field mb-4">
+                <p-button severity="info" label="Entrar" [disabled]="formLogin.invalid" [loading]="loading" (onClick)="load();efetuarLogin()" />
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
     </div>
   </div>
 </section>
+<p-toast  position="bottom-right" [life]="5000" [style]="{ width: 'auto' }"></p-toast>
