@@ -1,4 +1,4 @@
-import { TokenService } from '../autenticacao/token.service';
+import { TokenService } from './token.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Usuario } from '../../models/usuario.model';
 import { Injectable } from '@angular/core';

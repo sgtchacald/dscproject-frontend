@@ -71,11 +71,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "proxyConfig": "src/proxy-production.conf.json",
+              "proxyConfig": "proxy-production.conf.json",
               "browserTarget": "app-diego:build:production"
             },
             "development": {
-              "proxyConfig": "src/proxy.conf.json",
+              "proxyConfig": "proxy.conf.json",
               "browserTarget": "app-diego:build:development"
             }
           },

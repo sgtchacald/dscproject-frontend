@@ -3,6 +3,8 @@ import {UsuarioService} from "../../../services/usuario/usuario.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MessageService} from "primeng/api";
 import {HttpErrorResponse} from "@angular/common/http";
+import {EsqueciASenhaComponent} from "../esqueci-a-senha/esqueci-a-senha.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -26,8 +28,9 @@ export class LoginComponent implements OnInit{
 
   constructor(
     private usuarioService: UsuarioService,
+    private messageService: MessageService,
     private fb: FormBuilder,
-    private messageService: MessageService
+    private router: Router
   ) {}
 
   ngAfterViewInit() {
@@ -89,7 +92,7 @@ export class LoginComponent implements OnInit{
     this.usuarioService.autenticar(login, senha).subscribe(
       () => {
         this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Login Efetuado com sucesso! Redirecionando para o Dashboard.'});
-       //window.location.href = "/administracao";
+        this.router.navigate(['/admin'])
       },(error: HttpErrorResponse) => {
 
         if(error.status === 504){
@@ -103,10 +106,12 @@ export class LoginComponent implements OnInit{
         }
       }
     )
+  }
 
+  visible: boolean = false;
 
-
-
+  exibirModalEsqueciASenha() {
+    this.router.navigate(['login/esqueci-a-senha'], { queryParams: { exibirModal: true } });
   }
 
   load() {
@@ -118,4 +123,7 @@ export class LoginComponent implements OnInit{
   }
 
 
+  cadastrarUsuario() {
+    this.messageService.add({severity: 'success', summary: 'Cadastrar Usuário', detail: "Usuário Cadastrado com Sucesso!"});
+  }
 }

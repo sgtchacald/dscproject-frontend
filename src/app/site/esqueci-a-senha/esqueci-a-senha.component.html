@@ -1,0 +1,32 @@
+<div id="modalEsqueciASenha" class="card flex justify-content-center p-fluid">
+  <p-dialog
+    header="Header"
+    [(visible)]="modalVisivel"
+    [modal]="true"
+    [style]="{ width: '25rem' }"
+    [closable]="false">
+
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <span class="font-bold white-space-nowrap">
+          <h5>Recuperação de senha</h5>
+        </span>
+      </div>
+    </ng-template>
+
+    <p class="mb-4 ">
+      Digite seu e-mail para enviarmos os passos para a recuperação da senha.
+    </p>
+
+    <div class="flex align-items-center gap-3">
+      <label for="email" class="font-semibold w-6rem">Email</label>
+      <input pInputText id="email" class="flex-auto" autocomplete="off" />
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Fechar" [text]="true" severity="danger" (click)="fecharModal();" />
+      <p-button label="Recuperar"  [outlined]="false" severity="info" (click)="fecharModal();" />
+    </ng-template>
+
+  </p-dialog>
+</div>

@@ -1,11 +1,14 @@
-<section id="formulario-login"  class="login-section bg-secondary.bg-gradient">
+<section id="formulario-login"  class="login-section">
   <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
       <div class="card p-5 login-box">
-          <h5 class="mb-4 text-center">DSCPROJECT</h5>
-          <div class="p-fluid">
+
+          <h2 class="text-left">DSCPROJECT</h2>
+
+          <div class="p-fluid" style="max-width: 300px;">
             <form id="form-login" [formGroup]="formLogin" (ngSubmit)="onSubmit()" novalidate>
-              <div class="p-field mb-4">
+
+              <div class="p-field pb-4">
                 <label for="login">Login</label>
                 <input pInputText
                        id="login"
@@ -13,38 +16,43 @@
                        [ngClass]="{
                           'ng-invalid ng-dirty' : (form['login'].errors && form['login'].touched)
                        }"/>
-                <p>
                   <small [hidden]="!(form['login'].errors && form['login'].touched)" class="p-error">Login é Obrigatório.</small>
-                </p>
               </div>
 
-              <div class="p-field mb-4">
+              <div class="p-field pb-4">
                 <label for="login">Senha</label>
                 <p-password id="senha"
-                            formControlName="senha"
-                            promptLabel="Digite a Senha"
-                            weakLabel="Sua senha é fraca"
-                            mediumLabel="Sua senha é média"
-                            strongLabel="Sua senha é forte"
-                            [toggleMask]="true"
-                            [ngClass]="{
-                              'ng-invalid ng-dirty' : (form['login'].errors && form['login'].touched)
-                            }">
+                    formControlName="senha"
+                    promptLabel="Digite a Senha"
+                    weakLabel="Sua senha é fraca"
+                    mediumLabel="Sua senha é média"
+                    strongLabel="Sua senha é forte"
+                    [toggleMask]="true"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty' : (form['login'].errors && form['login'].touched)
+                    }">
                 </p-password>
                 <small [hidden]="!(form['senha'].errors && form['senha'].touched)" class="p-error w-25">Senha é Obrigatória.</small>
               </div>
 
-              <div class="p-field mb-4">
-                <a [routerLink]="['/usuario/esqueci-a-senha']">Esqueceu a senha?</a>
+              <div class="p-field pb-4">
+                <a (click)="exibirModalEsqueciASenha()" class="text-color-primary btn-link"> Recuperar Senha</a>
               </div>
 
               <div class="p-field mb-4">
-                <p-button severity="info" label="Entrar" [disabled]="formLogin.invalid" [loading]="loading" (onClick)="load();efetuarLogin()" />
+                <p-button label="Entrar" [disabled]="formLogin.invalid" [loading]="loading" (onClick)="load();efetuarLogin()" />
+              </div>
+
+              <div class="p-field mb-4">
+                <p-button severity="success" label="Cadastrar" [loading]="loading" (onClick)="cadastrarUsuario()" />
               </div>
             </form>
           </div>
         </div>
     </div>
   </div>
+  <p-toast  position="bottom-right" [life]="5000" [style]="{ width: 'auto' }"></p-toast>
 </section>
-<p-toast  position="bottom-right" [life]="5000" [style]="{ width: 'auto' }"></p-toast>
+
+<router-outlet></router-outlet>
+

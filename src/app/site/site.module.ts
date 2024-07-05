@@ -11,24 +11,30 @@ import {DividerModule} from "primeng/divider";
 import {InputTextModule} from "primeng/inputtext";
 import {ToastModule} from "primeng/toast";
 import {MessageModule} from "primeng/message";
+import { EsqueciASenhaComponent } from './esqueci-a-senha/esqueci-a-senha.component';
+import {DialogModule} from "primeng/dialog";
+import {AvatarModule} from "primeng/avatar";
 
 @NgModule({
   declarations: [
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    EsqueciASenhaComponent
   ],
-    imports: [
-        CommonModule,
-        SiteRoutingModule,
-        ReactiveFormsModule,
-        FormsModule,
-        PasswordModule,
-        CheckboxModule,
-        ButtonModule,
-        DividerModule,
-        InputTextModule,
-        ToastModule,
-        MessageModule
-    ]
+  imports: [
+    CommonModule,
+    SiteRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    PasswordModule,
+    CheckboxModule,
+    ButtonModule,
+    DividerModule,
+    InputTextModule,
+    ToastModule,
+    MessageModule,
+    DialogModule,
+    AvatarModule
+  ]
 })
 export class SiteModule { }
