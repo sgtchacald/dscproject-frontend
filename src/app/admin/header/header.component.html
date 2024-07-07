@@ -1,0 +1,25 @@
+<div class="header-container">
+  <div class="logo-container">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+      <nb-icon icon="menu-2-outline"></nb-icon>
+    </a>
+    <a class="ml-4" routerLink="/admin">DSC</a>
+  </div>
+</div>
+
+<div class="header-container" *ngIf="(usuario | async) as uData">
+  <nb-actions size="large">
+    <nb-action class="user-action">
+      <nb-user shape="semi-round"
+               title="JAVA Developer"
+               showInitials="true"
+               showName="true"
+               showTitle="true"
+               nbContextMenuTag="my-context-menu"
+               [nbContextMenu]="userMenu"
+               [name]="uData.nome">
+      </nb-user>
+    </nb-action>
+
+  </nb-actions>
+</div>
