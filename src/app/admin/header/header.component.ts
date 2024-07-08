@@ -45,7 +45,7 @@ export class HeaderComponent {
   }
 
   toggleSidebar(): boolean {
-    this.sidebarService.toggle(true, 'menu-sidebar');
+    this.sidebarService.toggle(true, 'menu-menu');
     this.layoutService.changeLayoutSize();
 
     return false;

@@ -7,7 +7,7 @@ import {
   NbCardModule,
   NbContextMenuModule,
   NbIconModule,
-  NbLayoutModule, NbMenuService,
+  NbLayoutModule, NbMenuModule, NbMenuService,
   NbSidebarModule, NbSidebarService,
   NbThemeModule,
   NbUserModule
@@ -16,11 +16,15 @@ import { HeaderComponent } from './header/header.component';
 import {MessageService} from "primeng/api";
 import {LayoutService} from "../../utils/layout.service";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
+import { FooterComponent } from './footer/footer.component';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    HeaderComponent
+    HeaderComponent,
+    FooterComponent,
+    MenuComponent
   ],
   imports: [
     CommonModule,
@@ -32,13 +36,15 @@ import {NbEvaIconsModule} from "@nebular/eva-icons";
     NbActionsModule,
     NbUserModule,
     NbContextMenuModule,
+    NbMenuModule.forRoot(),
     NbIconModule,
     NbEvaIconsModule
   ],
   providers: [
     NbSidebarService,
     NbMenuService,
-    LayoutService
+    LayoutService,
+
   ],
 })
 export class AdminModule { }
