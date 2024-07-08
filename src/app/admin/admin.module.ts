@@ -18,6 +18,7 @@ import {LayoutService} from "../../utils/layout.service";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import { FooterComponent } from './footer/footer.component';
 import { MenuComponent } from './menu/menu.component';
+import {BreadcrumbModule} from "primeng/breadcrumb";
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { MenuComponent } from './menu/menu.component';
   imports: [
     CommonModule,
     AdminRoutingModule,
-    NbThemeModule.forRoot({ name: 'default' }),
+    NbThemeModule.forRoot({name: 'default'}),
     NbLayoutModule,
     NbSidebarModule.forRoot(),
     NbCardModule,
@@ -38,7 +39,8 @@ import { MenuComponent } from './menu/menu.component';
     NbContextMenuModule,
     NbMenuModule.forRoot(),
     NbIconModule,
-    NbEvaIconsModule
+    NbEvaIconsModule,
+    BreadcrumbModule
   ],
   providers: [
     NbSidebarService,

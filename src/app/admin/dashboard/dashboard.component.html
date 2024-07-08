@@ -7,7 +7,23 @@
     <app-menu></app-menu>
   </nb-sidebar>
 
-  <nb-layout-column class="colored-column-basic">Layout Content</nb-layout-column>
+  <nb-layout-column class="p-3">
+    <div id="breadcrumb" class="pb-3">
+      <p-breadcrumb [model]="breadcrumbItens"></p-breadcrumb>
+    </div>
+
+    <div id="conteudo">
+      <nb-card>
+        <nb-card-body>
+
+            <p>
+              Aqui irão os <b>CARDS</b> com os gráficos da página de dashboards do sistema.
+            </p>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-layout-column>
+
 
   <nb-layout-footer>
     <app-footer></app-footer>

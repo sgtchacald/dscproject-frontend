@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {MenuItem} from "primeng/api";
 
 @Component({
   selector: 'app-dashboard',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
+  breadcrumbItens: MenuItem[] | undefined;
 
+  home: MenuItem | undefined;
+
+  ngOnInit() {
+    this.breadcrumbItens = [
+      {  label: 'Home', icon: 'pi pi-home', routerLink: '/admin' },
+      { label: 'Dashboard' }
+    ];
+  }
 }
