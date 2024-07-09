@@ -23,4 +23,27 @@ export class ErroService {
     // Retorne as mensagens de erro
     return mensagensErro;
   }
+
+  retornaErroStatusCode(error: HttpErrorResponse): any {
+    let retorno: String = "";
+
+    if (error.status) {
+      switch (error.status) {
+        case 400:
+          retorno = error.status + ' - Erro de validação.';
+          break;
+        case 500:
+          retorno = error.status + ' - Erro interno do servidor.';
+          break;
+        case 504:
+          retorno = error.status + ' - O servidor está desconectado.';
+          break;
+        default:
+          retorno = error.status + ' - Erro desconhecido.';
+      }
+    }
+
+    return retorno;
+  }
+
 }

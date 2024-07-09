@@ -9,12 +9,10 @@ import {MenuItem} from "primeng/api";
 export class DashboardComponent {
   breadcrumbItens: MenuItem[] | undefined;
 
-  home: MenuItem | undefined;
-
   ngOnInit() {
     this.breadcrumbItens = [
-      {  label: 'Home', icon: 'pi pi-home', routerLink: '/admin' },
-      { label: 'Dashboard' }
+      {  icon: 'pi pi-home', routerLink: '/admin' },
+      {  label: 'Dashboard' }
     ];
   }
 }

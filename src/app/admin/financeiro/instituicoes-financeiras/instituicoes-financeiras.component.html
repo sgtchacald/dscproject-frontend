@@ -1,0 +1,68 @@
+<nb-layout>
+  <nb-layout-header>
+    <app-header></app-header>
+  </nb-layout-header>
+
+  <nb-sidebar start>
+    <app-menu></app-menu>
+  </nb-sidebar>
+
+  <nb-layout-column class="p-3">
+    <div id="breadcrumb" class="pb-3">
+      <p-breadcrumb [model]="breadcrumbItens"></p-breadcrumb>
+    </div>
+
+    <div id="conteudo">
+      <nb-card>
+        <nb-card-body>
+          <div id="acoes" class="pt-2 ">
+            <p-toolbar styleClass="h-5rem">
+              <ng-template pTemplate="left">
+                <p-button id="cadastrar" class="mr-4" label="Cadastrar" icon="pi pi-plus" label="Cadastrar" size="small" severity="info" [raised]="true" (click)="abrirModal()"></p-button>
+                <p-button id="excluir" label="Excluir"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="true"></p-button>
+              </ng-template>
+
+              <ng-template pTemplate="right">
+                <p-button id="exportar" class="" label="Importar Arquivo" icon="pi pi-upload" size="small" severity="help" [raised]="true" [disabled]="true"></p-button>
+              </ng-template>
+            </p-toolbar>
+          </div>
+          <div id="container">
+
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <p-dialog [(visible)]="exibirDialog" [style]="{ width: '450px' }" header="Cadastrar Instituições Financeiras" [modal]="true" styleClass="p-fluid">
+      <!--<form id="form-instituicao-financeira" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>-->
+        <ng-template pTemplate="content" class="p-fluid">
+          <div class="field pt-4">
+            <label for="nome" class="font-semibold">Nome</label>
+            <input pInputText id="nome" [(ngModel)]="instituicao.nome" class="w-full" autocomplete="off" />
+            <small class="p-error" *ngIf="isSubmetido && !instituicao.nome">Nome é obrigatório.</small>
+          </div>
+
+          <div class="field pt-2">
+            <label for="tipo" class="font-semibold">Tipo</label>
+            <p-listbox id="tipo" [options]="tipoInstituicaoFinanceiraList" [(ngModel)]="tipoInstituicaoFinanceiraSelecionada" optionLabel="label"></p-listbox>
+            <small class="p-error" *ngIf="isSubmetido && !tipoInstituicaoFinanceiraSelecionada">Tipo é obrigatório.</small>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
+          <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="inserir()"></button>
+        </ng-template>
+      <!--</form>-->
+    </p-dialog>
+
+    <p-toast  position="bottom-center" [life]="5000" [style]="{ width: 'auto' }" class="pb-6"></p-toast>
+  </nb-layout-column>
+
+
+  <nb-layout-footer>
+    <app-footer></app-footer>
+  </nb-layout-footer>
+</nb-layout>
+

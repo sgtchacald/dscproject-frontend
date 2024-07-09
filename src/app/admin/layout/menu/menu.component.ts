@@ -22,7 +22,7 @@ export class MenuComponent {
         {
           title:'Instituições',
           icon: 'chevron-right-outline',
-          link:'/administracao/financeiro/instituicoes-financeiras',
+          link:'/admin/financeiro/instituicao-financeira',
         },
         {
           title:'Lançamentos',
