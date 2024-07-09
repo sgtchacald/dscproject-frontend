@@ -20,7 +20,7 @@ export class InstituicaoFinanceiraService {
   ) {}
 
   cadastrar(instituicaoFinanceira : InstituicaoFinanceira){
-    return this.httpClient.post(this.apiUrl + '/instituicao-financeira/inserir', instituicaoFinanceira);
+    return this.httpClient.post(this.apiUrl + '/instituicoes-financeiras/inserir', instituicaoFinanceira);
   }
 
 

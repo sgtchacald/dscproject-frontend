@@ -86,9 +86,6 @@ export class LoginComponent implements OnInit{
     let login: any = this.form['login'].value;
     let senha: any = this.form['senha'].value;
 
-    console.log(login);
-    console.log(senha);
-
     this.usuarioService.autenticar(login, senha).subscribe(
       () => {
         this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Login Efetuado com sucesso! Redirecionando para o Dashboard.'});

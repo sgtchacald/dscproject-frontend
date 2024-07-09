@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import {MenuItem, MessageService} from "primeng/api";
 import {InstituicaoFinanceira} from "../../../../models/instituicao-financeira.model";
-import {getAll, TipoInstituicaoFinanceiraEnum} from "../../../../models/tipo-instituicao-financeira";
-import {UsuarioService} from "../../../../services/usuario/usuario.service";
-import {FormBuilder} from "@angular/forms";
-import {Router} from "@angular/router";
+import {TipoInstituicaoFinanceiraEnum} from "../../../../enums/tipo-instituicao-financeira";
 import {InstituicaoFinanceiraService} from "../../../../services/financeiro/instituicao-financeira.service";
 import {ErroService} from "../../../../services/utils/erro.service";
 
@@ -19,8 +16,8 @@ export class InstituicoesFinanceirasComponent {
   instituicao: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '');
   isSubmetido: boolean = false;
   exibirDialog: boolean = false;
-  tipoInstituicaoFinanceiraList : { value: TipoInstituicaoFinanceiraEnum, label: string }[] = [];
-  tipoInstituicaoFinanceiraSelecionada: TipoInstituicaoFinanceiraEnum | undefined;
+  tipoInstituicaoFinanceiraList : { value: string, label: string }[] = [];
+  tipoInstituicaoFinanceiraSelecionada: { value: string, label: string } | undefined;
 
   constructor(
     private messageService: MessageService,
@@ -37,7 +34,7 @@ export class InstituicoesFinanceirasComponent {
       {  label: 'Manter Instituição Financeira' }
     ];
 
-    this.tipoInstituicaoFinanceiraList = getAll();
+    this.tipoInstituicaoFinanceiraList = TipoInstituicaoFinanceiraEnum.getAll();
   }
 
   abrirModal() {
@@ -52,23 +49,26 @@ export class InstituicoesFinanceirasComponent {
 
   inserir(){
     this.isSubmetido = true;
-    this.instituicao.tipoInstituicao = "";
+    this.instituicao.tipoInstituicao = this.tipoInstituicaoFinanceiraSelecionada?.value;
 
-    if(this.instituicao.nome && this.instituicao.tipoInstituicao){
-        this.instituicaoFinanceiraService.cadastrar(this.instituicao).subscribe(
-          () => {
-            this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Cadastrado com sucesso.'});
-            this.limpaCamposForm();
-            this.fecharModal();
-          },
-          (error) => {
-            let erro: string = this.erroService.retornaErroStatusCode(error);
-            if(erro != ""){
-              this.messageService.add({severity: 'error', summary: 'Erro', detail: erro });
-            }
+    if(
+        this.instituicao.nome != null && this.instituicao.nome != "" && this.instituicao.nome != undefined
+        && this.instituicao.tipoInstituicao != null && this.instituicao.tipoInstituicao != "" && this.instituicao.tipoInstituicao != undefined
+    ){
+      this.instituicaoFinanceiraService.cadastrar(this.instituicao).subscribe(
+        () => {
+          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Cadastrado com sucesso.'});
+          this.limpaCamposForm();
+          this.fecharModal();
+        },
+        (error) => {
+          let erro: string = this.erroService.retornaErroStatusCode(error);
+          if(erro != ""){
+            this.messageService.add({severity: 'error', summary: 'Erro', detail: erro });
           }
-        )
-      }
+        }
+      )
+    }
   }
 
   limpaCamposForm(){

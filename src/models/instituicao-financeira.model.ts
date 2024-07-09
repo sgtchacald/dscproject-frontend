@@ -1,9 +1,7 @@
-import { TipoInstituicaoFinanceiraEnum } from './tipo-instituicao-financeira'; // Ajuste o caminho conforme necessário
-
 export class InstituicaoFinanceira {
   id: number | null;
   nome: string;
-  tipoInstituicao: string;
+  tipoInstituicao: string | undefined;
 
   constructor(id: number | null, nome: string, tipoInstituicao: string) {
     this.id = id;

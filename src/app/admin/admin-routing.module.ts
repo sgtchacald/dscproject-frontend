@@ -6,7 +6,7 @@ import { InstituicoesFinanceirasComponent } from "./financeiro/instituicoes-fina
 
 const routes: Routes = [
 
-  { path: '', component: DashboardComponent },
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
 
   { path: 'admin', component: DashboardComponent, canActivate: [AuthGuard]},
 
