@@ -3,7 +3,6 @@ import {UsuarioService} from "../../../services/usuario/usuario.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MessageService} from "primeng/api";
 import {HttpErrorResponse} from "@angular/common/http";
-import {EsqueciASenhaComponent} from "../esqueci-a-senha/esqueci-a-senha.component";
 import {Router} from "@angular/router";
 
 @Component({

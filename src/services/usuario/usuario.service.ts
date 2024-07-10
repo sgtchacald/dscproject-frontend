@@ -73,7 +73,6 @@ export class UsuarioService {
   }
 
   recuperarSenha(email: string) {
-    console.log(this.apiUrl+'/login/esqueci-a-senha');
     return this.httpClient.post(this.apiUrl+'/auth/recuperar-senha', { email });
   }
 }

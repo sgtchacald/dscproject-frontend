@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Form, FormControl, FormGroup, Validators} from "@angular/forms";
+import {UsuarioService} from "../../../services/usuario/usuario.service";
+import {MessageService} from "primeng/api";
+import {ErroService} from "../../../services/utils/erro.service";
 
 @Component({
   selector: 'app-esqueci-a-senha',
@@ -18,7 +21,10 @@ export class EsqueciASenhaComponent {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private route: Router
+    private route: Router,
+    private usuarioService: UsuarioService,
+    private messageService: MessageService,
+    private erroService: ErroService
   ) {}
 
   ngOnInit(): void {
@@ -34,20 +40,20 @@ export class EsqueciASenhaComponent {
     this.route.navigate(['/login']);
   }
 
-  inserir(){
-
-    console.log(this.form?.value);
-
+  recuperarSenha(){
     this.isSubmetido = true;
-
-    /*if(
-      this.instituicao.nome != null && this.instituicao.nome != "" && this.instituicao.nome != undefined
-      && this.instituicao.tipoInstituicao != null && this.instituicao.tipoInstituicao != "" && this.instituicao.tipoInstituicao != undefined
-    ){
-      this.instituicaoFinanceiraService.cadastrar(this.instituicao).subscribe(
+    let email: any = this.form.value['email'];
+    console.log(this.form);
+    if(this.form.status == 'VALID'){
+      this.usuarioService.recuperarSenha(email).subscribe(
         () => {
-          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Cadastrado com sucesso.'});
-          this.limpaCamposForm();
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Caso seu e-mail esteja em nossos registros serão enviadas para você as instruções para recuperação da conta.'
+            }
+          );
           this.fecharModal();
         },
         (error) => {
@@ -57,7 +63,7 @@ export class EsqueciASenhaComponent {
           }
         }
       )
-    }*/
+    }
 
   }
 }
