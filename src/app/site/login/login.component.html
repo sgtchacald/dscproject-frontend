@@ -44,14 +44,13 @@
               </div>
 
               <div class="p-field mb-4">
-                <p-button severity="success" label="Cadastrar" [loading]="loading" (onClick)="cadastrarUsuario()" />
+                <p-button severity="success" label="Cadastrar" [loading]="loading" (onClick)="cadastrarUsuario()" [disabled]="true"/>
               </div>
             </form>
           </div>
         </div>
     </div>
   </div>
-  <p-toast  position="bottom-right" [life]="5000" [style]="{ width: 'auto' }"></p-toast>
 </section>
 
 <router-outlet></router-outlet>

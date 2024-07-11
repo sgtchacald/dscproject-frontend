@@ -24,7 +24,7 @@ export class EsqueciASenhaComponent {
     private route: Router,
     private usuarioService: UsuarioService,
     private messageService: MessageService,
-    private erroService: ErroService
+    private erroService: ErroService,
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +47,7 @@ export class EsqueciASenhaComponent {
     if(this.form.status == 'VALID'){
       this.usuarioService.recuperarSenha(email).subscribe(
         () => {
+          this.fecharModal();
           this.messageService.add(
             {
               severity: 'success',
@@ -54,12 +55,17 @@ export class EsqueciASenhaComponent {
               detail: 'Caso seu e-mail esteja em nossos registros serão enviadas para você as instruções para recuperação da conta.'
             }
           );
-          this.fecharModal();
         },
         (error) => {
           let erro: string = this.erroService.retornaErroStatusCode(error);
           if(erro != ""){
-            this.messageService.add({severity: 'error', summary: 'Erro', detail: erro });
+            this.messageService.add(
+              {
+                severity: 'error',
+                summary: 'Erro',
+                detail: erro
+              }
+            );
           }
         }
       )

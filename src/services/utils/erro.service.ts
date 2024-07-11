@@ -41,6 +41,11 @@ export class ErroService {
         default:
           retorno = error.status + ' - Erro desconhecido.';
       }
+
+      if(error.error.message){
+        retorno = retorno = error.error.message;
+      }
+
     }
 
     return retorno;

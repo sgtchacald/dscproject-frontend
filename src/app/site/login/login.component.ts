@@ -4,6 +4,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MessageService} from "primeng/api";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {ErroService} from "../../../services/utils/erro.service";
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit{
   constructor(
     private usuarioService: UsuarioService,
     private messageService: MessageService,
+    private erroService: ErroService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -87,18 +89,18 @@ export class LoginComponent implements OnInit{
 
     this.usuarioService.autenticar(login, senha).subscribe(
       () => {
-        this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Login Efetuado com sucesso! Redirecionando para o Dashboard.'});
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Login efetuado com sucesso.' });
         this.router.navigate(['/admin'])
       },(error: HttpErrorResponse) => {
-
-        if(error.status === 504){
-          this.erro = "O servidor está desconectado";
-        }else{
-          this.erro = error.error.message;
-        }
-
-        if(this.erro != null || this.erro != "" || this.erro!= undefined){} {
-          this.messageService.add({severity: 'error', summary: 'Erro', detail: this.erro});
+        let erro: string = this.erroService.retornaErroStatusCode(error);
+        if(erro != null || erro != "" || erro!= undefined){
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Erro',
+              detail: erro
+            }
+          );
         }
       }
     )
@@ -118,8 +120,5 @@ export class LoginComponent implements OnInit{
     }, 2000);
   }
 
-
-  cadastrarUsuario() {
-    this.messageService.add({severity: 'success', summary: 'Cadastrar Usuário', detail: "Usuário Cadastrado com Sucesso!"});
-  }
+  cadastrarUsuario() {}
 }

@@ -8,14 +8,13 @@
 
     <ng-template pTemplate="content" class="p-fluid">
       Digite seu e-mail para enviarmos os passos para a recuperação da senha.
-
       <form name="form-recuperacao-senha"  [formGroup]="form">
         <div class="field pt-5">
           <label for="email" class="font-semibold w-6rem">Email</label>
           <input pInputText id="email" formControlName="email" type="email" class="flex-auto" autocomplete="off" required email/>
           <span *ngIf="form?.get('email')?.errors">
             <small class="p-error" *ngIf="isSubmetido && form?.get('email')?.hasError('required')">Email é obrigatório.</small>
-            <small class="p-error" *ngIf="isSubmetido && form?.get('email')?.hasError('email')"> Digite um email válido.</small>
+            <small class="p-error" *ngIf="isSubmetido && form?.get('email')?.hasError('email')">Digite um email válido.</small>
           </span>
         </div>
       </form>
@@ -26,6 +25,4 @@
       <p-button label="Recuperar"  [outlined]="false" severity="info" (click)="recuperarSenha()" />
     </ng-template>
   </p-dialog>
-
-  <p-toast  position="bottom-right" [life]="10000" [style]="{ width: 'auto' }"></p-toast>
 </div>
