@@ -26,6 +26,8 @@ import {DropdownModule} from "primeng/dropdown";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ListboxModule} from "primeng/listbox";
 import {RippleModule} from "primeng/ripple";
+import {TableModule} from "primeng/table";
+import {ConfirmationService} from "primeng/api";
 
 @NgModule({
   declarations: [
@@ -35,35 +37,37 @@ import {RippleModule} from "primeng/ripple";
     DashboardComponent,
     InstituicoesFinanceirasComponent
   ],
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    NbThemeModule.forRoot({name: 'default'}),
-    NbLayoutModule,
-    NbSidebarModule.forRoot(),
-    NbCardModule,
-    NbActionsModule,
-    NbUserModule,
-    NbContextMenuModule,
-    NbMenuModule.forRoot(),
-    NbIconModule,
-    NbEvaIconsModule,
-    BreadcrumbModule,
-    ToastModule,
-    ToolbarModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    DropdownModule,
-    FormsModule,
-    ListboxModule,
-    ReactiveFormsModule,
-    RippleModule
-  ],
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        NbThemeModule.forRoot({name: 'default'}),
+        NbLayoutModule,
+        NbSidebarModule.forRoot(),
+        NbCardModule,
+        NbActionsModule,
+        NbUserModule,
+        NbContextMenuModule,
+        NbMenuModule.forRoot(),
+        NbIconModule,
+        NbEvaIconsModule,
+        BreadcrumbModule,
+        ToastModule,
+        ToolbarModule,
+        ButtonModule,
+        DialogModule,
+        InputTextModule,
+        DropdownModule,
+        FormsModule,
+        ListboxModule,
+        ReactiveFormsModule,
+        RippleModule,
+        TableModule
+    ],
   providers: [
     NbSidebarService,
     NbMenuService,
     LayoutService,
+    ConfirmationService
   ],
 })
 export class AdminModule { }

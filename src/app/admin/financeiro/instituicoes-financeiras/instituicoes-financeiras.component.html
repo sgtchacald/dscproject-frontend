@@ -18,7 +18,7 @@
           <div id="acoes" class="pt-2 ">
             <p-toolbar styleClass="h-5rem">
               <ng-template pTemplate="left">
-                <p-button id="cadastrar" class="mr-4" label="Cadastrar" icon="pi pi-plus" label="Cadastrar" size="small" severity="info" [raised]="true" (click)="abrirModal()"></p-button>
+                <p-button id="cadastrar" class="mr-4" label="Cadastrar" icon="pi pi-plus" label="Cadastrar" size="small" severity="info" [raised]="true" (click)="abrirModal(null)"></p-button>
                 <p-button id="excluir" label="Excluir"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="true"></p-button>
               </ng-template>
 
@@ -27,14 +27,83 @@
               </ng-template>
             </p-toolbar>
           </div>
-          <div id="container">
 
+          <div id="container" class="mt-3">
+            <p-table
+              #dt
+              [value]="instituicaoList"
+              [rows]="4"
+              [paginator]="true"
+              [globalFilterFields]="['nome', 'tipoInstituicao']"
+              [tableStyle]="{ 'min-width': '75rem' }"
+              [(selection)]="instituicoesSelecionadasList"
+              [rowHover]="true"
+              [showCurrentPageReport]="true"
+              [sortField]="'nome'"
+              [sortOrder]="1"
+              dataKey="id"
+              currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} registros"
+            >
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between h-2rem">
+                  <h5 class="m-0">Instituições Financeiras</h5>
+                  <span class="p-input-icon-left">
+                  <i class="pi pi-search"></i>
+                  <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')" placeholder="buscar..." />
+                  </span>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header">
+                <tr class="h-1rem">
+                  <th style="width: 3rem">
+                    <p-tableHeaderCheckbox />
+                  </th>
+                  <th pSortableColumn="nome" style="min-width:12rem">
+                    Nome <p-sortIcon field="nome" />
+                  </th>
+                  <th pSortableColumn="tipoInstituicao">
+                    Tipo <p-sortIcon field="tipoInstituicao" />
+                  </th>
+                  <th class="right">
+                    Ações
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-instituicao>
+                <tr class="h-1rem">
+                  <td>
+                    <p-tableCheckbox [value]="instituicao" />
+                  </td>
+                  <td>
+                    {{ instituicao.nome }}
+                  </td>
+                  <td>
+                    {{ instituicao.tipoInstituicao }}
+                  </td>
+                  <td>
+                    <span id="botaoEditar" pTooltip="Editar" tooltipPosition="left" placeholder="Right">
+                      <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModal(instituicao)"></i>
+                    </span>
+
+                    <span id="botaoExcluir" pTooltip="Excluir" tooltipPosition="right" placeholder="Right">
+                      <i class="pi pi-trash"  style="font-size: 1rem; color:red" (click)="excluir(instituicao)"></i>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                  No total existem {{ instituicaoList ? instituicaoList.length : 0 }} Instituições Financeiras.
+                </div>
+              </ng-template>
+            </p-table>
           </div>
         </nb-card-body>
       </nb-card>
     </div>
 
-    <p-dialog [(visible)]="exibirDialog" [style]="{ width: '450px' }" header="Cadastrar Instituições Financeiras" [modal]="true" styleClass="p-fluid">
+    <p-dialog [(visible)]="exibirDialog" [style]="{ width: '450px' }" header="{{prefixoModal}}" [modal]="true" styleClass="p-fluid">
       <!--<form id="form-instituicao-financeira" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>-->
         <ng-template pTemplate="content" class="p-fluid">
           <div class="field pt-4">
@@ -45,14 +114,14 @@
 
           <div class="field pt-2">
             <label for="tipo" class="font-semibold">Tipo</label>
-            <p-listbox id="tipo" [options]="tipoInstituicaoFinanceiraList" [(ngModel)]="tipoInstituicaoFinanceiraSelecionada" optionLabel="label"></p-listbox>
+            <p-listbox id="tipo" [options]="tipoInstituicaoFinanceiraList" [(ngModel)]="tipoInstituicaoFinanceiraSelecionada" optionLabel="value"></p-listbox>
             <small class="p-error" *ngIf="isSubmetido && !tipoInstituicaoFinanceiraSelecionada">Tipo é obrigatório.</small>
           </div>
         </ng-template>
 
         <ng-template pTemplate="footer">
           <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
-          <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="inserir()"></button>
+          <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="salvar()"></button>
         </ng-template>
       <!--</form>-->
     </p-dialog>

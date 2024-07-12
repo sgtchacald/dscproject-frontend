@@ -3,7 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {TokenService} from "../usuario/token.service";
 import {Router} from "@angular/router";
 import {environment} from "../../environments/environment";
-import {Usuario} from "../../models/usuario.model";
 import {InstituicaoFinanceira} from "../../models/instituicao-financeira.model";
 
 @Injectable({
@@ -19,8 +18,17 @@ export class InstituicaoFinanceiraService {
     private router: Router,
   ) {}
 
+  buscarTodos(){
+    return this.httpClient.get<InstituicaoFinanceira[]>(this.apiUrl + '/instituicoes-financeiras');
+  }
+
   cadastrar(instituicaoFinanceira : InstituicaoFinanceira){
     return this.httpClient.post(this.apiUrl + '/instituicoes-financeiras/inserir', instituicaoFinanceira);
+  }
+
+  editar(instituicaoFinanceira : InstituicaoFinanceira){
+    const id = instituicaoFinanceira.id;
+    return this.httpClient.put(this.apiUrl + `/instituicoes-financeiras/editar/${id}`, instituicaoFinanceira);
   }
 
 
