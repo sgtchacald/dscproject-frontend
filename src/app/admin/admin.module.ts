@@ -28,6 +28,7 @@ import {ListboxModule} from "primeng/listbox";
 import {RippleModule} from "primeng/ripple";
 import {TableModule} from "primeng/table";
 import {ConfirmationService} from "primeng/api";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {ConfirmationService} from "primeng/api";
         ListboxModule,
         ReactiveFormsModule,
         RippleModule,
-        TableModule
+        TableModule,
+        ConfirmDialogModule
     ],
   providers: [
     NbSidebarService,

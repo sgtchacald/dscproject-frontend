@@ -7,8 +7,8 @@
     <app-menu></app-menu>
   </nb-sidebar>
 
-  <nb-layout-column class="p-3">
-    <div id="breadcrumb" class="pb-3">
+  <nb-layout-column class="p-2">
+    <div id="breadcrumb" class="pb-2">
       <p-breadcrumb [model]="breadcrumbItens"></p-breadcrumb>
     </div>
 
@@ -32,7 +32,7 @@
             <p-table
               #dt
               [value]="instituicaoList"
-              [rows]="4"
+              [rows]="5"
               [paginator]="true"
               [globalFilterFields]="['nome', 'tipoInstituicao']"
               [tableStyle]="{ 'min-width': '75rem' }"
@@ -59,6 +59,9 @@
                   <th style="width: 3rem">
                     <p-tableHeaderCheckbox />
                   </th>
+                  <!--<th pSortableColumn="id" style="min-width:12rem;visibility: hidden">
+                    Id <p-sortIcon field="id" />
+                  </th>-->
                   <th pSortableColumn="nome" style="min-width:12rem">
                     Nome <p-sortIcon field="nome" />
                   </th>
@@ -75,6 +78,9 @@
                   <td>
                     <p-tableCheckbox [value]="instituicao" />
                   </td>
+                  <!--<td style="visibility: hidden">
+                    {{ instituicao.id }}
+                  </td>-->
                   <td>
                     {{ instituicao.nome }}
                   </td>
@@ -108,8 +114,8 @@
         <ng-template pTemplate="content" class="p-fluid">
           <div class="field pt-4">
             <label for="nome" class="font-semibold">Nome</label>
-            <input pInputText id="nome" [(ngModel)]="instituicao.nome" class="w-full" autocomplete="off" />
-            <small class="p-error" *ngIf="isSubmetido && !instituicao.nome">Nome é obrigatório.</small>
+            <input pInputText id="nome" [(ngModel)]="instituicaoTemp.nome" class="w-full" autocomplete="off" />
+            <small class="p-error" *ngIf="isSubmetido && !instituicaoTemp.nome">Nome é obrigatório.</small>
           </div>
 
           <div class="field pt-2">
@@ -125,6 +131,8 @@
         </ng-template>
       <!--</form>-->
     </p-dialog>
+
+    <p-confirmDialog />
   </nb-layout-column>
 
 

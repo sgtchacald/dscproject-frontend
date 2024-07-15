@@ -31,6 +31,8 @@ export class InstituicaoFinanceiraService {
     return this.httpClient.put(this.apiUrl + `/instituicoes-financeiras/editar/${id}`, instituicaoFinanceira);
   }
 
-
-
+  excluir(instituicaoFinanceira: InstituicaoFinanceira) {
+    const id = instituicaoFinanceira.id;
+    return this.httpClient.delete(this.apiUrl + `/instituicoes-financeiras/excluir/${id}`);
+  }
 }
