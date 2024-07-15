@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
 import { InstituicaoFinanceira } from "../../../../models/instituicao-financeira.model";
 import { TipoInstituicaoFinanceiraEnum } from "../../../../enums/tipo-instituicao-financeira";
@@ -14,14 +14,13 @@ import { HttpErrorResponse } from '@angular/common/http';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class InstituicoesFinanceirasComponent {
+  @ViewChild('dt') dt: any;
 
   breadcrumbItens: MenuItem[] | undefined;
-
   instituicao: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '');
   instituicaoTemp: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '');
   instituicaoList: InstituicaoFinanceira[] = [];
   instituicoesSelecionadasList: InstituicaoFinanceira[] = [];
-
   tipoInstituicaoFinanceiraList: { key: string, value: string }[] = [];
   tipoInstituicaoFinanceiraSelecionada: { key: string; value: string; } | undefined | null;
 
@@ -54,9 +53,6 @@ export class InstituicoesFinanceirasComponent {
   inserir() {
     this.isSubmetido = true;
     this.instituicaoTemp.tipoInstituicao = this.tipoInstituicaoFinanceiraSelecionada?.key;
-
-    console.log(this.instituicaoTemp);
-
     if (
       this.instituicaoTemp.nome != null && this.instituicaoTemp.nome !== "" && this.instituicaoTemp.nome !== undefined &&
       this.instituicaoTemp.tipoInstituicao != null && this.instituicaoTemp.tipoInstituicao !== "" && this.instituicaoTemp.tipoInstituicao !== undefined
@@ -233,5 +229,10 @@ export class InstituicoesFinanceirasComponent {
   limpaCamposForm(){
     this.instituicao = new InstituicaoFinanceira(null, '', '');
     this.tipoInstituicaoFinanceiraSelecionada = undefined;
+  }
+
+  aplicarFiltroPadrao($event: Event) {
+    const inputElement = $event.target as HTMLInputElement;
+    this.dt.filterGlobal(inputElement.value, "contains");
   }
 }

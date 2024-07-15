@@ -3,10 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
+import {AuthInterceptor} from "../interceptors/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,13 @@ import {ToastModule} from "primeng/toast";
     ToastModule
   ],
   providers: [
-    MessageService
+    MessageService,
+    AuthInterceptor,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

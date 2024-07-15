@@ -69,7 +69,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     NbSidebarService,
     NbMenuService,
     LayoutService,
-    ConfirmationService
+    ConfirmationService,
   ],
 })
 export class AdminModule { }
