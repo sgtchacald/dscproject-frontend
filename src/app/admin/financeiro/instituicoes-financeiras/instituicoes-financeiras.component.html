@@ -19,11 +19,10 @@
             <p-toolbar styleClass="h-5rem">
               <ng-template pTemplate="left">
                 <p-button id="cadastrar" class="mr-4" label="Cadastrar" icon="pi pi-plus" label="Cadastrar" size="small" severity="info" [raised]="true" (click)="abrirModal(null)"></p-button>
-                <p-button id="excluir" label="Excluir"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="true"></p-button>
+                <p-button id="excluir" label="Excluir"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="!instituicoesSelecionadasList || !instituicoesSelecionadasList.length" (click)="excluirSelecionados()"></p-button>
               </ng-template>
 
               <ng-template pTemplate="right">
-                <p-button id="exportar" class="" label="Importar Arquivo" icon="pi pi-upload" size="small" severity="help" [raised]="true" [disabled]="true"></p-button>
               </ng-template>
             </p-toolbar>
           </div>

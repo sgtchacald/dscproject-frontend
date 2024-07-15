@@ -126,9 +126,10 @@ export class InstituicoesFinanceirasComponent {
       message: 'Tem certeza que deseja excluir o item: <b>' + instituicaoFinanceiraGrid.nome + '</b>?',
       header: 'Confirmar Ação',
       icon: 'pi pi-exclamation-triangle',
-      acceptIcon: "none",
-      rejectIcon: "none",
-      rejectButtonStyleClass: "mr-3",
+      acceptButtonStyleClass: "p-button-primary mt-3",
+      rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
+      acceptLabel: "Sim",
+      rejectLabel: "Não",
       accept: () => {
         this.instituicaoFinanceiraService.excluir(instituicaoFinanceiraGrid).subscribe(
           () => {
@@ -136,7 +137,7 @@ export class InstituicoesFinanceirasComponent {
             if (index !== -1) {
               this.instituicaoList.splice(index, 1);
               this.atualizarTabela(false); // Atualiza a tabela após excluir
-              this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Item excluído com sucesso.'});
+              this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Item [' + instituicaoFinanceiraGrid.nome +'] excluído com sucesso.'});
             }
           },
           (error: HttpErrorResponse) => {
@@ -148,6 +149,48 @@ export class InstituicoesFinanceirasComponent {
         );
       }
     });
+  }
+
+  excluirSelecionados() {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir os itens selecionados?',
+      header: 'Confirmar Ação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: "p-button-primary mt-3",
+      rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
+      acceptLabel: "Sim",
+      rejectLabel: "Não",
+      accept: () => {
+        let existeErro: boolean = false;
+
+        for (let item of this.instituicoesSelecionadasList) {
+          this.instituicaoFinanceiraService.excluir(item).subscribe(
+            () => {
+              const index = this.instituicaoList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
+              if (index !== -1) {
+                this.instituicaoList.splice(index, 1);
+                this.atualizarTabela(false); // Atualiza a tabela após excluir
+                this.messageService.add({severity: 'info', summary: 'Notificação', detail: 'Item [' + item.nome +'] foi excluído.'});
+              }
+            },
+            (error: HttpErrorResponse) => {
+              let erro:string = this.erroService.retornaErroStatusCode(error);
+              if (erro !== "") {
+                this.messageService.add({severity: 'error', summary: 'Erro', detail: "Registro de id: " + item.id + " " + erro});
+              }
+            }
+          );
+        }
+
+        if(!existeErro && this.instituicoesSelecionadasList.length > 1){
+          //this.instituicaoList = this.instituicaoList.filter((val) => !this.instituicoesSelecionadasList?.includes(val));
+          this.instituicoesSelecionadasList = [];
+          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Todos os itens foram excluídos com sucesso'});
+        }
+
+      }
+    });
+
   }
 
   atualizarTabela(consumirAPI: boolean) {
