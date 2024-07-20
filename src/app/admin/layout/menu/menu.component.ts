@@ -17,12 +17,21 @@ export class MenuComponent {
     {
       title: 'Financeiro',
       icon: 'credit-card-outline',
-      expanded: true,
       children: [
         {
-          title:'Instituições',
-          icon: 'chevron-right-outline',
-          link:'/admin/financeiro/instituicao-financeira',
+          title:'Instituições Financeiras',
+          children: [
+            {
+              title:'Manter',
+              icon: 'chevron-right-outline',
+              link:'/admin/financeiro/instituicao-financeira',
+            },
+            {
+              title:'Vinclular ao Usuário',
+              icon: 'chevron-right-outline',
+              link:'',
+            }
+          ],
         },
         {
           title:'Lançamentos',

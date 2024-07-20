@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,6 +9,7 @@ import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {AuthInterceptor} from "../interceptors/auth.interceptor";
 
+
 @NgModule({
   declarations: [
     AppComponent
@@ -17,8 +18,8 @@ import {AuthInterceptor} from "../interceptors/auth.interceptor";
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule,
-    ToastModule
+    ToastModule,
+    HttpClientModule
   ],
   providers: [
     MessageService,
@@ -31,4 +32,6 @@ import {AuthInterceptor} from "../interceptors/auth.interceptor";
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+
+export class AppModule {
+}

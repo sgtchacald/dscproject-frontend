@@ -1,4 +1,4 @@
-import {NgModule} from "@angular/core";
+import {APP_INITIALIZER, NgModule} from "@angular/core";
 import {HeaderComponent} from "./layout/header/header.component";
 import {MenuComponent} from "./layout/menu/menu.component";
 import {FooterComponent} from "./layout/footer/footer.component";
@@ -29,6 +29,22 @@ import {RippleModule} from "primeng/ripple";
 import {TableModule} from "primeng/table";
 import {ConfirmationService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
+}
+
+const I18N_CONFIG = {
+  defaultLanguage: 'pt-br', // this name need to be the same as the JSON file
+  loader: {
+    provide: TranslateLoader,
+    useFactory: HttpLoaderFactory,
+    deps: [HttpClient]
+  }
+}
 
 @NgModule({
   declarations: [
@@ -36,40 +52,45 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     MenuComponent,
     FooterComponent,
     DashboardComponent,
-    InstituicoesFinanceirasComponent
+    InstituicoesFinanceirasComponent,
   ],
-    imports: [
-        CommonModule,
-        AdminRoutingModule,
-        NbThemeModule.forRoot({name: 'default'}),
-        NbLayoutModule,
-        NbSidebarModule.forRoot(),
-        NbCardModule,
-        NbActionsModule,
-        NbUserModule,
-        NbContextMenuModule,
-        NbMenuModule.forRoot(),
-        NbIconModule,
-        NbEvaIconsModule,
-        BreadcrumbModule,
-        ToastModule,
-        ToolbarModule,
-        ButtonModule,
-        DialogModule,
-        InputTextModule,
-        DropdownModule,
-        FormsModule,
-        ListboxModule,
-        ReactiveFormsModule,
-        RippleModule,
-        TableModule,
-        ConfirmDialogModule
-    ],
+  imports: [
+    CommonModule,
+    AdminRoutingModule,
+    NbThemeModule.forRoot({name: 'default'}),
+    NbLayoutModule,
+    NbSidebarModule.forRoot(),
+    NbCardModule,
+    NbActionsModule,
+    NbUserModule,
+    NbContextMenuModule,
+    NbMenuModule.forRoot(),
+    NbIconModule,
+    NbEvaIconsModule,
+    BreadcrumbModule,
+    ToastModule,
+    ToolbarModule,
+    ButtonModule,
+    DialogModule,
+    InputTextModule,
+    DropdownModule,
+    FormsModule,
+    ListboxModule,
+    ReactiveFormsModule,
+    RippleModule,
+    TableModule,
+    ConfirmDialogModule,
+    HttpClientModule,
+    TranslateModule.forRoot(I18N_CONFIG)
+  ],
   providers: [
     NbSidebarService,
     NbMenuService,
     LayoutService,
-    ConfirmationService,
+    ConfirmationService
   ],
 })
-export class AdminModule { }
+
+export class AdminModule {
+
+}

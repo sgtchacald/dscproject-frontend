@@ -6,8 +6,6 @@ import { InstituicaoFinanceiraService } from "../../../../services/financeiro/in
 import { ErroService } from "../../../../services/utils/erro.service";
 import { EnumService } from "../../../../services/utils/enum.service";
 import { HttpErrorResponse } from '@angular/common/http';
-import {TranslateService} from "@ngx-translate/core";
-import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-instituicoes-financeiras',
@@ -25,7 +23,6 @@ export class InstituicoesFinanceirasComponent {
   instituicoesSelecionadasList: InstituicaoFinanceira[] = [];
   tipoInstituicaoFinanceiraList: { key: string, value: string }[] = [];
   tipoInstituicaoFinanceiraSelecionada: { key: string; value: string; } | undefined | null;
-  existeErro: boolean = false;
 
   isSubmetido: boolean = false;
   exibirDialog: boolean = false;
@@ -37,9 +34,7 @@ export class InstituicoesFinanceirasComponent {
     private messageService: MessageService,
     private erroService: ErroService,
     private confirmationService: ConfirmationService,
-    private cdr: ChangeDetectorRef,
-    private translate: TranslateService,
-    private utils: UtilsService
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -70,14 +65,14 @@ export class InstituicoesFinanceirasComponent {
           //Faz o Push no novo item para a tabela.
           this.instituicaoList.push(this.instituicaoTemp);
 
-          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.cadastradoSucesso') });
+          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Item cadastrado com sucesso.'});
           this.fecharModal();
           this.atualizarTabela(true); // Atualiza a tabela após inserir
         },
         (error) => {
           const erro: string = this.erroService.retornaErroStatusCode(error);
           if (erro !== "") {
-            this.messageService.add({severity: 'error', summary: 'Erro', detail: this.translate.instant('message.cadastradoErro') + " " + erro});
+            this.messageService.add({severity: 'error', summary: 'Erro', detail: erro});
           }
         }
       );
@@ -108,14 +103,14 @@ export class InstituicoesFinanceirasComponent {
             this.instituicaoList[index] = { ...this.instituicao };
           }
 
-          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
+          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Item editado com sucesso.'});
           this.fecharModal();
           this.atualizarTabela(false); // Atualiza a tabela após editar
         },
         (error) => {
           erro = this.erroService.retornaErroStatusCode(error);
           if (erro !== "") {
-            this.messageService.add({severity: 'error', summary: 'Erro',  detail: this.translate.instant('message.cadastradoSucesso') + " " + erro });
+            this.messageService.add({severity: 'error', summary: 'Erro', detail: erro});
           }
         }
       );
@@ -138,12 +133,7 @@ export class InstituicoesFinanceirasComponent {
             if (index !== -1) {
               this.instituicaoList.splice(index, 1);
               this.atualizarTabela(false); // Atualiza a tabela após excluir
-
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Sucesso',
-                detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: instituicaoFinanceiraGrid.nome })
-              });
+              this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Item [' + instituicaoFinanceiraGrid.nome +'] excluído com sucesso.'});
             }
           },
           (error: HttpErrorResponse) => {
@@ -167,6 +157,8 @@ export class InstituicoesFinanceirasComponent {
       acceptLabel: "Sim",
       rejectLabel: "Não",
       accept: () => {
+        let existeErro: boolean = false;
+
         for (let item of this.instituicoesSelecionadasList) {
           this.instituicaoFinanceiraService.excluir(item).subscribe(
             () => {
@@ -174,30 +166,24 @@ export class InstituicoesFinanceirasComponent {
               if (index !== -1) {
                 this.instituicaoList.splice(index, 1);
                 this.atualizarTabela(false); // Atualiza a tabela após excluir
-                this.messageService.add(
-                  {
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: item.nome })
-                  }
-                );
+                this.messageService.add({severity: 'info', summary: 'Notificação', detail: 'Item [' + item.nome +'] foi excluído.'});
               }
             },
             (error: HttpErrorResponse) => {
               let erro:string = this.erroService.retornaErroStatusCode(error);
               if (erro !== "") {
-                this.existeErro = true;
-                this.messageService.add(
-                  {
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoErroCustom'), { registro: item.nome }) + " " + erro
-                  }
-                );
+                this.messageService.add({severity: 'error', summary: 'Erro', detail: "Registro de id: " + item.id + " " + erro});
               }
             }
           );
         }
+
+        if(!existeErro && this.instituicoesSelecionadasList.length > 1){
+          //this.instituicaoList = this.instituicaoList.filter((val) => !this.instituicoesSelecionadasList?.includes(val));
+          this.instituicoesSelecionadasList = [];
+          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Todos os itens foram excluídos com sucesso'});
+        }
+
       }
     });
 

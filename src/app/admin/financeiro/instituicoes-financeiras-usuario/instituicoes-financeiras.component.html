@@ -18,8 +18,8 @@
           <div id="acoes" class="pt-2 ">
             <p-toolbar styleClass="h-5rem">
               <ng-template pTemplate="left">
-                <p-button id="cadastrar" class="mr-4" label="{{ 'label.cadastrar' | translate }}" icon="pi pi-plus" size="small" severity="info" [raised]="true" (click)="abrirModal(null)"></p-button>
-                <p-button id="excluir" label="{{ 'label.excluir' | translate }}"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="!instituicoesSelecionadasList || !instituicoesSelecionadasList.length" (click)="excluirSelecionados()"></p-button>
+                <p-button id="cadastrar" class="mr-4" label="Cadastrar" icon="pi pi-plus" label="Cadastrar" size="small" severity="info" [raised]="true" (click)="abrirModal(null)"></p-button>
+                <p-button id="excluir" label="Excluir"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="!instituicoesSelecionadasList || !instituicoesSelecionadasList.length" (click)="excluirSelecionados()"></p-button>
               </ng-template>
 
               <ng-template pTemplate="right">
@@ -42,14 +42,14 @@
               [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
               #dt
               dataKey="id"
-              currentPageReportTemplate="{{ 'label.exibindoRegistrosTabela' | translate }}"
+              currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} registros"
             >
               <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between h-2rem">
-                  <h5 class="m-0">{{ 'label.instituicaoFinanceira.lbInstituicaoFinanceira' | translate }}</h5>
+                  <h5 class="m-0">Instituições Financeiras</h5>
                   <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="aplicarFiltroPadrao($event)" placeholder="{{ 'label.pesquisar' | translate }}" />
+                    <input pInputText type="text" (input)="aplicarFiltroPadrao($event)" placeholder="buscar..." />
                   </span>
                 </div>
               </ng-template>
@@ -63,13 +63,13 @@
                     Id <p-sortIcon field="id" />
                   </th>-->
                   <th pSortableColumn="nome" style="min-width:12rem">
-                    {{ 'label.nome' | translate }} <p-sortIcon field="nome" />
+                    Nome <p-sortIcon field="nome" />
                   </th>
                   <th pSortableColumn="tipoInstituicao">
-                    {{ 'label.tipo' | translate }} <p-sortIcon field="tipoInstituicao" />
+                    Tipo <p-sortIcon field="tipoInstituicao" />
                   </th>
                   <th class="right">
-                    {{ 'label.acoes' | translate }}
+                    Ações
                   </th>
                 </tr>
               </ng-template>
@@ -88,11 +88,11 @@
                     {{ instituicao.tipoInstituicao }}
                   </td>
                   <td>
-                    <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="Right">
+                    <span id="botaoEditar" pTooltip="Editar" tooltipPosition="left" placeholder="Right">
                       <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModal(instituicao)"></i>
                     </span>
 
-                    <span id="botaoExcluir" pTooltip="{{ 'label.excluir' | translate }}" tooltipPosition="right" placeholder="Right">
+                    <span id="botaoExcluir" pTooltip="Excluir" tooltipPosition="right" placeholder="Right">
                       <i class="pi pi-trash"  style="font-size: 1rem; color:red" (click)="excluir(instituicao)"></i>
                     </span>
                   </td>
@@ -100,7 +100,7 @@
               </ng-template>
               <ng-template pTemplate="summary">
                 <div class="flex align-items-center justify-content-between">
-                  {{ 'label.noTotalExistem' | translate }} {{ instituicaoList ? instituicaoList.length : 0 }} {{ 'label.instituicaoFinanceira.instituicoesFinanceiras' | translate }}.
+                  No total existem {{ instituicaoList ? instituicaoList.length : 0 }} Instituições Financeiras.
                 </div>
               </ng-template>
             </p-table>

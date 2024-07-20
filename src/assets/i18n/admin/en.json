@@ -1,0 +1,16 @@
+{
+  "label": {
+    "cadastrar": "Signup",
+    "editar": "Editar",
+    "excluir": "Excluir",
+    "exibindoRegistrosTabela": "Exibindo {first} a {last} de {totalRecords} registros",
+
+    "instituicaoFinanceira": {
+      "lbInstituicaoFinanceira": "Instituição Financeira"
+    }
+  },
+
+  "message": {
+    "cadastradoSucesso": "Item cadastrado com sucesso"
+  }
+}
