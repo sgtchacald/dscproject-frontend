@@ -32,6 +32,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import { InstituicoesFinanceirasUsuarioComponent } from './financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -53,6 +54,7 @@ const I18N_CONFIG = {
     FooterComponent,
     DashboardComponent,
     InstituicoesFinanceirasComponent,
+    InstituicoesFinanceirasUsuarioComponent,
   ],
   imports: [
     CommonModule,

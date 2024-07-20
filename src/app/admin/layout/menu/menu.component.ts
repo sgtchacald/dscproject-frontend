@@ -27,9 +27,9 @@ export class MenuComponent {
               link:'/admin/financeiro/instituicao-financeira',
             },
             {
-              title:'Vinclular ao Usuário',
+              title:'Vincular ao Usuário',
               icon: 'chevron-right-outline',
-              link:'',
+              link:'/admin/financeiro/instituicao-financeira-usuario',
             }
           ],
         },

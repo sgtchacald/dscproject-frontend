@@ -1,0 +1,152 @@
+<nb-layout>
+  <nb-layout-header>
+    <app-header></app-header>
+  </nb-layout-header>
+
+  <nb-sidebar start>
+    <app-menu></app-menu>
+  </nb-sidebar>
+
+  <nb-layout-column class="p-2">
+    <div id="breadcrumb" class="pb-2">
+      <p-breadcrumb [model]="breadcrumbItens"></p-breadcrumb>
+    </div>
+
+    <div id="conteudo">
+      <nb-card>
+        <nb-card-body>
+          <div id="acoes" class="pt-2 ">
+            <p-toolbar styleClass="h-5rem">
+              <ng-template pTemplate="left">
+                <p-button id="cadastrar" class="mr-4" label="{{ 'label.cadastrar' | translate }}" icon="pi pi-plus" size="small" severity="info" [raised]="true" (click)="abrirModal(null)"></p-button>
+                <p-button id="excluir" label="{{ 'label.excluir' | translate }}"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="!instituicoesFinanceirasUsuarioSelecionadasList || !instituicoesFinanceirasUsuarioSelecionadasList.length" (click)="excluirSelecionados()"></p-button>
+              </ng-template>
+
+              <ng-template pTemplate="right">
+              </ng-template>
+            </p-toolbar>
+          </div>
+
+          <div id="container" class="mt-3">
+            <p-table
+              [value]="instituicoesFinanceirasUsuarioList"
+              [rows]="5"
+              [paginator]="true"
+              [tableStyle]="{ 'min-width': '75rem' }"
+              [(selection)]="instituicoesFinanceirasUsuarioSelecionadasList"
+              [rowHover]="true"
+              [showCurrentPageReport]="true"
+              [sortField]="'instituicaoFinanceira.nome'"
+              [sortOrder]="1"
+              [globalFilterFields]="['instituicaoFinanceira.nome', 'agencia', 'conta', 'nomeGerente', 'telefoneGerente']"
+              [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
+              #dt
+              dataKey="id"
+              currentPageReportTemplate="{{ 'label.exibindoRegistrosTabela' | translate }}"
+            >
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between h-2rem">
+                  <h5 class="m-0">{{ 'label.instituicaoFinanceiraUsuario.lbInstituicaoFinanceiraUsuario' | translate }}</h5>
+                  <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" (input)="aplicarFiltroPadrao($event)" placeholder="{{ 'label.pesquisar' | translate }}" />
+      </span>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header">
+                <tr class="h-1rem">
+                  <th style="width: 3rem">
+                    <p-tableHeaderCheckbox />
+                  </th>
+                  <th pSortableColumn="instituicaoFinanceira.nome" style="min-width:12rem">
+                    {{ 'label.instituicaoFinanceiraUsuario.instituicao' | translate }} <p-sortIcon field="instituicaoFinanceira.nome" />
+                  </th>
+                  <th pSortableColumn="instituicaoFinanceira.tipoInstituicao">
+                    {{ 'label.tipo' | translate }} <p-sortIcon field="instituicaoFinanceira.tipoInstituicao" />
+                  </th>
+                  <th class="right">
+                    {{ 'label.acoes' | translate }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-instituicaoFinanceiraUsuario>
+                <tr class="h-1rem">
+                  <td>
+                    <p-tableCheckbox [value]="instituicaoFinanceiraUsuario" />
+                  </td>
+                  <td>
+                    {{ instituicaoFinanceiraUsuario.instituicaoFinanceira.nome }}
+                  </td>
+                  <td>
+                    {{ instituicaoFinanceiraUsuario.instituicaoFinanceira.tipoInstituicao }}
+                  </td>
+
+                  <td>
+                    <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="Right">
+                      <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModal(instituicaoFinanceiraUsuario)"></i>
+                    </span>
+
+                    <span id="botaoExcluir" pTooltip="{{ 'label.excluir' | translate }}" tooltipPosition="right" placeholder="Right">
+                      <i class="pi pi-trash"  style="font-size: 1rem; color:red" (click)="excluir(instituicaoFinanceiraUsuario)"></i>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                  {{ 'label.noTotalExistem' | translate }} {{ instituicoesFinanceirasUsuarioList ? instituicoesFinanceirasUsuarioList.length : 0 }} {{ 'label.instituicaoFinanceiraUsuario.lbInstituicaoFinanceiraUsuario' | translate }}.
+                </div>
+              </ng-template>
+            </p-table>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <p-dialog [(visible)]="exibirDialog" [style]="{ width: '450px' }" header="{{prefixoModal}}" [modal]="true" styleClass="p-fluid">
+      <ng-template pTemplate="content" class="p-fluid">
+        <div class="field pt-2">
+          <label for="tipo" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.instituicaoAVincular' | translate }}</label>
+          <p-listbox id="tipo" [options]="instituicoesFinanceirasList" [(ngModel)]="instituicaoFinanceiraSelecionada" optionLabel="nome"></p-listbox>
+          <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+        </div>
+
+        <div class="pt-2">
+          <div class="field">
+            <label for="agencia" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.agencia' | translate }}</label>
+            <input pInputText id="agencia" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.agencia" class="w-full" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="agencia" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.conta' | translate }}</label>
+            <input pInputText id="conta" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.agencia" class="w-full" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <div class="field">
+            <label for="nomeGerente" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.nomeGerente' | translate }}</label>
+            <input pInputText id="nomeGerente" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.nomeGerente" class="w-full" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="telefoneGerente" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.telefoneGerente' | translate }}</label>
+            <input pInputText id="telefoneGerente" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.telefoneGerente" class="w-full" autocomplete="off" />
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton label="{{ 'label.cancelar' | translate }}" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
+        <button pButton label="{{ 'label.salvar' | translate }}" icon="pi pi-check" class="p-button-text" (click)="salvar()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog />
+  </nb-layout-column>
+
+
+  <nb-layout-footer>
+    <app-footer></app-footer>
+  </nb-layout-footer>
+</nb-layout>
+

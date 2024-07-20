@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
 import { InstituicaoFinanceira } from "../../../../models/instituicao-financeira.model";
-import { TipoInstituicaoFinanceiraEnum } from "../../../../enums/tipo-instituicao-financeira";
 import { InstituicaoFinanceiraService } from "../../../../services/financeiro/instituicao-financeira.service";
 import { ErroService } from "../../../../services/utils/erro.service";
 import { EnumService } from "../../../../services/utils/enum.service";

@@ -4,15 +4,33 @@
     "editar": "Editar",
     "excluir": "Excluir",
     "pesquisar": "Pesquisar",
+    "salvar": "Salvar",
+    "cancelar": "Cancelar",
+    "sim": "Sim",
+    "nao": "Não",
     "nome": "Nome",
     "tipo": "Tipo",
     "acoes": "Ações",
+    "usuario": "Usuário",
     "noTotalExistem": "No total existem",
     "exibindoRegistrosTabela": "Exibindo {first} a {last} de {totalRecords} registros",
 
     "instituicaoFinanceira": {
       "lbInstituicaoFinanceira": "Instituição Financeira",
-      "instituicoesFinanceiras": "Instituições Financeiras"
+      "instituicoesFinanceiras": "Instituições Financeiras",
+      "financeiro": "Financeiro",
+      "instituicoes": "Instituições"
+    },
+
+    "instituicaoFinanceiraUsuario": {
+      "lbInstituicaoFinanceiraUsuario": "Vincular Instituição Financeira ao Usuário",
+      "instituicoesFinanceirasVinculo": "Vínculos com Instituições Financeiras",
+      "instituicao": "Instituição Vinculada",
+      "instituicaoAVincular": "Instituição a vincular",
+      "agencia": "Agência",
+      "conta": "Conta",
+      "nomeGerente": "Gerente",
+      "telefoneGerente": "Telefone Gerente"
     }
   },
 
@@ -20,19 +38,16 @@
     "cadastradoSucesso": "Item cadastrado com sucesso.",
     "editadoSucesso": "Item editado com sucesso.",
     "excluidoSucesso": "Item excluído com sucesso.",
-
     "cadastradoSucessoCustom": "Item '{registro}' cadastrado com sucesso.",
     "editadoSucessoCustom": "Item '{registro}' editado com sucesso.",
     "excluidoSucessoCustom": "Item '{registro}' excluido com sucesso.",
-
     "cadastradoErro": "Erro ao cadastrar item.",
     "editadoErro": "Erro ao Editar item.",
     "excluidoErro": "Erro ao Excluir item.",
-
     "cadastradoErroCustom": "Erro ao excluir o item '{registro}'.",
     "editadoErroCustom": "Erro ao editar o item '{registro}'.",
     "excluidoErroCustom": "Erro ao excluir o item '{registro}'.",
-
-    "todosCadastradosSucesso": "Erro ao excluir o item."
+    "todosCadastradosSucesso": "Erro ao excluir o item.",
+    "campoObrigatorio": "Este campo é obrigatório."
   }
 }
