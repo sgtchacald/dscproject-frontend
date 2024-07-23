@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {InstituicaoFinanceira} from "../../../../models/instituicao-financeira.model";
 import {InstituicaoFinanceiraService} from "../../../../services/financeiro/instituicao-financeira.service";
-import {EnumService} from "../../../../services/utils/enum.service";
+
 import {ErroService} from "../../../../services/utils/erro.service";
 import {TranslateService} from "@ngx-translate/core";
 import {UtilsService} from "../../../../services/utils/utils.service";
@@ -32,6 +32,7 @@ export class InstituicoesFinanceirasUsuarioComponent {
   isSubmetido: boolean = false;
   exibirDialog: boolean = false;
   prefixoModal: string | undefined = "";
+  exibirCampoInstituicoesFinanceiras: boolean = true;
 
   constructor(
     private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService,
@@ -52,22 +53,40 @@ export class InstituicoesFinanceirasUsuarioComponent {
       {label: 'Vincular Instituição Financeira ao Usuário'}
     ];
 
-    this.instituicaoFinanceiraService.buscarTodos().subscribe(instFin => {
-      this.instituicoesFinanceirasList = instFin;
-    });
-
     this.atualizarTabela(true);
+
+    this.getInstituicoesFinanceiras();
+  }
+
+  getInstituicoesFinanceiras(){
+    this.instituicaoFinanceiraService.buscarTodos().subscribe(
+      instFin => {
+        this.instituicoesFinanceirasList = instFin;
+        this.desabilitarOptionsInstituicoesFinanceiras();
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
+  }
+
+  desabilitarOptionsInstituicoesFinanceiras(){
+    this.instituicoesFinanceirasList = this.instituicoesFinanceirasList.map(instituicao => ({
+      ...instituicao,
+      disabled: this.instituicoesFinanceirasUsuarioList.some(
+        inst =>
+          inst.instituicaoFinanceira
+          && inst.instituicaoFinanceira.id
+          && inst.instituicaoFinanceira.id === instituicao.id
+      )
+    }));
   }
 
   inserir() {
     this.isSubmetido = true;
     this.instituicaoFinanceiraUsuarioTemp.instituicaoFinanceira = this.instituicaoFinanceiraSelecionada;
 
-    console.log(this.instituicaoFinanceiraUsuarioTemp);
-
-    if (
-      this.instituicaoFinanceiraUsuarioTemp.agencia
-    ) {
+    if(this.instituicaoFinanceiraUsuarioTemp.instituicaoFinanceira){
       this.instituicaoFinanceiraUsuarioService.cadastrar(this.instituicaoFinanceiraUsuarioTemp).subscribe(
         () => {
           // Atualiza o objeto original após sucesso
@@ -83,7 +102,6 @@ export class InstituicoesFinanceirasUsuarioComponent {
         },
         (error) => {
           const erro: string = this.erroService.retornaErroStatusCode(error);
-          console.log(erro);
           if (erro !== "") {
             this.messageService.add({severity: 'error', summary: 'Erro', detail: this.translate.instant('message.cadastradoErro') + " " + erro});
           }
@@ -96,41 +114,42 @@ export class InstituicoesFinanceirasUsuarioComponent {
     this.isSubmetido = true;
     let erro: string = "";
 
-    console.log(this.instituicaoFinanceiraUsuarioTemp);
-
     // Copia os valores do objeto temporário para o original
     this.instituicaoFinanceiraUsuarioTemp.instituicaoFinanceira = this.instituicaoFinanceiraSelecionada;
 
-    if (this.instituicaoFinanceiraUsuarioTemp.id
-          && this.instituicaoFinanceiraUsuarioTemp.agencia
-          && this.instituicaoFinanceiraUsuarioTemp.conta
-          && this.instituicaoFinanceiraUsuarioTemp.nomeGerente
-          && this.instituicaoFinanceiraUsuarioTemp.telefoneGerente
-          && this.instituicaoFinanceiraUsuarioTemp.instituicaoFinanceira
-    ) {
+    if(this.instituicaoFinanceiraUsuarioTemp.id && this.instituicaoFinanceiraUsuarioTemp.instituicaoFinanceira) {
       this.instituicaoFinanceiraUsuarioService.editar(this.instituicaoFinanceiraUsuarioTemp).subscribe(
         () => {
           // Atualiza o objeto original após sucesso
-          this.instituicaoFinanceiraUsuario = { ...this.instituicaoFinanceiraUsuarioTemp };
+          this.instituicaoFinanceiraUsuario = {...this.instituicaoFinanceiraUsuarioTemp};
 
           // Atualiza a lista de instituições
-          const index = this.instituicoesFinanceirasList.findIndex(item => item.id === this.instituicaoFinanceiraUsuario.id);
+          const index = this.instituicoesFinanceirasUsuarioList.findIndex(item => item.id === this.instituicaoFinanceiraUsuario.id);
           if (index !== -1) {
-            this.instituicoesFinanceirasUsuarioList[index] = { ...this.instituicaoFinanceiraUsuario };
+            this.instituicoesFinanceirasUsuarioList[index] = {...this.instituicaoFinanceiraUsuario};
           }
 
-          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: this.translate.instant('message.editadoSucesso')
+          });
           this.fecharModal();
           this.atualizarTabela(false); // Atualiza a tabela após editar
         },
         (error) => {
           erro = this.erroService.retornaErroStatusCode(error);
           if (erro !== "") {
-            this.messageService.add({severity: 'error', summary: 'Erro',  detail: this.translate.instant('message.cadastradoSucesso') + " " + erro });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: this.translate.instant('message.cadastradoErro') + " " + erro
+            });
           }
         }
       );
     }
+
   }
 
   excluir(instituicaoFinanceiraUsuarioGrid: InstituicaoFinanceiraUsuario) {
@@ -243,6 +262,8 @@ export class InstituicoesFinanceirasUsuarioComponent {
     }
     this.isSubmetido = false;
     this.exibirDialog = true;
+    let id: number | null | undefined = instituicaoFinanceiraUsuarioGrid?.id;
+    this.exibirCampoInstituicoesFinanceiras = !id;
   }
 
   fecharModal() {

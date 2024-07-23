@@ -18,8 +18,8 @@ export class InstituicoesFinanceirasComponent {
   @ViewChild('dt') dt: any;
 
   breadcrumbItens: MenuItem[] | undefined;
-  instituicao: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '');
-  instituicaoTemp: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '');
+  instituicao: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '', true);
+  instituicaoTemp: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '', true);
   instituicaoList: InstituicaoFinanceira[] = [];
   instituicoesSelecionadasList: InstituicaoFinanceira[] = [];
   tipoInstituicaoFinanceiraList: { key: string, value: string }[] = [];
@@ -224,7 +224,7 @@ export class InstituicoesFinanceirasComponent {
 
   abrirModal(instituicaoFinanceiraGrid: InstituicaoFinanceira | null) {
     this.prefixoModal = instituicaoFinanceiraGrid ? "Editar" : "Cadastrar";
-    this.instituicao = instituicaoFinanceiraGrid ? instituicaoFinanceiraGrid : new InstituicaoFinanceira(null, '', '');
+    this.instituicao = instituicaoFinanceiraGrid ? instituicaoFinanceiraGrid : new InstituicaoFinanceira(null, '', '', true);
     this.instituicaoTemp = { ...this.instituicao }; // Cria uma cópia para o objeto temporário
     if (this.instituicao.tipoInstituicao) {
       this.tipoInstituicaoFinanceiraSelecionada = this.enumService.getEnumPorKey(this.instituicao.tipoInstituicao, this.tipoInstituicaoFinanceiraList);
@@ -240,7 +240,7 @@ export class InstituicoesFinanceirasComponent {
   }
 
   limpaCamposForm(){
-    this.instituicao = new InstituicaoFinanceira(null, '', '');
+    this.instituicao = new InstituicaoFinanceira(null, '', '', true);
     this.tipoInstituicaoFinanceiraSelecionada = undefined;
   }
 

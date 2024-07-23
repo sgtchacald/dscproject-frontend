@@ -30,7 +30,13 @@
       "agencia": "Agência",
       "conta": "Conta",
       "nomeGerente": "Gerente",
-      "telefoneGerente": "Telefone Gerente"
+      "telefoneGerente": "Telefone Gerente",
+      "vincularInstituicao": "Vincular instituição financeira",
+      "desvincularInstituicao": "Desvincular esta instituição financeira",
+      "desvincularInstituicaoVarias": "Desvincular uma ou mais instituições financeiras",
+      "vincular": "Vincular",
+      "desvincular": "Desvincular",
+      "desvincularTodas": "Desvincular Todas"
     }
   },
 

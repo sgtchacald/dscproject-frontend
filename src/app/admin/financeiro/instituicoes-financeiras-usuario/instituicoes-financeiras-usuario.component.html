@@ -18,8 +18,30 @@
           <div id="acoes" class="pt-2 ">
             <p-toolbar styleClass="h-5rem">
               <ng-template pTemplate="left">
-                <p-button id="cadastrar" class="mr-4" label="{{ 'label.cadastrar' | translate }}" icon="pi pi-plus" size="small" severity="info" [raised]="true" (click)="abrirModal(null)"></p-button>
-                <p-button id="excluir" label="{{ 'label.excluir' | translate }}"  icon="pi pi-trash" size="small" severity="danger" [raised]="true" [disabled]="!instituicoesFinanceirasUsuarioSelecionadasList || !instituicoesFinanceirasUsuarioSelecionadasList.length" (click)="excluirSelecionados()"></p-button>
+                <p-button id="cadastrar"
+                    class="mr-4"
+                    label="{{ 'label.instituicaoFinanceiraUsuario.vincular' | translate }}"
+                    pTooltip="{{ 'label.instituicaoFinanceiraUsuario.vincularInstituicao' | translate }}"
+                    tooltipPosition="bottom"
+                    icon="pi pi-plus"
+                    size="small"
+                    severity="info"
+                    [raised]="true"
+                    (click)="abrirModal(null);desabilitarOptionsInstituicoesFinanceiras()"
+                    [disabled]="instituicoesFinanceirasUsuarioList.length === instituicoesFinanceirasList.length">
+                </p-button>
+
+                <p-button id="excluir"
+                  label="{{ 'label.instituicaoFinanceiraUsuario.desvincular' | translate }}"
+                  pTooltip="{{ 'label.instituicaoFinanceiraUsuario.desvincularInstituicaoVarias' | translate }}"
+                  tooltipPosition="bottom"
+                  icon="pi pi-trash"
+                  size="small"
+                  severity="danger"
+                  [raised]="true"
+                  [disabled]="!instituicoesFinanceirasUsuarioSelecionadasList || !instituicoesFinanceirasUsuarioSelecionadasList.length"
+                  (click)="excluirSelecionados();">
+                </p-button>
               </ng-template>
 
               <ng-template pTemplate="right">
@@ -83,11 +105,11 @@
                   </td>
 
                   <td>
-                    <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="Right">
+                    <span id="botaoEditar" pTooltip="{{ 'label.instituicaoFinanceiraUsuario.vincular' | translate }}" tooltipPosition="left" placeholder="Right">
                       <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModal(instituicaoFinanceiraUsuario)"></i>
                     </span>
 
-                    <span id="botaoExcluir" pTooltip="{{ 'label.excluir' | translate }}" tooltipPosition="right" placeholder="Right">
+                    <span id="botaoExcluir" pTooltip="{{ 'label.instituicaoFinanceiraUsuario.desvincular' | translate }}" tooltipPosition="right" placeholder="Right">
                       <i class="pi pi-trash"  style="font-size: 1rem; color:red" (click)="excluir(instituicaoFinanceiraUsuario)"></i>
                     </span>
                   </td>
@@ -105,10 +127,17 @@
     </div>
 
     <p-dialog [(visible)]="exibirDialog" [style]="{ width: '450px' }" header="{{prefixoModal}}" [modal]="true" styleClass="p-fluid">
+
       <ng-template pTemplate="content" class="p-fluid">
-        <div class="field pt-2">
+        <div class="field pt-2" *ngIf="exibirCampoInstituicoesFinanceiras">
           <label for="tipo" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.instituicaoAVincular' | translate }}</label>
-          <p-listbox id="tipo" [options]="instituicoesFinanceirasList" [(ngModel)]="instituicaoFinanceiraSelecionada" optionLabel="nome"></p-listbox>
+          <p-listbox
+            id="tipo"
+            optionLabel="nome"
+            optionDisabled="disabled"
+            [options]="instituicoesFinanceirasList"
+            [(ngModel)]="instituicaoFinanceiraSelecionada">
+          </p-listbox>
           <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
         </div>
 
@@ -119,7 +148,7 @@
           </div>
           <div class="field">
             <label for="agencia" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.conta' | translate }}</label>
-            <input pInputText id="conta" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.agencia" class="w-full" autocomplete="off" />
+            <input pInputText id="conta" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.conta" class="w-full" autocomplete="off" />
           </div>
         </div>
 
@@ -143,7 +172,6 @@
 
     <p-confirmDialog />
   </nb-layout-column>
-
 
   <nb-layout-footer>
     <app-footer></app-footer>
