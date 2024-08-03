@@ -18,6 +18,7 @@ export class InstituicoesFinanceirasComponent {
   @ViewChild('dt') dt: any;
 
   breadcrumbItens: MenuItem[] | undefined;
+  loading: boolean = true;
   instituicao: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '', true);
   instituicaoTemp: InstituicaoFinanceira = new InstituicaoFinanceira(null, '', '', true);
   instituicaoList: InstituicaoFinanceira[] = [];
@@ -51,7 +52,7 @@ export class InstituicoesFinanceirasComponent {
 
     this.atualizarTabela(true);
 
-    this.tipoInstituicaoFinanceiraList = this.enumService.getTipoInstituicoesFinanceiras();
+    this.tipoInstituicaoFinanceiraList = EnumService.getTipoInstituicoesFinanceiras();
   }
 
   inserir() {
@@ -206,10 +207,12 @@ export class InstituicoesFinanceirasComponent {
     if(consumirAPI){
       this.instituicaoFinanceiraService.buscarTodos().subscribe(instituicaoList => {
         this.instituicaoList = instituicaoList;
+        this.loading = false;
       });
     }else{
       // Cria uma nova referência para forçar a atualização da tabela
       this.instituicaoList = [...this.instituicaoList];
+      this.loading = false;
     }
     this.cdr.detectChanges();
   }
@@ -227,7 +230,7 @@ export class InstituicoesFinanceirasComponent {
     this.instituicao = instituicaoFinanceiraGrid ? instituicaoFinanceiraGrid : new InstituicaoFinanceira(null, '', '', true);
     this.instituicaoTemp = { ...this.instituicao }; // Cria uma cópia para o objeto temporário
     if (this.instituicao.tipoInstituicao) {
-      this.tipoInstituicaoFinanceiraSelecionada = this.enumService.getEnumPorKey(this.instituicao.tipoInstituicao, this.tipoInstituicaoFinanceiraList);
+      this.tipoInstituicaoFinanceiraSelecionada = EnumService.getEnumPorKey(this.instituicao.tipoInstituicao, this.tipoInstituicaoFinanceiraList);
     }
     this.isSubmetido = false;
     this.exibirDialog = true;

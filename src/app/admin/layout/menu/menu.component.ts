@@ -20,6 +20,7 @@ export class MenuComponent {
       children: [
         {
           title:'Instituições Financeiras',
+          icon: 'chevron-right-outline',
           children: [
             {
               title:'Manter',
@@ -34,14 +35,9 @@ export class MenuComponent {
           ],
         },
         {
-          title:'Lançamentos',
+          title:'Registros Financeiros',
           icon: 'chevron-right-outline',
-          link:'',
-        },
-        {
-          title:'Pagamentos',
-          icon: 'chevron-right-outline',
-          link:'',
+          link:'/admin/financeiro/registro-financeiro',
         },
       ],
     },

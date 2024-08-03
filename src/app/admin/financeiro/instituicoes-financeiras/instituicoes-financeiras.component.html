@@ -40,6 +40,7 @@
               [sortOrder]="1"
               [globalFilterFields]="['nome', 'tipoInstituicao']"
               [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
+              [loading]="loading"
               #dt
               dataKey="id"
               currentPageReportTemplate="{{ 'label.exibindoRegistrosTabela' | translate }}"

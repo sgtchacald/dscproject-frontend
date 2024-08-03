@@ -3,6 +3,7 @@
     "cadastrar": "Cadastrar",
     "editar": "Editar",
     "excluir": "Excluir",
+    "excluirVarios": "Excluir Vários",
     "pesquisar": "Pesquisar",
     "salvar": "Salvar",
     "cancelar": "Cancelar",
@@ -24,6 +25,24 @@
 
     "instituicaoFinanceiraUsuario": {
       "lbInstituicaoFinanceiraUsuario": "Vincular Instituição Financeira ao Usuário",
+      "instituicoesFinanceirasVinculo": "Vínculos com Instituições Financeiras",
+      "instituicao": "Instituição Vinculada",
+      "instituicaoAVincular": "Instituição a vincular",
+      "agencia": "Agência",
+      "conta": "Conta",
+      "nomeGerente": "Gerente",
+      "telefoneGerente": "Telefone Gerente",
+      "vincularInstituicao": "Vincular instituição financeira",
+      "desvincularInstituicao": "Desvincular esta instituição financeira",
+      "desvincularInstituicaoVarias": "Desvincular uma ou mais instituições financeiras",
+      "vincular": "Vincular",
+      "desvincular": "Desvincular",
+      "desvincularTodas": "Desvincular Todas"
+    },
+
+    "registroFinanceiro": {
+      "lbRegistroFinanceiro": "Registro Financeiro",
+      "lbRegistrosFinanceiros": "Registros Financeiros",
       "instituicoesFinanceirasVinculo": "Vínculos com Instituições Financeiras",
       "instituicao": "Instituição Vinculada",
       "instituicaoAVincular": "Instituição a vincular",

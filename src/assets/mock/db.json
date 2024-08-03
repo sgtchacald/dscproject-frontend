@@ -1,0 +1,243 @@
+{
+  "registrosFinanceirosList":[
+    {
+      "id": 1,
+      "descricao": "Pagamento Seplag Junho 2024",
+      "valor": 8000.00,
+      "dtLancamento": "05/07/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "RECEITA",
+      "tipoReceitaDespesa": "SALARIO",
+      "instituicaoFinanceiraUsuarioId": 1,
+      "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "descricao": "Pagamento Seplag Julho 2024",
+      "valor": 8000.00,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "RECEITA",
+      "tipoReceitaDespesa": "SALARIO",
+      "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 3,
+      "descricao": "Férias Seplag Julho 2024",
+      "valor": 2500.00,
+      "dtLancamento": "05/07/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "RECEITA",
+      "tipoReceitaDespesa": "SALARIO",
+      "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 4,
+      "descricao": "Aluguel Agosto 2024",
+      "valor": 1000.00,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": "07/08/2028",
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "MORADIA",
+      "statusPagamento": {"key": "NAO", "value": "Não"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 5,
+      "descricao": "Conta de Luz da Light Agosto 2024",
+      "valor": 350.00,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": "10/08/2028",
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "MORADIA",
+      "statusPagamento": {"key": "NAO", "value": "Não"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 6,
+      "descricao": "Compras do Mês",
+      "valor": 800,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "MORADIA",
+      "statusPagamento": {"key": "NAO", "value": "Não"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "descricao": "Onix Plus 2020",
+      "valor": 81900,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": null,
+      "diaVencimento": 6,
+      "qtdParcela": 36,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "CARRO",
+      "statusPagamento": {"key": "SIM", "value": "Sim"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 8,
+      "descricao": "Pagamento Seplag Junho 2024",
+      "valor": 8000.00,
+      "dtLancamento": "05/07/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "RECEITA",
+      "tipoReceitaDespesa": "SALARIO",
+      "instituicaoFinanceiraUsuarioId": 1,
+      "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 9,
+      "descricao": "Pagamento Seplag Julho 2024",
+      "valor": 8000.00,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "RECEITA",
+      "tipoReceitaDespesa": "SALARIO",
+      "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 10,
+      "descricao": "Férias Seplag Julho 2024",
+      "valor": 2500.00,
+      "dtLancamento": "05/07/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "RECEITA",
+      "tipoReceitaDespesa": "SALARIO",
+      "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 11,
+      "descricao": "Aluguel Agosto 2024",
+      "valor": 1000.00,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": "07/08/2028",
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "MORADIA",
+      "statusPagamento": {"key": "NAO", "value": "Não"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 12,
+      "descricao": "Conta de Luz da Light Agosto 2024",
+      "valor": 350.00,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": "10/08/2028",
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "MORADIA",
+      "statusPagamento": {"key": "NAO", "value": "Não"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 13,
+      "descricao": "Compras do Mês",
+      "valor": 800,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": null,
+      "diaVencimento": null,
+      "qtdParcela": null,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "MORADIA",
+      "statusPagamento": {"key": "NAO", "value": "Não"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 14,
+      "descricao": "Onix Plus 2020",
+      "valor": 81900,
+      "dtLancamento": "05/08/2024",
+      "dtVencimento": null,
+      "diaVencimento": 6,
+      "qtdParcela": 36,
+      "tipoRegistroFinanceiro": "DESPESA",
+      "tipoReceitaDespesa": "CARRO",
+      "statusPagamento": {"key": "SIM", "value": "Sim"},
+      "instituicaoFinanceiraUsuarioId": 1,
+      "usuariosResponsaveis": [
+        1,
+        2
+      ]
+    }
+  ]
+
+}

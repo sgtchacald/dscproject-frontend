@@ -33,6 +33,8 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import { InstituicoesFinanceirasUsuarioComponent } from './financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component';
+import { RegistrosFinanceirosComponent } from './financeiro/registros-financeiros/registros-financeiros.component';
+import {TagModule} from "primeng/tag";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -55,36 +57,38 @@ const I18N_CONFIG = {
     DashboardComponent,
     InstituicoesFinanceirasComponent,
     InstituicoesFinanceirasUsuarioComponent,
+    RegistrosFinanceirosComponent,
   ],
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    NbThemeModule.forRoot({name: 'default'}),
-    NbLayoutModule,
-    NbSidebarModule.forRoot(),
-    NbCardModule,
-    NbActionsModule,
-    NbUserModule,
-    NbContextMenuModule,
-    NbMenuModule.forRoot(),
-    NbIconModule,
-    NbEvaIconsModule,
-    BreadcrumbModule,
-    ToastModule,
-    ToolbarModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    DropdownModule,
-    FormsModule,
-    ListboxModule,
-    ReactiveFormsModule,
-    RippleModule,
-    TableModule,
-    ConfirmDialogModule,
-    HttpClientModule,
-    TranslateModule.forRoot(I18N_CONFIG)
-  ],
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        NbThemeModule.forRoot({name: 'default'}),
+        NbLayoutModule,
+        NbSidebarModule.forRoot(),
+        NbCardModule,
+        NbActionsModule,
+        NbUserModule,
+        NbContextMenuModule,
+        NbMenuModule.forRoot(),
+        NbIconModule,
+        NbEvaIconsModule,
+        BreadcrumbModule,
+        ToastModule,
+        ToolbarModule,
+        ButtonModule,
+        DialogModule,
+        InputTextModule,
+        DropdownModule,
+        FormsModule,
+        ListboxModule,
+        ReactiveFormsModule,
+        RippleModule,
+        TableModule,
+        ConfirmDialogModule,
+        HttpClientModule,
+        TranslateModule.forRoot(I18N_CONFIG),
+        TagModule
+    ],
   providers: [
     NbSidebarService,
     NbMenuService,

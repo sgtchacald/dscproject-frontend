@@ -21,6 +21,7 @@ export class InstituicoesFinanceirasUsuarioComponent {
   @ViewChild('dt') dt: any;
 
   breadcrumbItens: MenuItem[] | undefined;
+  loading: boolean = true;
   instituicaoFinanceiraUsuario: InstituicaoFinanceiraUsuario = new InstituicaoFinanceiraUsuario(null,'','','','', null);
   instituicaoFinanceiraUsuarioTemp: InstituicaoFinanceiraUsuario = new InstituicaoFinanceiraUsuario(null,'','','','', null);
   instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
@@ -237,10 +238,12 @@ export class InstituicoesFinanceirasUsuarioComponent {
     if(consumirAPI){
       this.instituicaoFinanceiraUsuarioService.buscarTodos().subscribe(instFinUsu => {
         this.instituicoesFinanceirasUsuarioList = instFinUsu;
+        this.loading = false;
       });
     }else{
       // Cria uma nova referência para forçar a atualização da tabela
       this.instituicoesFinanceirasUsuarioList = [...this.instituicoesFinanceirasUsuarioList];
+      this.loading = false;
     }
     this.cdr.detectChanges();
   }
