@@ -32,6 +32,9 @@ export class ErroService {
         case 400:
           retorno = error.status + ' - Erro de validação.';
           break;
+        case 403:
+          retorno = error.status + ' - Não Autorizado.';
+          break;
         case 500:
           retorno = error.status + ' - Erro interno do servidor.';
           break;

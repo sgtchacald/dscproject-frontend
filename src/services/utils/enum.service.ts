@@ -30,8 +30,8 @@ static getGeneros() {
 
   static getTipoRegistroFinanceiro() {
     return [
-      { key: 'RECEITA', value: 'Receita', severity: 'success' },
-      { key: 'DESPESA', value: 'Despesa', severity: 'danger' }
+      { key: 'RECEITA', value: 'Receita', color: "green", severity: 'success', icon: 'pi pi-dollar', icon2: 'pi pi-thumbs-up-fill' },
+      { key: 'DESPESA', value: 'Despesa', color: "red",   severity: 'danger',  icon: 'pi pi-dollar', icon2: 'pi pi-thumbs-down-fill' }
     ];
   }
 
@@ -55,11 +55,38 @@ static getGeneros() {
     ];
   }
 
+  static getCategoriaRegistroFinanceiro() {
+    return [
+      { key: 'SALARIO',                 value: 'Salário',      tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-briefcase' },
+      { key: 'SALARIO_DECIMO_TERCEIRO', value: '13º Salário',  tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-gift' },
+      { key: 'EXTRA',                   value: 'Extra',        tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-plus-square' },
+      { key: 'FERIAS',                  value: 'Férias',       tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-umbrella' },
+      { key: 'INVESTIMENTO',            value: 'Investimento', tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-btc' },
+      { key: 'MORADIA',                 value: 'Moradia',      tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-home' },
+      { key: 'ALIMENTACAO',             value: 'Alimentação',  tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-cutlery' },
+      { key: 'LAZER',                   value: 'Lazer',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-gamepad' },
+      { key: 'VESTUARIO',               value: 'Vestuário',    tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-female' },
+      { key: 'TRANSPORTE',              value: 'Transporte',   tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-bus' },
+      { key: 'CARRO',                   value: 'Carro',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-car' },
+      { key: 'SAUDE',                   value: 'Saúde',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-heartbeat' },
+      { key: 'EDUCACAO',                value: 'Educação',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-graduation-cap' },
+      { key: 'SERVICOS',                value: 'Serviços',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-wrench' },
+      { key: 'EMPRESTIMOS',             value: 'Empréstimos',  tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-credit-card' },
+    ];
+  }
+
   static getStatusPagamento() {
     return [
       { key: 'SIM',           value: 'Sim',           severity: 'success'},
       { key: 'NAO',           value: 'Não',           severity: 'danger'},
       { key: 'NAO_SE_APLICA', value: 'Não se aplica', severity: 'info' }
+    ];
+  }
+
+  static getStatusSimNao() :any {
+    return [
+      { key: 'SIM',           value: 'Sim',           severity: 'primary'},
+      { key: 'NAO',           value: 'Não',           severity: 'danger'},
     ];
   }
 

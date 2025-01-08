@@ -106,10 +106,6 @@
                   </td>
 
                   <td>
-                    <span id="botaoEditar" pTooltip="{{ 'label.instituicaoFinanceiraUsuario.vincular' | translate }}" tooltipPosition="left" placeholder="Right">
-                      <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModal(instituicaoFinanceiraUsuario)"></i>
-                    </span>
-
                     <span id="botaoExcluir" pTooltip="{{ 'label.instituicaoFinanceiraUsuario.desvincular' | translate }}" tooltipPosition="right" placeholder="Right">
                       <i class="pi pi-trash"  style="font-size: 1rem; color:red" (click)="excluir(instituicaoFinanceiraUsuario)"></i>
                     </span>
@@ -140,28 +136,6 @@
             [(ngModel)]="instituicaoFinanceiraSelecionada">
           </p-listbox>
           <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
-        </div>
-
-        <div class="pt-2">
-          <div class="field">
-            <label for="agencia" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.agencia' | translate }}</label>
-            <input pInputText id="agencia" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.agencia" class="w-full" autocomplete="off" />
-          </div>
-          <div class="field">
-            <label for="agencia" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.conta' | translate }}</label>
-            <input pInputText id="conta" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.conta" class="w-full" autocomplete="off" />
-          </div>
-        </div>
-
-        <div class="pt-2">
-          <div class="field">
-            <label for="nomeGerente" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.nomeGerente' | translate }}</label>
-            <input pInputText id="nomeGerente" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.nomeGerente" class="w-full" autocomplete="off" />
-          </div>
-          <div class="field">
-            <label for="telefoneGerente" class="font-semibold">{{ 'label.instituicaoFinanceiraUsuario.telefoneGerente' | translate }}</label>
-            <input pInputText id="telefoneGerente" [(ngModel)]="instituicaoFinanceiraUsuarioTemp.telefoneGerente" class="w-full" autocomplete="off" />
-          </div>
         </div>
       </ng-template>
 

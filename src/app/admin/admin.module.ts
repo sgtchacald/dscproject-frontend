@@ -35,6 +35,9 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import { InstituicoesFinanceirasUsuarioComponent } from './financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component';
 import { RegistrosFinanceirosComponent } from './financeiro/registros-financeiros/registros-financeiros.component';
 import {TagModule} from "primeng/tag";
+import {SelectButtonModule} from "primeng/selectbutton";
+import {RadioButtonModule} from "primeng/radiobutton";
+import {InputNumberModule} from "primeng/inputnumber";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -87,7 +90,10 @@ const I18N_CONFIG = {
         ConfirmDialogModule,
         HttpClientModule,
         TranslateModule.forRoot(I18N_CONFIG),
-        TagModule
+        TagModule,
+        SelectButtonModule,
+        RadioButtonModule,
+        InputNumberModule
     ],
   providers: [
     NbSidebarService,

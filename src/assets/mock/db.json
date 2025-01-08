@@ -9,7 +9,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "RECEITA",
-      "tipoReceitaDespesa": "SALARIO",
+      "categoriaRegistroFinanceiro": "SALARIO",
       "instituicaoFinanceiraUsuarioId": 1,
       "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
       "usuariosResponsaveis": [
@@ -26,7 +26,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "RECEITA",
-      "tipoReceitaDespesa": "SALARIO",
+      "categoriaRegistroFinanceiro": "SALARIO",
       "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -43,7 +43,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "RECEITA",
-      "tipoReceitaDespesa": "SALARIO",
+      "categoriaRegistroFinanceiro": "SALARIO",
       "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -60,7 +60,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "MORADIA",
+      "categoriaRegistroFinanceiro": "MORADIA",
       "statusPagamento": {"key": "NAO", "value": "Não"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -77,7 +77,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "MORADIA",
+      "categoriaRegistroFinanceiro": "MORADIA",
       "statusPagamento": {"key": "NAO", "value": "Não"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -94,7 +94,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "MORADIA",
+      "categoriaRegistroFinanceiro": "MORADIA",
       "statusPagamento": {"key": "NAO", "value": "Não"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -111,7 +111,7 @@
       "diaVencimento": 6,
       "qtdParcela": 36,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "CARRO",
+      "categoriaRegistroFinanceiro": "CARRO",
       "statusPagamento": {"key": "SIM", "value": "Sim"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -128,7 +128,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "RECEITA",
-      "tipoReceitaDespesa": "SALARIO",
+      "categoriaRegistroFinanceiro": "SALARIO",
       "instituicaoFinanceiraUsuarioId": 1,
       "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
       "usuariosResponsaveis": [
@@ -145,7 +145,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "RECEITA",
-      "tipoReceitaDespesa": "SALARIO",
+      "categoriaRegistroFinanceiro": "SALARIO",
       "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -162,7 +162,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "RECEITA",
-      "tipoReceitaDespesa": "SALARIO",
+      "categoriaRegistroFinanceiro": "SALARIO",
       "statusPagamento": {"key": "NAO_SE_APLICA", "value": "Não se Aplica"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -179,7 +179,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "MORADIA",
+      "categoriaRegistroFinanceiro": "MORADIA",
       "statusPagamento": {"key": "NAO", "value": "Não"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -196,7 +196,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "MORADIA",
+      "categoriaRegistroFinanceiro": "MORADIA",
       "statusPagamento": {"key": "NAO", "value": "Não"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -213,7 +213,7 @@
       "diaVencimento": null,
       "qtdParcela": null,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "MORADIA",
+      "categoriaRegistroFinanceiro": "MORADIA",
       "statusPagamento": {"key": "NAO", "value": "Não"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [
@@ -230,7 +230,7 @@
       "diaVencimento": 6,
       "qtdParcela": 36,
       "tipoRegistroFinanceiro": "DESPESA",
-      "tipoReceitaDespesa": "CARRO",
+      "categoriaRegistroFinanceiro": "CARRO",
       "statusPagamento": {"key": "SIM", "value": "Sim"},
       "instituicaoFinanceiraUsuarioId": 1,
       "usuariosResponsaveis": [

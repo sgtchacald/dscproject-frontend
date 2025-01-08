@@ -84,11 +84,14 @@ export class LoginComponent implements OnInit{
 
   efetuarLogin(){
 
+    this.usuarioService.logout();
+
     let login: any = this.form['login'].value;
     let senha: any = this.form['senha'].value;
 
     this.usuarioService.autenticar(login, senha).subscribe(
       () => {
+        console.log(login + senha);
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Login efetuado com sucesso.' });
         this.router.navigate(['/admin'])
       },(error: HttpErrorResponse) => {

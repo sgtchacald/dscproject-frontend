@@ -6,15 +6,24 @@ export class RegistroFinanceiro {
   diaVencimento: number | undefined | null;
   qtdParcela: number | undefined | null;
   tipoRegistroFinanceiro: string | undefined | null;
-  tipoReceitaDespesa: string | undefined | null;
-  statusPagamento: {key: string, value: string} | undefined | null;
+  categoriaRegistroFinanceiro: string | undefined | null;
+  statusPagamento: { key: string; value: string } | undefined | null;
   instituicaoFinanceiraUsuarioId: number | undefined | null;
-  usuariosResponsaveis: number[] = [];
-  
-  constructor(id: number | null, descricao: string | undefined | null, valor: number | undefined | null, dtVencimento: string | undefined | null, diaVencimento: number | undefined | null, qtdParcela: number | undefined | null, tipoRegistroFinanceiro: string | undefined | null, tipoReceitaDespesa: string | undefined | null, statusPagamento: {
-    key: string;
-    value: string
-  } | undefined | null, instituicaoFinanceiraUsuarioId: number | undefined | null, usuariosResponsaveis: number[]) {
+  usuariosResponsaveis: number[];
+
+  constructor(
+    id: number | null = null,
+    descricao: string | undefined | null = null,
+    valor: number | undefined | null = null,
+    dtVencimento: string | undefined | null = null,
+    diaVencimento: number | undefined | null = null,
+    qtdParcela: number | undefined | null = null,
+    tipoRegistroFinanceiro: string | undefined | null = null,
+    categoriaRegistroFinanceiro: string | undefined | null = null,
+    statusPagamento: { key: string; value: string } | undefined | null = null,
+    instituicaoFinanceiraUsuarioId: number | undefined | null = null,
+    usuariosResponsaveis: number[] = []
+  ) {
     this.id = id;
     this.descricao = descricao;
     this.valor = valor;
@@ -22,7 +31,7 @@ export class RegistroFinanceiro {
     this.diaVencimento = diaVencimento;
     this.qtdParcela = qtdParcela;
     this.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
-    this.tipoReceitaDespesa = tipoReceitaDespesa;
+    this.categoriaRegistroFinanceiro = categoriaRegistroFinanceiro;
     this.statusPagamento = statusPagamento;
     this.instituicaoFinanceiraUsuarioId = instituicaoFinanceiraUsuarioId;
     this.usuariosResponsaveis = usuariosResponsaveis;

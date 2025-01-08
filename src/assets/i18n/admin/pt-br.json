@@ -43,19 +43,14 @@
     "registroFinanceiro": {
       "lbRegistroFinanceiro": "Registro Financeiro",
       "lbRegistrosFinanceiros": "Registros Financeiros",
-      "instituicoesFinanceirasVinculo": "Vínculos com Instituições Financeiras",
-      "instituicao": "Instituição Vinculada",
-      "instituicaoAVincular": "Instituição a vincular",
-      "agencia": "Agência",
-      "conta": "Conta",
-      "nomeGerente": "Gerente",
-      "telefoneGerente": "Telefone Gerente",
-      "vincularInstituicao": "Vincular instituição financeira",
-      "desvincularInstituicao": "Desvincular esta instituição financeira",
-      "desvincularInstituicaoVarias": "Desvincular uma ou mais instituições financeiras",
-      "vincular": "Vincular",
-      "desvincular": "Desvincular",
-      "desvincularTodas": "Desvincular Todas"
+      "descricao": "Descrição",
+      "lancamento": "Lançamento",
+      "vencimento": "Vencimento",
+      "parcelas": "Parcelas",
+      "tipo": "Tipo",
+      "categoria": "Categoria",
+      "valor": "Valor",
+      "pago": "Pago?"
     }
   },
 

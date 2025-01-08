@@ -1,0 +1,264 @@
+<nb-layout>
+  <nb-layout-header>
+    <app-header></app-header>
+  </nb-layout-header>
+
+  <nb-sidebar start>
+    <app-menu></app-menu>
+  </nb-sidebar>
+
+  <nb-layout-column class="p-2">
+    <div id="breadcrumb" class="pb-2">
+      <p-breadcrumb [model]="breadcrumbItens"></p-breadcrumb>
+    </div>
+
+    <div id="conteudo">
+      <nb-card>
+        <nb-card-body>
+          <div id="acoes" class="pt-2 ">
+            <p-toolbar styleClass="h-5rem">
+              <ng-template pTemplate="left">
+                <p-button id="cadastrar"
+                    class="mr-4"
+                    label="{{ 'label.cadastrar' | translate }}"
+                    pTooltip="{{ 'label.cadastrar' | translate }} {{ 'label.registroFinanceiro.lbRegistroFinanceiro' | translate }}"
+                    tooltipPosition="bottom"
+                    icon="pi pi-plus"
+                    size="small"
+                    severity="info"
+                    [raised]="true"
+                    (click)="abrirModal(null)">
+                </p-button>
+
+                <p-button id="excluir"
+                  label="{{ 'label.excluir' | translate }}"
+                  pTooltip="{{ 'label.excluirVarios' | translate }} {{ 'label.registroFinanceiro.lbRegistrosFinanceiros' | translate }}"
+                  tooltipPosition="bottom"
+                  icon="pi pi-trash"
+                  size="small"
+                  severity="danger"
+                  [raised]="true">
+                </p-button>
+              </ng-template>
+
+              <ng-template pTemplate="right">
+              </ng-template>
+            </p-toolbar>
+          </div>
+
+          <div id="container" class="mt-3">
+            <div id="tabela">
+            <p-table
+              [value]="registrosFinanceirosList"
+              [paginator]="true"
+              [rows]="5"
+              [tableStyle]="{ 'min-width': '75rem' }"
+              [(selection)]="registrosFinanceirosSelecionadosList"
+              [rowHover]="true"
+              [showCurrentPageReport]="true"
+              [sortField]="'instituicaoFinanceira.nome'"
+              [sortOrder]="1"
+              [globalFilterFields]="['descricao', 'dtLancamento', 'dtVencimento', 'qtdParcela', 'tipoRegistroFinanceiro', 'tipoReceitaDespesa', 'valor', 'statusPagamento.value']"
+              [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
+              [scrollable]="true" scrollHeight="370px"
+              [loading]="loading"
+              #dt
+              dataKey="id"
+              currentPageReportTemplate="{{ 'label.exibindoRegistrosTabela' | translate }}"
+            >
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between h-2rem">
+                  <h5 class="m-0">Gerenciar Registros Financeiros</h5>
+                  <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="aplicarFiltroPadrao($event)" placeholder="{{ 'label.pesquisar' | translate }}" />
+                  </span>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th style="width: 3rem"> <p-tableHeaderCheckbox /></th>
+                  <th pSortableColumn="descricao" class="text-left">Descrição  <p-sortIcon field="descricao"></p-sortIcon></th>
+                  <th pSortableColumn="dtLancamento" class="text-center">Lançamento <p-sortIcon field="dtLancamento"></p-sortIcon></th>
+                  <th pSortableColumn="dtVencimento" class="text-center">Vencimento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
+                  <th pSortableColumn="qtdParcela" class="text-center">Parcelas <p-sortIcon field="qtdParcela"></p-sortIcon></th>
+                  <th pSortableColumn="tipoRegistroFinanceiro" class="text-left">Tipo <p-sortIcon field="tipoRegistroFinanceiro"></p-sortIcon></th>
+                  <th pSortableColumn="tipoReceitaDespesa" class="text-left">Categoria <p-sortIcon field="tipoReceitaDespesa"></p-sortIcon></th>
+                  <th pSortableColumn="valor" class="text-right">Valor <p-sortIcon field="valor"></p-sortIcon></th>
+                  <th pSortableColumn="statusPagamento" class="text-center">Pago?<p-sortIcon field="statusPagamento"></p-sortIcon></th>
+                  <th class="text-center"  style="width:10%">Ações</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-registro let-columns="columns">
+                <tr>
+                  <td><p-tableCheckbox [value]="registroFinanceiro" /></td>
+
+                  <td class="text-left">{{registro.descricao }}</td>
+
+                  <td class="text-center">{{registro.dtLancamento}}</td>
+
+                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento}}</span></td>
+
+                  <td class="text-center"><span *ngIf="registro.qtdParcela; else hifenSpan">{{registro.qtdParcela}}</span></td>
+
+                  <td class="text-center">
+                    <p-tag
+                      [value]="EnumService.getLabelEnum(registro.tipoRegistroFinanceiro, EnumService.getTipoRegistroFinanceiro())"
+                      [severity]="EnumService.getSeveridadeEnum(registro.tipoRegistroFinanceiro, EnumService.getTipoRegistroFinanceiro())"
+                    ></p-tag>
+                  </td>
+
+                  <td class="text-left">
+                    {{ EnumService.getLabelEnum(registro.tipoReceitaDespesa, EnumService.getCategoriaReceitaDespesa()) }}
+                  </td>
+
+                  <td class="text-right">{{registro.valor | currency }}</td>
+
+                  <td class="text-center">
+                    <p-tag
+                      [value]="registro.statusPagamento.value"
+                      [severity]="EnumService.getSeveridadeEnum(registro.statusPagamento.key, EnumService.getStatusPagamento())"
+                    ></p-tag>
+                  </td>
+
+                  <td class="text-center">
+                    <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="right">
+                      <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green"></i>
+                    </span>
+
+                    <span id="botaoExcluir" pTooltip="{{ 'label.excluir' | translate }}" tooltipPosition="right" placeholder="Right">
+                      <i class="pi pi-trash"  style="font-size: 1rem; color:red"></i>
+                    </span>
+                  </td>
+
+                  <ng-template #hifenSpan><span>-</span></ng-template>
+                </tr>
+              </ng-template>
+            </p-table>
+            </div>
+
+            <p-dialog [(visible)]="exibirDialogCadastro" [style]="{ width: '450px', height: '800px' }" header="{{prefixoModal}}" [modal]="true" styleClass="p-fluid">
+              <ng-template pTemplate="content" class="p-fluid">
+
+                <div class="field pt-3">
+                  <label for="trFinanceiro" class="font-semibold">Tipo Registro Financeiro</label>
+
+                  <p id="trFinanceiro" *ngFor="let tipoRegistroFinanceiro of tipoRegistroFinanceiroList">
+                    <p-radioButton
+                      id="tipoRegistroFinanceiro"
+                      name="tipoRegistroFinanceiro"
+                      [inputId]="tipoRegistroFinanceiro.key"
+                      [value]="tipoRegistroFinanceiro"
+                      [(ngModel)]="tipoRegistroFinanceiroSelecionado"
+                      (ngModelChange)="filtrarCategoriasPorTipo(tipoRegistroFinanceiro.key)"
+                    ></p-radioButton>
+
+                    <label [for]="tipoRegistroFinanceiro.key" class="ml-2">
+                      <p-tag
+                        [value]="tipoRegistroFinanceiro.value"
+                        [severity]="tipoRegistroFinanceiro.severity"
+                      ></p-tag>
+                    </label>
+
+                  </p>
+                </div>
+
+                <div class="field pt-3">
+                  <label for="categoria" class="font-semibold">Categoria</label>
+
+                  <p-dropdown
+                    id="categoria"
+                    [options]="categoriaRegistroFinanceiroList"
+                    [(ngModel)]="categoriaRegistroFinanceiroSelecionado"
+                    [filter]="true"
+                    [showClear]="true"
+                    filterBy="value"
+                    optionLabel="value"
+                    placeholder="Selecione a Categoria">
+
+                    <ng-template pTemplate="selectedItem">
+                      <div class="flex align-items-center gap-2" *ngIf="categoriaRegistroFinanceiroSelecionado">
+                        <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                        <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                      </div>
+                    </ng-template>
+                    <ng-template let-categoriaRegistroFinanceiroSelecionado pTemplate="item">
+                      <div class="flex align-items-center gap-2">
+                        <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                        <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                      </div>
+                    </ng-template>
+
+                  </p-dropdown>
+
+                 <!-- <p-dropdown
+                    id="categoria"
+                    name="categoria"
+                    optionLabel="value"
+                    placeholder="Selecione a Categoria"
+                    [options]="categoriaRegistroFinanceiroList"
+                    [(ngModel)]="categoriaRegistroFinanceiroSelecionado"
+                    loading="true"
+                    checkmark="true" /> -->
+
+                  <small class="p-error" *ngIf="isSubmetido && !registroFinanceiro.tipoRegistroFinanceiro">Categoria é obrigatório.</small>
+                </div>
+
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
+                <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="salvar()"></button>
+              </ng-template>
+            </p-dialog>
+
+            <!--<div id="dialogPesquisaInicial">
+              <p-dialog [(visible)]="exibirDialogPesquisa" [style]="{ width: '450px' }" header="Gerenciar Registros Financeiros" [modal]="true" styleClass="p-fluid">
+
+                <ng-template pTemplate="content" class="p-fluid">
+                  <p class="mb-4 text-danger font-bold"> Selecione os parâmetros para visualizar os registros conforme sua preferência para facilitar a pesquisa.</p>
+
+                  <div id="campoTipoRegistroFinanceiro">
+                    <label for="tipo" class="ml-2">Tipo Registro Financeiro</label>
+                    <p-selectButton
+                        id="tipo"
+                        optionLabel="icon"
+                        [options]="tipoRegistroFinanceiroOptions"
+                        [(ngModel)]="tipoRegistroFinanceiroSelecionadoPesquisa"  >
+                      <ng-template let-item pTemplate>
+                            {{item.value}}
+                      </ng-template>
+                    </p-selectButton>
+                  </div>
+
+                  <div id="campoIsPago" class="mt-3">
+                    <label for="isPago" class="ml-2">Registro foi pago?</label>
+                    <p-selectButton id="isPago" class="" [options]="EnumService.getStatusSimNao()" [(ngModel)]="isPagoPesquisa" optionLabel="icon">
+                      <ng-template let-item pTemplate>
+                        <div class="font-bold pr-3 pl-3">
+                          {{item.value}}
+                        </div>
+                      </ng-template>
+                    </p-selectButton>
+                  </div>
+
+                </ng-template>
+
+                <ng-template pTemplate="footer">
+                  <button pButton label="{{ 'label.cancelar' | translate }}" icon="pi pi-times" class="p-button-text" (click)="fecharModalPesquisa()"></button>
+                  <button pButton label="{{ 'label.pesquisar' | translate }}" icon="pi pi-check" class="p-button-text" (click)="pesquisar()"></button>
+                </ng-template>
+              </p-dialog>
+            </div> -->
+          </div>
+
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-layout-column>
+
+  <nb-layout-footer>
+    <app-footer></app-footer>
+  </nb-layout-footer>
+</nb-layout>
