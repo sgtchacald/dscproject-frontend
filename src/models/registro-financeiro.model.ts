@@ -2,6 +2,7 @@ export class RegistroFinanceiro {
   id: number | null;
   descricao: string | undefined | null;
   valor: number | undefined | null;
+  dtCadastro: string | undefined | null;
   dtVencimento: string | undefined | null;
   diaVencimento: number | undefined | null;
   qtdParcela: number | undefined | null;
@@ -15,6 +16,7 @@ export class RegistroFinanceiro {
     id: number | null = null,
     descricao: string | undefined | null = null,
     valor: number | undefined | null = null,
+    dtCadastro: string | undefined | null = null,
     dtVencimento: string | undefined | null = null,
     diaVencimento: number | undefined | null = null,
     qtdParcela: number | undefined | null = null,
@@ -27,6 +29,7 @@ export class RegistroFinanceiro {
     this.id = id;
     this.descricao = descricao;
     this.valor = valor;
+    this.dtCadastro = dtCadastro;
     this.dtVencimento = dtVencimento;
     this.diaVencimento = diaVencimento;
     this.qtdParcela = qtdParcela;

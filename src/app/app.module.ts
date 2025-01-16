@@ -28,7 +28,7 @@ registerLocaleData(ptBr);
   ],
   providers: [
     MessageService,
-    { provide: LOCALE_ID, useValue: 'pt' },
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: '' },
     AuthInterceptor,
     {

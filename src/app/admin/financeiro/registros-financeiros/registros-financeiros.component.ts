@@ -36,6 +36,15 @@ export class RegistrosFinanceirosComponent {
   categoriaRegistroFinanceiroList:  any = [];
   categoriaRegistroFinanceiroSelecionado: any = null;
 
+  diasList: { name: string, value: number }[] = [];
+  diaSelecionado: number | null = null;
+
+  parcelasList: { name: string, value: number }[] = [];
+  parcelaSelecionada: number | null = null;
+
+  statusPagamentoList:  any = [];
+  statusPagamentoSelecionado: any = null;
+
   ngOnInit() {
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
@@ -49,7 +58,17 @@ export class RegistrosFinanceirosComponent {
     this.tipoRegistroFinanceiroList = EnumService.getTipoRegistroFinanceiro();
     //this.tipoRegistroFinanceiroSelecionado = this.tipoRegistroFinanceiroList[1];
 
-    this.categoriaRegistroFinanceiroList = EnumService.getCategoriaRegistroFinanceiro();
+    // Gerar a lista de dias de 1 a 31
+    for (let i = 1; i <= 31; i++) {
+      this.diasList.push({ name: i.toString(), value: i });
+    }
+
+    // Gerar a lista de dias de 1 a 31
+    for (let i = 1; i <= 360; i++) {
+      this.parcelasList.push({ name: i.toString(), value: i });
+    }
+
+    this.statusPagamentoList = EnumService.getStatusPagamento();
 
   }
 
@@ -109,4 +128,24 @@ export class RegistrosFinanceirosComponent {
   }
 
 
+  validarData(event: any) {
+    let input = event.target.value;
+
+    // Remove caracteres não numéricos (exceto barras já adicionadas)
+    input = input.replace(/[^0-9/]/g, '');
+
+    // Adiciona a barra automaticamente após 2 e 5 caracteres
+    if (input.length === 2 || input.length === 5) {
+      if (!input.endsWith('/')) {
+        input += '/';
+      }
+    }
+
+    // Limita o comprimento máximo para "dd/mm/yyyy"
+    if (input.length > 10) {
+      input = input.slice(0, 10);
+    }
+
+    event.target.value = input;
+  }
 }

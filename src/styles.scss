@@ -6,5 +6,11 @@
 @import "~node_modules/@nebular/theme/styles/prebuilt/default.css";
 @import "~node_modules/font-awesome/css/font-awesome.min.css";
 
+.dropdown-up .p-dropdown-panel {
+  transform-origin: bottom center !important; /* Define a origem da animação no rodapé */
+  bottom: calc(100% + 5px) !important; /* Adiciona margem de 5px */
+  top: auto !important; /* Garante que a posição superior seja ignorada */
+}
+
 
 
