@@ -8,7 +8,7 @@ export class RegistroFinanceiro {
   qtdParcela: number | undefined | null;
   tipoRegistroFinanceiro: string | undefined | null;
   categoriaRegistroFinanceiro: string | undefined | null;
-  statusPagamento: { key: string; value: string } | undefined | null;
+  statusPagamento:  string | undefined | null;
   instituicaoFinanceiraUsuarioId: number | undefined | null;
   usuariosResponsaveis: number[];
 
@@ -22,7 +22,7 @@ export class RegistroFinanceiro {
     qtdParcela: number | undefined | null = null,
     tipoRegistroFinanceiro: string | undefined | null = null,
     categoriaRegistroFinanceiro: string | undefined | null = null,
-    statusPagamento: { key: string; value: string } | undefined | null = null,
+    statusPagamento: string | undefined | null = null,
     instituicaoFinanceiraUsuarioId: number | undefined | null = null,
     usuariosResponsaveis: number[] = []
   ) {

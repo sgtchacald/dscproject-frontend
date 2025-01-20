@@ -251,4 +251,5 @@ export class InstituicoesFinanceirasComponent {
     const inputElement = $event.target as HTMLInputElement;
     this.dt.filterGlobal(inputElement.value, "contains");
   }
+
 }

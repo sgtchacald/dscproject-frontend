@@ -1,8 +1,15 @@
-import {Component, ViewChild} from '@angular/core';
-import {MenuItem} from "primeng/api";
+import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {RegistroFinanceiro} from "../../../../models/registro-financeiro.model";
 import data from "../../../../assets/mock/db.json";
 import {EnumService} from "../../../../services/utils/enum.service";
+import {InstituicaoFinanceiraUsuario} from "../../../../models/instituicao-financeira-usuario.model";
+import {InstituicaoFinanceira} from "../../../../models/instituicao-financeira.model";
+import {ErroService} from "../../../../services/utils/erro.service";
+import {TranslateService} from "@ngx-translate/core";
+import {HttpErrorResponse} from "@angular/common/http";
+import {RegistroFinanceiroService} from "../../../../services/financeiro/registro-financeiro.service";
+import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-registros-financeiros',
@@ -12,7 +19,13 @@ import {EnumService} from "../../../../services/utils/enum.service";
 export class RegistrosFinanceirosComponent {
 
   constructor(
-    private enumService: EnumService,
+    private registroFinanceiroService: RegistroFinanceiroService,
+    private erroService: ErroService,
+    private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
+    private confirmationService: ConfirmationService,
+    private utils: UtilsService
   ) {}
 
   @ViewChild('dt') dt: any;
@@ -24,26 +37,33 @@ export class RegistrosFinanceirosComponent {
   registroFinanceiro: RegistroFinanceiro = new RegistroFinanceiro();
   loading: boolean = true;
   exibirDialogPesquisa: boolean = true;
+  existeErro: boolean = false;
 
-  registroFinanceiroTemp: {} = new RegistroFinanceiro();
+
+  registroFinanceiroTemp: RegistroFinanceiro = new RegistroFinanceiro();
   isSubmetido: boolean = false;
-  exibirDialogCadastro: boolean = false;
+  exibirQtdParcela: boolean = false;
+  exibirDialogCadastroDespesa: boolean = false;
   prefixoModal: string | undefined = "";
 
   tipoRegistroFinanceiroList: any = [];
-  tipoRegistroFinanceiroSelecionado: any = null;
 
   categoriaRegistroFinanceiroList:  any = [];
-  categoriaRegistroFinanceiroSelecionado: any = null;
+  categoriaRegistroFinanceiroSelecionado: { key: string; value: string; icon: string } | undefined | null;
 
-  diasList: { name: string, value: number }[] = [];
-  diaSelecionado: number | null = null;
-
-  parcelasList: { name: string, value: number }[] = [];
-  parcelaSelecionada: number | null = null;
+  parcelasList: { key: string, value: number }[] = [];
+  parcelaSelecionada :{ key: string; value: number; } | undefined | null;
 
   statusPagamentoList:  any = [];
   statusPagamentoSelecionado: any = null;
+
+  existePrestacaoList:  any = [];
+  existePrestacaoSelecionado: any = null;
+
+  instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
+  instituicaoFinanceiraUsuarioSelecionada: InstituicaoFinanceira | undefined | null;
+
+
 
   ngOnInit() {
     this.breadcrumbItens = [
@@ -53,23 +73,21 @@ export class RegistrosFinanceirosComponent {
     ];
 
     this.registrosFinanceirosList = data.registrosFinanceirosList;
+    //this.registrosFinanceirosList = [];
     this.loading = false;
 
     this.tipoRegistroFinanceiroList = EnumService.getTipoRegistroFinanceiro();
-    //this.tipoRegistroFinanceiroSelecionado = this.tipoRegistroFinanceiroList[1];
 
     // Gerar a lista de dias de 1 a 31
-    for (let i = 1; i <= 31; i++) {
-      this.diasList.push({ name: i.toString(), value: i });
+    for (let i = 2; i <= 36; i++) {
+      this.parcelasList.push({ key: i.toString(), value: i });
     }
 
-    // Gerar a lista de dias de 1 a 31
-    for (let i = 1; i <= 360; i++) {
-      this.parcelasList.push({ name: i.toString(), value: i });
-    }
+    this.statusPagamentoList = EnumService.getStatusSimNao();
 
-    this.statusPagamentoList = EnumService.getStatusPagamento();
+    this.existePrestacaoList = EnumService.getStatusSimNao();
 
+    this.exibirQtdParcela = false;
   }
 
   aplicarFiltroPadrao($event: Event) {
@@ -87,25 +105,266 @@ export class RegistrosFinanceirosComponent {
   }
 
   pesquisar() {
-
   }
 
-  abrirModal(registroFinanceiroGrid: RegistroFinanceiro | null) {
-    this.prefixoModal = registroFinanceiroGrid ? "Editar" : "Cadastrar";
+  abrirModalDespesa(registroFinanceiroGrid: RegistroFinanceiro | null) {
+    this.prefixoModal = (registroFinanceiroGrid ? "Editar" : "Cadastrar") + " Despesa";
     this.registroFinanceiro = registroFinanceiroGrid ? registroFinanceiroGrid : new RegistroFinanceiro();
     this.registroFinanceiroTemp = { ...this.registroFinanceiro }; // Cria uma cópia para o objeto temporário
     this.isSubmetido = false;
-    this.exibirDialogCadastro = true;
+    console.log(this.isSubmetido);
+    this.exibirDialogCadastroDespesa = true;
+
+    this.filtrarCategoriasPorTipo("DESPESA");
+    //this.parcelaSelecionada = this.parcelasList[0];
+    this.statusPagamentoSelecionado = this.statusPagamentoList[1];
+    this.existePrestacaoSelecionado = this.existePrestacaoList[1];
+
+    if(registroFinanceiroGrid?.id){
+
+      this.registroFinanceiroTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
+        registroFinanceiroGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()
+      );
+
+      this.statusPagamentoSelecionado = this.statusPagamentoList[
+        EnumService.getPosicaoEnumPorKey(
+          registroFinanceiroGrid.statusPagamento,
+          this.statusPagamentoList
+        )
+      ];
+
+      this.categoriaRegistroFinanceiroSelecionado = this.categoriaRegistroFinanceiroList[
+        EnumService.getPosicaoEnumPorKey(
+          registroFinanceiroGrid.categoriaRegistroFinanceiro,
+          this.categoriaRegistroFinanceiroList
+        )
+      ];
+
+      //const dataSelecionada = registroFinanceiroTemp.dtVencimento;
+
+
+      this.existePrestacaoSelecionado = this.existePrestacaoList[
+        EnumService.getPosicaoEnumPorKey(
+          registroFinanceiroGrid.categoriaRegistroFinanceiro,
+          this.categoriaRegistroFinanceiroList
+        )
+      ];
+
+      // @ts-ignore
+      if(this.isValid(registroFinanceiroGrid.qtdParcela) && registroFinanceiroGrid.qtdParcela > 1){
+        this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[0]);
+        // @ts-ignore
+        this.parcelaSelecionada = this.parcelasList[registroFinanceiroGrid.qtdParcela - 2];
+      }else{
+        this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[1]);
+      }
+
+    }
+
+
   }
+
+
 
   fecharModal() {
     this.limpaCamposForm();
-    this.exibirDialogCadastro = false;
+    this.exibirDialogCadastroDespesa = false;
     this.isSubmetido = false;
+    console.log(this.isSubmetido);
+
   }
 
-  salvar() {
+  salvarDespesa() {
+    console.log(this.registroFinanceiro.id);
 
+      if(this.registroFinanceiro.id === null){
+        this.inserir("DESPESA");
+      }else{
+        this.editar("DESPESA");
+      }
+  }
+
+  private inserir(tipoRegistroFinanceiro: string) {
+    this.isSubmetido = true;
+
+    this.registroFinanceiroTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+    this.registroFinanceiroTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
+    this.registroFinanceiroTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
+    this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
+    this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
+
+    const dtLancamento: any = this.formatarDataHoraParaEnvio(new Date().toString());
+    console.log(dtLancamento);
+    this.registroFinanceiroTemp.dtCadastro = dtLancamento;
+
+    const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
+    if(this.isValid(dtVencimento)) {
+      this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
+    }
+
+    console.log(this.registroFinanceiroTemp);
+
+    if (
+      this.isValid(this.categoriaRegistroFinanceiroSelecionado)
+      && this.isValid(this.registroFinanceiroTemp.descricao)
+      && this.isValid(this.registroFinanceiroTemp.valor)
+      && this.isValid(this.registroFinanceiroTemp.statusPagamento)
+    ) {
+      console.log(this.registroFinanceiroTemp);
+
+      // Atualiza o objeto original após sucesso
+      this.registroFinanceiro = {...this.registroFinanceiroTemp};
+
+      //Faz o Push no novo item para a tabela.
+      this.registrosFinanceirosList.push(this.registroFinanceiroTemp);
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: this.translate.instant('message.cadastradoSucesso')
+      });
+      this.fecharModal();
+      this.atualizarTabela(false);
+    }
+  }
+
+  editar(tipoRegistroFinanceiro: string) {
+    this.isSubmetido = true;
+    let erro: string = "";
+
+    this.registroFinanceiroTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+    this.registroFinanceiroTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
+    this.registroFinanceiroTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
+
+
+    this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
+    this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
+
+    const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
+    console.log(dtVencimento);
+    if(this.isValid(dtVencimento)) {
+      this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
+    }
+
+    // @ts-ignore
+    if(this.existePrestacaoSelecionado.key === "NAO"){
+      this.registroFinanceiroTemp.qtdParcela = null;
+    }
+
+    if (this.isValid(this.categoriaRegistroFinanceiroSelecionado)
+      && this.isValid(this.registroFinanceiroTemp.descricao)
+      && this.isValid(this.registroFinanceiroTemp.valor)
+      && this.isValid(this.registroFinanceiroTemp.statusPagamento)) {
+        // Atualiza o objeto original após sucesso
+        this.registroFinanceiro = { ...this.registroFinanceiroTemp };
+
+        // Atualiza a lista de instituições
+        const index = this.registrosFinanceirosList.findIndex(item => item.id === this.registroFinanceiro.id);
+        if (index !== -1) {
+          this.registrosFinanceirosList[index] = { ...this.registroFinanceiro };
+        }
+
+        // Exibe mensagem de Sucesso
+        this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
+        this.fecharModal();
+        this.atualizarTabela(false); // Atualiza a tabela após editar
+    }
+
+  }
+
+  excluir(registroFinanceiroGrid: RegistroFinanceiro) {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir o item: <b>' + registroFinanceiroGrid.descricao + '</b>?',
+      header: 'Confirmar Ação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: "p-button-primary mt-3",
+      rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
+      acceptLabel: "Sim",
+      rejectLabel: "Não",
+      accept: () => {
+        this.registroFinanceiroService.excluir(registroFinanceiroGrid).subscribe(
+          () => {
+            const index = this.registrosFinanceirosList.findIndex(item => item.id === registroFinanceiroGrid.id);
+            if (index !== -1) {
+              this.registrosFinanceirosList.splice(index, 1);
+              this.atualizarTabela(false); // Atualiza a tabela após excluir
+
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: registroFinanceiroGrid.descricao })
+              });
+            }
+          },
+          (error: HttpErrorResponse) => {
+            const erro: string = this.erroService.retornaErroStatusCode(error);
+            if (erro !== "") {
+              this.messageService.add({severity: 'error', summary: 'Erro', detail: erro });
+            }
+          }
+        );
+      }
+    });
+  }
+
+  excluirSelecionados() {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir os itens selecionados?',
+      header: 'Confirmar Ação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: "p-button-primary mt-3",
+      rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
+      acceptLabel: "Sim",
+      rejectLabel: "Não",
+      accept: () => {
+        for (let item of this.registrosFinanceirosSelecionadosList) {
+          this.registroFinanceiroService.excluir(item).subscribe(
+            () => {
+              const index = this.registrosFinanceirosList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
+              if (index !== -1) {
+                this.registrosFinanceirosList.splice(index, 1);
+                this.atualizarTabela(false); // Atualiza a tabela após excluir
+                this.messageService.add(
+                  {
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: item.descricao })
+                  }
+                );
+              }
+            },
+            (error: HttpErrorResponse) => {
+              let erro:string = this.erroService.retornaErroStatusCode(error);
+              if (erro !== "") {
+                this.existeErro = true;
+                this.messageService.add(
+                  {
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoErroCustom'), { registro: item.descricao }) + " " + erro
+                  }
+                );
+              }
+            }
+          );
+        }
+      }
+    });
+
+  }
+
+  atualizarTabela(consumirAPI: boolean) {
+    if(consumirAPI){
+      /*this.instituicaoFinanceiraService.buscarTodos().subscribe(instituicaoList => {
+        this.instituicaoList = instituicaoList;
+        this.loading = false;
+      });*/
+    }else{
+      // Cria uma nova referência para forçar a atualização da tabela
+      this.registrosFinanceirosList = [...this.registrosFinanceirosList];
+      this.loading = false;
+    }
+    this.cdr.detectChanges();
   }
 
   limpaCamposForm(){
@@ -114,8 +373,6 @@ export class RegistrosFinanceirosComponent {
   }
 
   filtrarCategoriasPorTipo(tipo: string) {
-    console.log('Tipo selecionado:', tipo);
-
     // Obtém a lista completa e filtra com base no tipo
     const todasCategorias = EnumService.getCategoriaRegistroFinanceiro();
 
@@ -126,7 +383,6 @@ export class RegistrosFinanceirosComponent {
     // Limpa o valor selecionado no dropdown
     this.categoriaRegistroFinanceiroSelecionado = null;
   }
-
 
   validarData(event: any) {
     let input = event.target.value;
@@ -147,5 +403,48 @@ export class RegistrosFinanceirosComponent {
     }
 
     event.target.value = input;
+  }
+
+  formatarDataParaEnvio(pData: string | undefined | null) {
+    if (pData) {
+      const data = new Date(pData);
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+
+      return `${dia}/${mes}/${ano}`;
+    }
+    return '';
+  }
+
+  formatarDataHoraParaEnvio(pData: string | undefined | null) {
+    if (pData) {
+      const data = new Date(pData);
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+      const horas = String(data.getHours()).padStart(2, '0');
+      const minutos = String(data.getMinutes()).padStart(2, '0');
+      const segundos = String(data.getSeconds()).padStart(2, '0');
+
+      return `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`;
+    }
+    return '';
+  }
+
+  isValid(value: any): boolean {
+    return value !== null && value !== undefined && !(typeof value === 'string' && value.trim() === "");
+  }
+
+  atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado: any) {
+    this.existePrestacaoSelecionado = existePrestacaoSelecionado;
+
+    if(this.existePrestacaoSelecionado.key == "SIM"){
+      this.exibirQtdParcela = true;
+    }else{
+      this.exibirQtdParcela = false;
+    }
+
+    console.log('Status selecionado:', this.existePrestacaoSelecionado);
   }
 }

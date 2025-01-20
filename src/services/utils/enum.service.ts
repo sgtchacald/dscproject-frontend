@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {T} from "@angular/cdk/keycodes";
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +70,7 @@ static getGeneros() {
     ];
   }
 
-  static getEnumPorKey(key: string, listaEnum: { key: string; value: string; }[]) {
+  static getEnumPorKey(key: string | undefined | null, listaEnum: { key: string; value: string }[]) {
     let resultado: { key: string; value: string; } | null = null;
 
     listaEnum.forEach(obj => {
@@ -82,7 +82,24 @@ static getGeneros() {
     return resultado ? resultado : undefined;
   }
 
-  static getLabelEnum(key: string, listaEnum: { key: string; value: string; }[]) {
+  static getPosicaoEnumPorKey(key: any | undefined | null, listaEnum: any[]){
+    let posicaoEnum: number = 0;
+    let resultado: any = null;
+
+    // @ts-ignore
+    listaEnum.forEach(obj => {
+      posicaoEnum++;
+
+      if (obj.key === key) {
+        posicaoEnum--;
+        resultado = posicaoEnum;
+      }
+    });
+
+    return resultado;
+  }
+
+  static getLabelEnum(key: string | undefined | null, listaEnum: { key: string; value: string }[]) {
     let resultado: string | null = null;
 
     listaEnum.forEach(obj => {
@@ -105,5 +122,18 @@ static getGeneros() {
 
     return resultado ? resultado : undefined;
   }
+
+  /*static selecionarPorKey(key: string | undefined | null, obj: any): void {
+    const item = this.getPorKey(key, obj);
+    if (item) {
+      console.log('item encontrado:', item);
+    } else {
+      console.warn('Nenhuma categoria encontrada com a key:', key);
+    }
+  }
+
+  static getPorKey<T extends { key: string }>(key: string | undefined | null, list: T[]): T | undefined {
+    return list.find(item => item.key === key);
+  }*/
 
 }

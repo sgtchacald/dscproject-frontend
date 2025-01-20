@@ -27,7 +27,7 @@
                     size="small"
                     severity="info"
                     [raised]="true"
-                    (click)="abrirModal(null)">
+                    (click)="abrirModalDespesa(null)">
                 </p-button>
 
                 <p-button id="excluir"
@@ -37,8 +37,12 @@
                   icon="pi pi-trash"
                   size="small"
                   severity="danger"
-                  [raised]="true">
+                  [raised]="true"
+                  [disabled]="!registrosFinanceirosSelecionadosList || !registrosFinanceirosSelecionadosList.length"
+                  (click)="excluirSelecionados()">
                 </p-button>
+
+
               </ng-template>
 
               <ng-template pTemplate="right">
@@ -56,16 +60,17 @@
               [(selection)]="registrosFinanceirosSelecionadosList"
               [rowHover]="true"
               [showCurrentPageReport]="true"
-              [sortField]="'instituicaoFinanceira.nome'"
+              [sortField]="'instituicaoFinanceira.descricao'"
               [sortOrder]="1"
-              [globalFilterFields]="['descricao', 'dtLancamento', 'dtVencimento', 'qtdParcela', 'tipoRegistroFinanceiro', 'tipoReceitaDespesa', 'valor', 'statusPagamento.value']"
+              [globalFilterFields]="['descricao', 'dtLancamento', 'dtVencimento', 'qtdParcela', 'tipoRegistroFinanceiro', 'tipoReceitaDespesa', 'valor', 'statusPagamento']"
               [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
-              [scrollable]="true" scrollHeight="370px"
               [loading]="loading"
               #dt
               dataKey="id"
               currentPageReportTemplate="{{ 'label.exibindoRegistrosTabela' | translate }}"
             >
+              <!--[scrollable]="true" scrollHeight="370px"-->
+
               <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between h-2rem">
                   <h5 class="m-0">Gerenciar Registros Financeiros</h5>
@@ -84,7 +89,7 @@
                   <th pSortableColumn="dtVencimento" class="text-center">Vencimento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
                   <th pSortableColumn="qtdParcela" class="text-center">Parcelas <p-sortIcon field="qtdParcela"></p-sortIcon></th>
                   <th pSortableColumn="tipoRegistroFinanceiro" class="text-left">Tipo <p-sortIcon field="tipoRegistroFinanceiro"></p-sortIcon></th>
-                  <th pSortableColumn="tipoReceitaDespesa" class="text-left">Categoria <p-sortIcon field="tipoReceitaDespesa"></p-sortIcon></th>
+                  <th pSortableColumn="categoriaRegistroFinanceiro" class="text-left">Categoria <p-sortIcon field="categoriaRegistroFinanceiro"></p-sortIcon></th>
                   <th pSortableColumn="valor" class="text-right">Valor <p-sortIcon field="valor"></p-sortIcon></th>
                   <th pSortableColumn="statusPagamento" class="text-center">Pago?<p-sortIcon field="statusPagamento"></p-sortIcon></th>
                   <th class="text-center"  style="width:10%">Ações</th>
@@ -92,11 +97,11 @@
               </ng-template>
               <ng-template pTemplate="body" let-registro let-columns="columns">
                 <tr>
-                  <td><p-tableCheckbox [value]="registroFinanceiro" /></td>
+                  <td><p-tableCheckbox [value]="registro" /></td>
 
                   <td class="text-left">{{registro.descricao }}</td>
 
-                  <td class="text-center">{{registro.dtLancamento}}</td>
+                  <td class="text-center">{{registro.dtCadastro}}</td>
 
                   <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento}}</span></td>
 
@@ -104,31 +109,31 @@
 
                   <td class="text-center">
                     <p-tag
-                      [value]="EnumService.getLabelEnum(registro.tipoRegistroFinanceiro, EnumService.getTipoRegistroFinanceiro())"
+                      [value]="EnumService.getLabelEnum(registro.tipoRegistroFinanceiro,EnumService.getTipoRegistroFinanceiro())"
                       [severity]="EnumService.getSeveridadeEnum(registro.tipoRegistroFinanceiro, EnumService.getTipoRegistroFinanceiro())"
                     ></p-tag>
                   </td>
 
                   <td class="text-left">
-                    {{ EnumService.getLabelEnum(registro.tipoReceitaDespesa, EnumService.getCategoriaRegistroFinanceiro()) }}
+                    {{ EnumService.getLabelEnum(registro.categoriaRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()) }}
                   </td>
 
                   <td class="text-right">{{registro.valor | currency }}</td>
 
                   <td class="text-center">
                     <p-tag
-                      [value]="registro.statusPagamento.value"
-                      [severity]="EnumService.getSeveridadeEnum(registro.statusPagamento.key, EnumService.getStatusPagamento())"
+                      [value]="EnumService.getLabelEnum(registro.statusPagamento,EnumService.getStatusPagamento())"
+                      [severity]="EnumService.getSeveridadeEnum(registro.statusPagamento, EnumService.getStatusPagamento())"
                     ></p-tag>
                   </td>
 
                   <td class="text-center">
                     <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="right">
-                      <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green"></i>
+                      <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModalDespesa(registro)"></i>
                     </span>
 
                     <span id="botaoExcluir" pTooltip="{{ 'label.excluir' | translate }}" tooltipPosition="right" placeholder="Right">
-                      <i class="pi pi-trash"  style="font-size: 1rem; color:red"></i>
+                      <i class="pi pi-trash"  style="font-size: 1rem; color:red" (click)="excluir(registro)"></i>
                     </span>
                   </td>
 
@@ -138,161 +143,472 @@
             </p-table>
             </div>
 
-            <p-dialog [(visible)]="exibirDialogCadastro" header="{{prefixoModal}}" [modal]="true" [style]="{width: '50%'}" styleClass="p-fluid" >
+            <p-dialog [(visible)]="exibirDialogCadastroDespesa" header="{{prefixoModal}}" [modal]="true" [style]="{width: '50%'}" styleClass="p-fluid" >
 
-            <ng-template pTemplate="content">
-              <div class="grid">
+              <ng-template pTemplate="content">
+
                 <div class="field col-12">
-                  <label for="trFinanceiro" class="font-semibold mb-0">Tipo Registro Financeiro</label>
+                  <label class="font-semibold">Esta despesa foi paga?</label>
                   <div class="formgroup-inline">
-                    <p id="trFinanceiro" *ngFor="let tipoRegistroFinanceiro of tipoRegistroFinanceiroList" class="mr-4">
-                      <p-radioButton
-                        id="tipoRegistroFinanceiro"
-                        name="tipoRegistroFinanceiro"
-                        [inputId]="tipoRegistroFinanceiro.key"
-                        [value]="tipoRegistroFinanceiro"
-                        [(ngModel)]="tipoRegistroFinanceiroSelecionado"
-                        (ngModelChange)="filtrarCategoriasPorTipo(tipoRegistroFinanceiro.key)"
-                      ></p-radioButton>
-                      <label [for]="tipoRegistroFinanceiro.key" class="ml-2">
-                        <p-tag
-                          [value]="tipoRegistroFinanceiro.value"
-                          [severity]="tipoRegistroFinanceiro.severity"
-                        ></p-tag>
-                      </label>
-                    </p>
+                    <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
+                      <p-radioButton id="{{status.key}}" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
+                      <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="grid">
+                <div class="grid">
+                  <div class="field col-6">
+                    <label for="categoria" class="font-semibold">Categoria</label>
+                    <p-dropdown
+                      id="categoria"
+                      [options]="categoriaRegistroFinanceiroList"
+                      [(ngModel)]="categoriaRegistroFinanceiroSelecionado"
+                      [filter]="true"
+                      [showClear]="true"
+                      filterBy="value"
+                      optionLabel="value"
+                      placeholder="Selecione a Categoria"
+                      class="w-full">
 
-                <div class="field col-6">
-                  <label for="categoria" class="font-semibold">Categoria</label>
-                  <p-dropdown
-                    id="categoria"
-                    [options]="categoriaRegistroFinanceiroList"
-                    [(ngModel)]="categoriaRegistroFinanceiroSelecionado"
-                    [filter]="true"
-                    [showClear]="true"
-                    filterBy="value"
-                    optionLabel="value"
-                    placeholder="Selecione a Categoria"
-                    class="w-full">
+                      <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="categoriaRegistroFinanceiroSelecionado">
+                          <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                          <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                        </div>
+                      </ng-template>
+                      <ng-template let-categoriaRegistroFinanceiroSelecionado pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                          <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                          <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                        </div>
+                      </ng-template>
 
-                    <ng-template pTemplate="selectedItem">
-                      <div class="flex align-items-center gap-2" *ngIf="categoriaRegistroFinanceiroSelecionado">
-                        <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
-                        <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
-                      </div>
-                    </ng-template>
-                    <ng-template let-categoriaRegistroFinanceiroSelecionado pTemplate="item">
-                      <div class="flex align-items-center gap-2">
-                        <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
-                        <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
-                      </div>
-                    </ng-template>
-
-                  </p-dropdown>
-                  <small class="p-error" *ngIf="isSubmetido && !registroFinanceiro.categoriaRegistroFinanceiro">Categoria é obrigatório.</small>
-                </div>
-
-                <!--<ng-template pTemplate="content" class="p-fluid">
-                  <div class="field col-6 ">
-                    <label for="tipo" class="font-semibold">Instituições Financeiras</label>
-                    <p-listbox
-                      id="tipo"
-                      optionLabel="nome"
-                      optionDisabled="disabled"
-                      [options]="instituicoesFinanceirasUsuarioList"
-                      [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
-                    </p-listbox>
-                    <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
                   </div>
-                </ng-template>-->
 
-                <div class="field col-12">
-                  <label for="descricao" class="font-semibold">Descrição</label>
-                  <input id="descricao" class="w-full" type="text" pInputText [(ngModel)]="registroFinanceiro.descricao">
+                  <ng-template pTemplate="content" class="p-fluid">
+                    <div class="field col-6 ">
+                      <label for="tipo" class="font-semibold">Instituições Financeiras</label>
+                      <p-listbox
+                        id="tipo"
+                        optionLabel="nome"
+                        optionDisabled="disabled"
+                        [options]="instituicoesFinanceirasUsuarioList"
+                        [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
+                      </p-listbox>
+                      <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraUsuarioSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+                    </div>
+                  </ng-template>
+
+                  <div class="field col-12">
+                    <label for="descricao" class="font-semibold">Descrição</label>
+
+                    <input id="descricao"
+                      class="w-full"
+                      type="text"
+                      pInputText [(ngModel)]="registroFinanceiroTemp.descricao">
+
+                    <small class="p-error" *ngIf="isSubmetido && !registroFinanceiroTemp.descricao">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
+                    <p-calendar
+                      id="dtVencimento"
+                      [(ngModel)]="registroFinanceiroTemp.dtVencimento"
+                      [showIcon]="true"
+                      (onInput)="validarData($event)"
+                      [showButtonBar]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="dia/mês/ano"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      class="w-full">
+                    </p-calendar>
+
+                    <!--<small class="p-error" *ngIf="isSubmetido && !registroFinanceiroTemp.dtVencimento">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small> -->
+                  </div>
+
+                  <div class="field col-8">
+                  </div>
+
+                  <div class="field col-4">
+                    <label class="font-semibold">Deseja parcelar essa despesa?</label>
+                    <div class="formgroup-inline">
+                      <div *ngFor="let ep of existePrestacaoList" class="field-radiobutton">
+                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionado" (onClick)="atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado)"></p-radioButton>
+                        <label [for]="ep.key" class="ml-2">{{ ep.value }}</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field col-4" *ngIf="exibirQtdParcela">
+                    <label for="qtdParcela" class="font-semibold">Parcelas</label>
+
+                    <p-dropdown
+                      id="qtdParcela"
+                      class="w-full"
+                      [options]="parcelasList"
+                      [(ngModel)]="parcelaSelecionada"
+                      [showClear]="true"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      optionLabel="key"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionado.key !== 'SIM' && !parcelaSelecionada">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-4">
+                  </div>
+
+                  <div class="field col-6">
+                    <label for="valor" class="font-semibold">Valor</label>
+                    <p-inputNumber
+                      id="valor"
+                      class="w-full"
+                      mode="currency"
+                      currency="BRL"
+                      locale="pt-BR"
+                      [(ngModel)]="registroFinanceiroTemp.valor">
+                    </p-inputNumber>
+
+                    <small class="p-error" *ngIf="isSubmetido && !registroFinanceiroTemp.valor">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+
+                    <small class="p-error" *ngIf="isSubmetido && registroFinanceiroTemp.valor && registroFinanceiroTemp.valor <= 0">
+                      {{ 'message.campoDeveSerMaiorQueZero' | translate }}
+                    </small>
+                  </div>
+
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
+                <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="salvarDespesa()"></button>
+              </ng-template>
+            </p-dialog>
+
+            <!--<p-dialog [(visible)]="exibirDialogCadastro" header="{{prefixoModal}}" [modal]="true" [style]="{width: '50%'}" styleClass="p-fluid" >
+
+              <ng-template pTemplate="content">
+                <div class="grid">
+                  <div class="field col-12">
+                    <label for="trFinanceiro" class="font-semibold mb-0">Tipo Registro Financeiro</label>
+                    <div class="formgroup-inline">
+                      <p id="trFinanceiro" *ngFor="let tipoRegistroFinanceiro of tipoRegistroFinanceiroList" class="mr-4">
+                        <p-radioButton
+                          id="tipoRegistroFinanceiro"
+                          name="tipoRegistroFinanceiro"
+                          [inputId]="tipoRegistroFinanceiro.key"
+                          [value]="tipoRegistroFinanceiro"
+                          [(ngModel)]="tipoRegistroFinanceiroSelecionado"
+                          (ngModelChange)="filtrarCategoriasPorTipo(tipoRegistroFinanceiro.key)"
+                        ></p-radioButton>
+                        <label [for]="tipoRegistroFinanceiro.key" class="ml-2">
+                          <p-tag
+                            [value]="tipoRegistroFinanceiro.value"
+                            [severity]="tipoRegistroFinanceiro.severity"
+                          ></p-tag>
+                        </label>
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="field col-4">
-                  <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
-                  <p-calendar
-                    id="dtVencimento"
-                    [(ngModel)]="registroFinanceiro.dtVencimento"
-                    [showIcon]="true"
-                    (onInput)="validarData($event)"
-                    [showButtonBar]="true"
-                    dateFormat="dd/mm/yy"
-                    placeholder="dia/mês/ano"
-                    appendTo="body"
-                    panelStyleClass="dropdown-up"
-                    class="w-full">
-                  </p-calendar>
+                <div class="grid">
+
+                  <div class="field col-6">
+                    <label for="categoria" class="font-semibold">Categoria</label>
+                    <p-dropdown
+                      id="categoria"
+                      [options]="categoriaRegistroFinanceiroList"
+                      [(ngModel)]="categoriaRegistroFinanceiroSelecionado"
+                      [filter]="true"
+                      [showClear]="true"
+                      filterBy="value"
+                      optionLabel="value"
+                      placeholder="Selecione a Categoria"
+                      class="w-full">
+
+                      <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="categoriaRegistroFinanceiroSelecionado">
+                          <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                          <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                        </div>
+                      </ng-template>
+                      <ng-template let-categoriaRegistroFinanceiroSelecionado pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                          <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                          <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                        </div>
+                      </ng-template>
+
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="isSubmetido && !registroFinanceiro.categoriaRegistroFinanceiro">Categoria é obrigatório.</small>
+                  </div>
+
+                  <ng-template pTemplate="content" class="p-fluid">
+                    <div class="field col-6 ">
+                      <label for="tipo" class="font-semibold">Instituições Financeiras</label>
+                      <p-listbox
+                        id="tipo"
+                        optionLabel="nome"
+                        optionDisabled="disabled"
+                        [options]="instituicoesFinanceirasUsuarioList"
+                        [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
+                      </p-listbox>
+                      <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+                    </div>
+                  </ng-template>
+
+                  <div class="field col-12">
+                    <label for="descricao" class="font-semibold">Descrição</label>
+                    <input id="descricao" class="w-full" type="text" pInputText [(ngModel)]="registroFinanceiro.descricao">
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
+                    <p-calendar
+                      id="dtVencimento"
+                      [(ngModel)]="registroFinanceiro.dtVencimento"
+                      [showIcon]="true"
+                      (onInput)="validarData($event)"
+                      [showButtonBar]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="dia/mês/ano"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      class="w-full">
+                    </p-calendar>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="diaVencimento" class="font-semibold">Vencimento</label>
+                    <p-dropdown
+                      id="diaVencimento"
+                      class="w-full"
+                      [options]="diasList"
+                      [(ngModel)]="registroFinanceiro.diaVencimento"
+                      [showClear]="true"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      optionLabel="name">
+                    </p-dropdown>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="qtdParcela" class="font-semibold">Parcelas</label>
+                    <p-dropdown
+                      id="qtdParcela"
+                      class="w-full"
+                      [options]="parcelasList"
+                      [(ngModel)]="registroFinanceiro.qtdParcela"
+                      [showClear]="true"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      optionLabel="name">
+                    </p-dropdown>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="valor" class="font-semibold">Valor</label>
+                    <p-inputNumber
+                      id="valor"
+                      class="w-full"
+                      mode="currency"
+                      currency="BRL"
+                      locale="pt-BR"
+                      [(ngModel)]="registroFinanceiro.valor">
+                    </p-inputNumber>
+                  </div>
+
                 </div>
 
-                <div class="field col-4">
-                  <label for="diaVencimento" class="font-semibold">Vencimento</label>
-                  <p-dropdown
-                    id="diaVencimento"
-                    class="w-full"
-                    [options]="diasList"
-                    [(ngModel)]="registroFinanceiro.diaVencimento"
-                    [showClear]="true"
-                    appendTo="body"
-                    panelStyleClass="dropdown-up"
-                    optionLabel="name">
-                  </p-dropdown>
-                </div>
-
-                <div class="field col-4">
-                  <label for="qtdParcela" class="font-semibold">Parcelas</label>
-                  <p-dropdown
-                    id="qtdParcela"
-                    class="w-full"
-                    [options]="parcelasList"
-                    [(ngModel)]="registroFinanceiro.qtdParcela"
-                    [showClear]="true"
-                    appendTo="body"
-                    panelStyleClass="dropdown-up"
-                    optionLabel="name">
-                  </p-dropdown>
-                </div>
-
-                <div class="field col-4">
-                  <label for="valor" class="font-semibold">Valor</label>
-                  <p-inputNumber
-                    id="valor"
-                    class="w-full"
-                    mode="currency"
-                    currency="BRL"
-                    locale="pt-BR"
-                    [(ngModel)]="registroFinanceiro.valor">
-                  </p-inputNumber>
-                </div>
-
-              </div>
-
-              <!--<div class="grid">
-                 <div class="field col-12">
-                   <label class="font-semibold mb-3">Registro foi pago?</label>
-                   <div class="formgroup-inline">
-                     <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
-                       <p-radioButton [inputId]="status.key" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
-                       <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                <div class="grid">
+                   <div class="field col-12">
+                     <label class="font-semibold mb-3">Registro foi pago?</label>
+                     <div class="formgroup-inline">
+                       <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
+                         <p-radioButton [inputId]="status.key" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
+                         <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                       </div>
                      </div>
                    </div>
                  </div>
-               </div>-->
-            </ng-template>
+              </ng-template>
 
-            <ng-template pTemplate="footer">
-              <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
-              <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="salvar()"></button>
-            </ng-template>
-            </p-dialog>
+              <ng-template pTemplate="footer">
+                <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
+                <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="salvar()"></button>
+              </ng-template>
+            </p-dialog> -->
 
+            <!--<p-dialog [(visible)]="exibirDialogCadastro" header="{{prefixoModal}}" [modal]="true" [style]="{width: '50%'}" styleClass="p-fluid" >
+
+              <ng-template pTemplate="content">
+                <div class="grid">
+                  <div class="field col-12">
+                    <label for="trFinanceiro" class="font-semibold mb-0">Tipo Registro Financeiro</label>
+                    <div class="formgroup-inline">
+                      <p id="trFinanceiro" *ngFor="let tipoRegistroFinanceiro of tipoRegistroFinanceiroList" class="mr-4">
+                        <p-radioButton
+                          id="tipoRegistroFinanceiro"
+                          name="tipoRegistroFinanceiro"
+                          [inputId]="tipoRegistroFinanceiro.key"
+                          [value]="tipoRegistroFinanceiro"
+                          [(ngModel)]="tipoRegistroFinanceiroSelecionado"
+                          (ngModelChange)="filtrarCategoriasPorTipo(tipoRegistroFinanceiro.key)"
+                        ></p-radioButton>
+                        <label [for]="tipoRegistroFinanceiro.key" class="ml-2">
+                          <p-tag
+                            [value]="tipoRegistroFinanceiro.value"
+                            [severity]="tipoRegistroFinanceiro.severity"
+                          ></p-tag>
+                        </label>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid">
+
+                  <div class="field col-6">
+                    <label for="categoria" class="font-semibold">Categoria</label>
+                    <p-dropdown
+                      id="categoria"
+                      [options]="categoriaRegistroFinanceiroList"
+                      [(ngModel)]="categoriaRegistroFinanceiroSelecionado"
+                      [filter]="true"
+                      [showClear]="true"
+                      filterBy="value"
+                      optionLabel="value"
+                      placeholder="Selecione a Categoria"
+                      class="w-full">
+
+                      <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="categoriaRegistroFinanceiroSelecionado">
+                          <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                          <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                        </div>
+                      </ng-template>
+                      <ng-template let-categoriaRegistroFinanceiroSelecionado pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                          <i class="fa {{ categoriaRegistroFinanceiroSelecionado.icon }}"></i>
+                          <div>{{ categoriaRegistroFinanceiroSelecionado.value }}</div>
+                        </div>
+                      </ng-template>
+
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="isSubmetido && !registroFinanceiro.categoriaRegistroFinanceiro">Categoria é obrigatório.</small>
+                  </div>
+
+                  <ng-template pTemplate="content" class="p-fluid">
+                    <div class="field col-6 ">
+                      <label for="tipo" class="font-semibold">Instituições Financeiras</label>
+                      <p-listbox
+                        id="tipo"
+                        optionLabel="nome"
+                        optionDisabled="disabled"
+                        [options]="instituicoesFinanceirasUsuarioList"
+                        [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
+                      </p-listbox>
+                      <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+                    </div>
+                  </ng-template>
+
+                  <div class="field col-12">
+                    <label for="descricao" class="font-semibold">Descrição</label>
+                    <input id="descricao" class="w-full" type="text" pInputText [(ngModel)]="registroFinanceiro.descricao">
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
+                    <p-calendar
+                      id="dtVencimento"
+                      [(ngModel)]="registroFinanceiro.dtVencimento"
+                      [showIcon]="true"
+                      (onInput)="validarData($event)"
+                      [showButtonBar]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="dia/mês/ano"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      class="w-full">
+                    </p-calendar>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="diaVencimento" class="font-semibold">Vencimento</label>
+                    <p-dropdown
+                      id="diaVencimento"
+                      class="w-full"
+                      [options]="diasList"
+                      [(ngModel)]="registroFinanceiro.diaVencimento"
+                      [showClear]="true"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      optionLabel="name">
+                    </p-dropdown>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="qtdParcela" class="font-semibold">Parcelas</label>
+                    <p-dropdown
+                      id="qtdParcela"
+                      class="w-full"
+                      [options]="parcelasList"
+                      [(ngModel)]="registroFinanceiro.qtdParcela"
+                      [showClear]="true"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      optionLabel="name">
+                    </p-dropdown>
+                  </div>
+
+                  <div class="field col-4">
+                    <label for="valor" class="font-semibold">Valor</label>
+                    <p-inputNumber
+                      id="valor"
+                      class="w-full"
+                      mode="currency"
+                      currency="BRL"
+                      locale="pt-BR"
+                      [(ngModel)]="registroFinanceiro.valor">
+                    </p-inputNumber>
+                  </div>
+
+                </div>
+
+                <div class="grid">
+                   <div class="field col-12">
+                     <label class="font-semibold mb-3">Registro foi pago?</label>
+                     <div class="formgroup-inline">
+                       <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
+                         <p-radioButton [inputId]="status.key" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
+                         <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModal()"></button>
+                <button pButton label="Salvar" icon="pi pi-check" class="p-button-text" (click)="salvar()"></button>
+              </ng-template>
+            </p-dialog> -->
 
             <!--<div id="dialogPesquisaInicial">
               <p-dialog [(visible)]="exibirDialogPesquisa" [style]="{ width: '450px' }" header="Gerenciar Registros Financeiros" [modal]="true" styleClass="p-fluid">
