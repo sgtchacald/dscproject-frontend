@@ -10,6 +10,9 @@ import {TranslateService} from "@ngx-translate/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RegistroFinanceiroService} from "../../../../services/financeiro/registro-financeiro.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
+import {
+  InstituicaoFinanceiraUsuarioService
+} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
 
 @Component({
   selector: 'app-registros-financeiros',
@@ -25,8 +28,9 @@ export class RegistrosFinanceirosComponent {
     private cdr: ChangeDetectorRef,
     private translate: TranslateService,
     private confirmationService: ConfirmationService,
-    private utils: UtilsService
-  ) {}
+    private utils: UtilsService,
+    private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService
+) {}
 
   @ViewChild('dt') dt: any;
   protected readonly EnumService = EnumService;
@@ -87,7 +91,11 @@ export class RegistrosFinanceirosComponent {
 
     this.existePrestacaoList = EnumService.getStatusSimNao();
 
-    this.exibirQtdParcela = false;
+    this.exibirQtdParcela = false
+
+    this.getInstituicoesFinanceirasUsuario();
+
+    console.log(this.instituicoesFinanceirasUsuarioList);
   }
 
   aplicarFiltroPadrao($event: Event) {
@@ -236,7 +244,6 @@ export class RegistrosFinanceirosComponent {
     this.registroFinanceiroTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.registroFinanceiroTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
-
     this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
     this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
@@ -254,7 +261,9 @@ export class RegistrosFinanceirosComponent {
     if (this.isValid(this.categoriaRegistroFinanceiroSelecionado)
       && this.isValid(this.registroFinanceiroTemp.descricao)
       && this.isValid(this.registroFinanceiroTemp.valor)
-      && this.isValid(this.registroFinanceiroTemp.statusPagamento)) {
+      && this.isValid(this.registroFinanceiroTemp.statusPagamento)
+      && this.isValid(this.instituicaoFinanceiraUsuarioSelecionada)
+    ) {
         // Atualiza o objeto original após sucesso
         this.registroFinanceiro = { ...this.registroFinanceiroTemp };
 
@@ -447,4 +456,12 @@ export class RegistrosFinanceirosComponent {
 
     console.log('Status selecionado:', this.existePrestacaoSelecionado);
   }
+
+  getInstituicoesFinanceirasUsuario() {
+      this.instituicaoFinanceiraUsuarioService.buscarTodos().subscribe(instFinUsu => {
+        this.instituicoesFinanceirasUsuarioList = instFinUsu;
+        console.log(this.instituicoesFinanceirasUsuarioList);
+      });
+  }
+
 }

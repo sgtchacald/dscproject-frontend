@@ -147,18 +147,18 @@
 
               <ng-template pTemplate="content">
 
-                <div class="field col-12">
-                  <label class="font-semibold">Esta despesa foi paga?</label>
-                  <div class="formgroup-inline">
-                    <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
-                      <p-radioButton id="{{status.key}}" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
-                      <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                <div class="grid">
+                  <div class="field col-12">
+                    <label class="font-semibold">Esta despesa foi paga?</label>
+                    <div class="formgroup-inline">
+                      <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
+                        <p-radioButton id="{{status.key}}" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
+                        <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="grid">
-                  <div class="field col-6">
+                  <div class="field col-12">
                     <label for="categoria" class="font-semibold">Categoria</label>
                     <p-dropdown
                       id="categoria"
@@ -188,19 +188,30 @@
                     <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
                   </div>
 
-                  <ng-template pTemplate="content" class="p-fluid">
-                    <div class="field col-6 ">
-                      <label for="tipo" class="font-semibold">Instituições Financeiras</label>
-                      <p-listbox
-                        id="tipo"
-                        optionLabel="nome"
-                        optionDisabled="disabled"
-                        [options]="instituicoesFinanceirasUsuarioList"
-                        [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
-                      </p-listbox>
-                      <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraUsuarioSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
-                    </div>
-                  </ng-template>
+                  <div class="field col-12">
+                    <label for="instituicaoFinanceiraUsuario" class="font-semibold">Instituição Financeira</label>
+                    <p-listbox
+                      id="instituicaoFinanceiraUsuario"
+                      optionLabel="instituicaoFinanceira.nome"
+                      optionDisabled="disabled"
+                      [options]="instituicoesFinanceirasUsuarioList"
+                      [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
+                      <ng-template let-instituicao pTemplate="instituicaoFinanceiraUsuario">
+                        <div class="" *ngIf="instituicao.instituicaoFinanceira.tipoInstituicao == 'BANCO'">
+                          <i class="fa fa-university mr-2" aria-hidden="true"></i>
+                          {{ instituicao.instituicaoFinanceira.nome }}
+                        </div>
+
+                        <div class="" *ngIf="instituicao.instituicaoFinanceira.tipoInstituicao == 'CORRETORA'">
+                          <i class="fa fa-btc mr-3" aria-hidden="true"></i>
+                          {{ instituicao.instituicaoFinanceira.nome }}
+                        </div>
+
+
+                      </ng-template>
+                    </p-listbox>
+                    <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraUsuarioSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+                  </div>
 
                   <div class="field col-12">
                     <label for="descricao" class="font-semibold">Descrição</label>
@@ -216,6 +227,33 @@
                   </div>
 
                   <div class="field col-4">
+                    <label class="font-semibold">Deseja parcelar essa despesa?</label>
+                    <div class="formgroup-inline">
+                      <div *ngFor="let ep of existePrestacaoList" class="field-radiobutton">
+                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionado" (onClick)="atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado)"></p-radioButton>
+                        <label [for]="ep.key" class="ml-2">{{ ep.value }}</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field col-4" *ngIf="exibirQtdParcela">
+                    <label for="qtdParcela" class="font-semibold">Parcelas</label>
+                    <p-dropdown
+                      id="qtdParcela"
+                      class="w-full"
+                      [options]="parcelasList"
+                      [(ngModel)]="parcelaSelecionada"
+                      [showClear]="true"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      optionLabel="key"></p-dropdown>
+
+                    <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionado.key !== 'SIM' && !parcelaSelecionada">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-12">
                     <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
                     <p-calendar
                       id="dtVencimento"
@@ -235,43 +273,7 @@
                     </small> -->
                   </div>
 
-                  <div class="field col-8">
-                  </div>
-
-                  <div class="field col-4">
-                    <label class="font-semibold">Deseja parcelar essa despesa?</label>
-                    <div class="formgroup-inline">
-                      <div *ngFor="let ep of existePrestacaoList" class="field-radiobutton">
-                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionado" (onClick)="atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado)"></p-radioButton>
-                        <label [for]="ep.key" class="ml-2">{{ ep.value }}</label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="field col-4" *ngIf="exibirQtdParcela">
-                    <label for="qtdParcela" class="font-semibold">Parcelas</label>
-
-                    <p-dropdown
-                      id="qtdParcela"
-                      class="w-full"
-                      [options]="parcelasList"
-                      [(ngModel)]="parcelaSelecionada"
-                      [showClear]="true"
-                      appendTo="body"
-                      panelStyleClass="dropdown-up"
-                      optionLabel="key"
-                    >
-                    </p-dropdown>
-
-                    <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionado.key !== 'SIM' && !parcelaSelecionada">
-                      {{ 'message.campoObrigatorio' | translate }}
-                    </small>
-                  </div>
-
-                  <div class="field col-4">
-                  </div>
-
-                  <div class="field col-6">
+                  <div class="field col-12">
                     <label for="valor" class="font-semibold">Valor</label>
                     <p-inputNumber
                       id="valor"
