@@ -17,9 +17,6 @@ export class ErroService {
 
     // Extraia as mensagens de erro do objeto
     const mensagensErro: string[] = erroAPI.errors.map(erroAPI.errors.mensagem);
-
-    console.log(mensagensErro)
-
     // Retorne as mensagens de erro
     return mensagensErro;
   }

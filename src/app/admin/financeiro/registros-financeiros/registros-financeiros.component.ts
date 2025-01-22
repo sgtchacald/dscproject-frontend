@@ -13,6 +13,11 @@ import {UtilsService} from "../../../../services/utils/utils.service";
 import {
   InstituicaoFinanceiraUsuarioService
 } from "../../../../services/financeiro/instituicao-financeira-usuario.service";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ModalSelecaoUsuarioComponent} from "../../modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
+import {Usuario} from "../../../../models/usuario.model";
+import {Observable} from "rxjs";
+import {UsuarioService} from "../../../../services/usuario/usuario.service";
 
 @Component({
   selector: 'app-registros-financeiros',
@@ -29,7 +34,9 @@ export class RegistrosFinanceirosComponent {
     private translate: TranslateService,
     private confirmationService: ConfirmationService,
     private utils: UtilsService,
-    private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService
+    private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService,
+    public dialogService: DialogService,
+    public usuarioService: UsuarioService
 ) {}
 
   @ViewChild('dt') dt: any;
@@ -67,7 +74,9 @@ export class RegistrosFinanceirosComponent {
   instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
   instituicaoFinanceiraUsuarioSelecionada: InstituicaoFinanceira | undefined | null;
 
+  dividirDespesaList: any = [];
 
+  ref: DynamicDialogRef | undefined;
 
   ngOnInit() {
     this.breadcrumbItens = [
@@ -76,8 +85,8 @@ export class RegistrosFinanceirosComponent {
       {label: 'Gerenciar Registros Financeiros'}
     ];
 
-    this.registrosFinanceirosList = data.registrosFinanceirosList;
-    //this.registrosFinanceirosList = [];
+    //this.registrosFinanceirosList = data.registrosFinanceirosList;
+
     this.loading = false;
 
     this.tipoRegistroFinanceiroList = EnumService.getTipoRegistroFinanceiro();
@@ -95,7 +104,8 @@ export class RegistrosFinanceirosComponent {
 
     this.getInstituicoesFinanceirasUsuario();
 
-    console.log(this.instituicoesFinanceirasUsuarioList);
+    this.atualizarTabela(true);
+
   }
 
   aplicarFiltroPadrao($event: Event) {
@@ -120,7 +130,6 @@ export class RegistrosFinanceirosComponent {
     this.registroFinanceiro = registroFinanceiroGrid ? registroFinanceiroGrid : new RegistroFinanceiro();
     this.registroFinanceiroTemp = { ...this.registroFinanceiro }; // Cria uma cópia para o objeto temporário
     this.isSubmetido = false;
-    console.log(this.isSubmetido);
     this.exibirDialogCadastroDespesa = true;
 
     this.filtrarCategoriasPorTipo("DESPESA");
@@ -148,9 +157,6 @@ export class RegistrosFinanceirosComponent {
         )
       ];
 
-      //const dataSelecionada = registroFinanceiroTemp.dtVencimento;
-
-
       this.existePrestacaoSelecionado = this.existePrestacaoList[
         EnumService.getPosicaoEnumPorKey(
           registroFinanceiroGrid.categoriaRegistroFinanceiro,
@@ -168,23 +174,15 @@ export class RegistrosFinanceirosComponent {
       }
 
     }
-
-
   }
-
-
 
   fecharModal() {
     this.limpaCamposForm();
     this.exibirDialogCadastroDespesa = false;
     this.isSubmetido = false;
-    console.log(this.isSubmetido);
-
   }
 
   salvarDespesa() {
-    console.log(this.registroFinanceiro.id);
-
       if(this.registroFinanceiro.id === null){
         this.inserir("DESPESA");
       }else{
@@ -202,15 +200,18 @@ export class RegistrosFinanceirosComponent {
     this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
     const dtLancamento: any = this.formatarDataHoraParaEnvio(new Date().toString());
-    console.log(dtLancamento);
     this.registroFinanceiroTemp.dtCadastro = dtLancamento;
 
     const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
+
     if(this.isValid(dtVencimento)) {
+
+      const pDtVencimentoPDia = this.registroFinanceiroTemp.dtVencimento;
+      // @ts-ignore
+      this.registroFinanceiroTemp.diaVencimento = String(new Date(pDtVencimentoPDia).data.getDate()).padStart(2, '0');
+
       this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
-
-    console.log(this.registroFinanceiroTemp);
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)
@@ -218,21 +219,28 @@ export class RegistrosFinanceirosComponent {
       && this.isValid(this.registroFinanceiroTemp.valor)
       && this.isValid(this.registroFinanceiroTemp.statusPagamento)
     ) {
-      console.log(this.registroFinanceiroTemp);
+      this.registroFinanceiroService.cadastrar(this.registroFinanceiroTemp).subscribe(
+        () => {
+          // Atualiza o objeto original após sucesso
+          this.registroFinanceiro = {...this.registroFinanceiroTemp};
 
-      // Atualiza o objeto original após sucesso
-      this.registroFinanceiro = {...this.registroFinanceiroTemp};
+          //Faz o Push no novo item para a tabela.
+          this.registrosFinanceirosList.push(this.registroFinanceiroTemp);
 
-      //Faz o Push no novo item para a tabela.
-      this.registrosFinanceirosList.push(this.registroFinanceiroTemp);
-
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: this.translate.instant('message.cadastradoSucesso')
-      });
-      this.fecharModal();
-      this.atualizarTabela(false);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: this.translate.instant('message.cadastradoSucesso')
+          });
+          this.fecharModal();
+          this.atualizarTabela(true); // Atualiza a tabela após inserir
+        },(error : any) => {
+          const erro: string = this.erroService.retornaErroStatusCode(error);
+          if (erro !== "") {
+            this.messageService.add({severity: 'error', summary: 'Erro', detail: this.translate.instant('message.cadastradoErro') + " " + erro});
+          }
+        }
+      );
     }
   }
 
@@ -248,7 +256,6 @@ export class RegistrosFinanceirosComponent {
     this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
     const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
-    console.log(dtVencimento);
     if(this.isValid(dtVencimento)) {
       this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
@@ -264,24 +271,34 @@ export class RegistrosFinanceirosComponent {
       && this.isValid(this.registroFinanceiroTemp.statusPagamento)
       && this.isValid(this.instituicaoFinanceiraUsuarioSelecionada)
     ) {
-        // Atualiza o objeto original após sucesso
-        this.registroFinanceiro = { ...this.registroFinanceiroTemp };
+      this.registroFinanceiroService.editar(this.registroFinanceiroTemp).subscribe(
+        () => {
+          // Atualiza o objeto original após sucesso
+          this.registroFinanceiro = { ...this.registroFinanceiroTemp };
 
-        // Atualiza a lista de instituições
-        const index = this.registrosFinanceirosList.findIndex(item => item.id === this.registroFinanceiro.id);
-        if (index !== -1) {
-          this.registrosFinanceirosList[index] = { ...this.registroFinanceiro };
+          // Atualiza a lista de registros financeiros
+          const index = this.registrosFinanceirosList.findIndex(item => item.id === this.registroFinanceiro.id);
+          if (index !== -1) {
+            this.registrosFinanceirosList[index] = { ...this.registroFinanceiro };
+          }
+
+          // Exibe mensagem de Sucesso
+          this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
+          this.fecharModal();
+          this.atualizarTabela(false); // Atualiza a tabela após editar sem consultar a api
+        },(error: any) => {
+          erro = this.erroService.retornaErroStatusCode(error);
+          if (erro !== "") {
+            this.messageService.add({severity: 'error', summary: 'Erro',  detail: this.translate.instant('message.cadastradoSucesso') + " " + erro });
+          }
         }
-
-        // Exibe mensagem de Sucesso
-        this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
-        this.fecharModal();
-        this.atualizarTabela(false); // Atualiza a tabela após editar
+      );
     }
-
   }
 
   excluir(registroFinanceiroGrid: RegistroFinanceiro) {
+    console.log("clicou");
+
     this.confirmationService.confirm({
       message: 'Tem certeza que deseja excluir o item: <b>' + registroFinanceiroGrid.descricao + '</b>?',
       header: 'Confirmar Ação',
@@ -364,10 +381,10 @@ export class RegistrosFinanceirosComponent {
 
   atualizarTabela(consumirAPI: boolean) {
     if(consumirAPI){
-      /*this.instituicaoFinanceiraService.buscarTodos().subscribe(instituicaoList => {
-        this.instituicaoList = instituicaoList;
+      this.registroFinanceiroService.buscarTodos().subscribe(registrosList => {
+        this.registrosFinanceirosList = registrosList;
         this.loading = false;
-      });*/
+      });
     }else{
       // Cria uma nova referência para forçar a atualização da tabela
       this.registrosFinanceirosList = [...this.registrosFinanceirosList];
@@ -441,6 +458,21 @@ export class RegistrosFinanceirosComponent {
     return '';
   }
 
+  formatarDataHoraSQLParaEnvio(pData: string | undefined | null) {
+    if (pData) {
+      const data = new Date(pData);
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+      const horas = String(data.getHours()).padStart(2, '0');
+      const minutos = String(data.getMinutes()).padStart(2, '0');
+      const segundos = String(data.getSeconds()).padStart(2, '0');
+
+      return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+    }
+    return '';
+  }
+
   isValid(value: any): boolean {
     return value !== null && value !== undefined && !(typeof value === 'string' && value.trim() === "");
   }
@@ -448,20 +480,29 @@ export class RegistrosFinanceirosComponent {
   atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado: any) {
     this.existePrestacaoSelecionado = existePrestacaoSelecionado;
 
-    if(this.existePrestacaoSelecionado.key == "SIM"){
-      this.exibirQtdParcela = true;
-    }else{
-      this.exibirQtdParcela = false;
-    }
-
-    console.log('Status selecionado:', this.existePrestacaoSelecionado);
+    this.exibirQtdParcela = this.existePrestacaoSelecionado.key == "SIM";
   }
 
   getInstituicoesFinanceirasUsuario() {
       this.instituicaoFinanceiraUsuarioService.buscarTodos().subscribe(instFinUsu => {
         this.instituicoesFinanceirasUsuarioList = instFinUsu;
-        console.log(this.instituicoesFinanceirasUsuarioList);
       });
+  }
+
+  exibirModalUsuarios() {
+    this.ref = this.dialogService.open(ModalSelecaoUsuarioComponent, {
+      header: 'Selecione um usuário para dividir a despesa',
+      width: '70%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true
+    });
+
+    this.ref.onClose.subscribe((usuario: Usuario) => {
+      if (usuario) {
+        this.messageService.add({ severity: 'info', summary: 'Usuario Selecionado', detail: usuario.nome });
+      }
+    });
   }
 
 }

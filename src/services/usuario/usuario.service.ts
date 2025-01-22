@@ -6,6 +6,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { jwtDecode } from "jwt-decode";
+import {RegistroFinanceiro} from "../../models/registro-financeiro.model";
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +60,6 @@ export class UsuarioService {
   }
 
   autenticar(login: string, senha: string): Observable<HttpResponse<any>> {
-
     return this.httpClient.post(
       this.apiUrl+'/auth/login',
       {login: login, senha: senha},
@@ -74,6 +74,10 @@ export class UsuarioService {
 
   recuperarSenha(email: string) {
     return this.httpClient.post(this.apiUrl+'/auth/recuperar-senha', { email });
+  }
+
+  buscarTodos() {
+    return this.httpClient.get<Usuario[]>(this.apiUrl + '/usuarios');
   }
 }
 

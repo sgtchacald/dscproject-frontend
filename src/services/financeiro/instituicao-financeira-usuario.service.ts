@@ -23,7 +23,6 @@ export class InstituicaoFinanceiraUsuarioService {
   }
 
   cadastrar(instituicaoFinanceiraUsuario : InstituicaoFinanceiraUsuario){
-    console.log(instituicaoFinanceiraUsuario);
     return this.httpClient.post(this.apiUrl + '/instituicoes-financeiras-usuario/inserir', instituicaoFinanceiraUsuario);
   }
 

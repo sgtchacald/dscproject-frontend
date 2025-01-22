@@ -88,8 +88,6 @@ export class InstituicoesFinanceirasComponent {
     this.isSubmetido = true;
     let erro: string = "";
 
-    console.log(this.instituicaoTemp);
-
     // Copia os valores do objeto temporário para o original
     this.instituicaoTemp.tipoInstituicao = this.tipoInstituicaoFinanceiraSelecionada?.key;
 

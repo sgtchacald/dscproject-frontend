@@ -16,7 +16,6 @@ export class TokenService {
   }
 
   excluirToken(){
-    console.log('Excluir Token ativado');
     localStorage.removeItem(KEY);
   }
 

@@ -43,7 +43,6 @@ export class EsqueciASenhaComponent {
   recuperarSenha(){
     this.isSubmetido = true;
     let email: any = this.form.value['email'];
-    console.log(this.form);
     if(this.form.status == 'VALID'){
       this.usuarioService.recuperarSenha(email).subscribe(
         () => {

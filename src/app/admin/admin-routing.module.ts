@@ -7,6 +7,7 @@ import {
   InstituicoesFinanceirasUsuarioComponent
 } from "./financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component";
 import {RegistrosFinanceirosComponent} from "./financeiro/registros-financeiros/registros-financeiros.component";
+import {ModalSelecaoUsuarioComponent} from "./modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
 
 const routes: Routes = [
 
@@ -18,7 +19,9 @@ const routes: Routes = [
 
   { title: 'instituicaoFinanceiraUsuario', path: 'financeiro/instituicao-financeira-usuario', component: InstituicoesFinanceirasUsuarioComponent, canActivate: [AuthGuard]},
 
-  { title: 'instituicaoFinanceiraUsuario', path: 'financeiro/registro-financeiro', component: RegistrosFinanceirosComponent, canActivate: [AuthGuard]}
+  { title: 'instituicaoFinanceiraUsuario', path: 'financeiro/registro-financeiro', component: RegistrosFinanceirosComponent, canActivate: [AuthGuard]},
+
+  { title: 'modalSelecaoUsuario', path: 'modais-genericas/modal-selecao-usuario', component: ModalSelecaoUsuarioComponent, canActivate: [AuthGuard]}
 
 ];
 

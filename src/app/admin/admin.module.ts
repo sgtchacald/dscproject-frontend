@@ -40,6 +40,9 @@ import {RadioButtonModule} from "primeng/radiobutton";
 import {InputNumberModule} from "primeng/inputnumber";
 import {CalendarModule} from "primeng/calendar";
 import {KeyFilterModule} from "primeng/keyfilter";
+import {CheckboxModule} from "primeng/checkbox";
+import { ModalSelecaoUsuarioComponent } from './modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component';
+import {DialogService, DynamicDialogModule} from "primeng/dynamicdialog";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -63,47 +66,51 @@ const I18N_CONFIG = {
     InstituicoesFinanceirasComponent,
     InstituicoesFinanceirasUsuarioComponent,
     RegistrosFinanceirosComponent,
+    ModalSelecaoUsuarioComponent,
   ],
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    NbThemeModule.forRoot({name: 'default'}),
-    NbLayoutModule,
-    NbSidebarModule.forRoot(),
-    NbCardModule,
-    NbActionsModule,
-    NbUserModule,
-    NbContextMenuModule,
-    NbMenuModule.forRoot(),
-    NbIconModule,
-    NbEvaIconsModule,
-    BreadcrumbModule,
-    ToastModule,
-    ToolbarModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    DropdownModule,
-    FormsModule,
-    ListboxModule,
-    ReactiveFormsModule,
-    RippleModule,
-    TableModule,
-    ConfirmDialogModule,
-    HttpClientModule,
-    TranslateModule.forRoot(I18N_CONFIG),
-    TagModule,
-    SelectButtonModule,
-    RadioButtonModule,
-    InputNumberModule,
-    CalendarModule,
-    KeyFilterModule
-  ],
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        NbThemeModule.forRoot({name: 'default'}),
+        NbLayoutModule,
+        NbSidebarModule.forRoot(),
+        NbCardModule,
+        NbActionsModule,
+        NbUserModule,
+        NbContextMenuModule,
+        NbMenuModule.forRoot(),
+        NbIconModule,
+        NbEvaIconsModule,
+        BreadcrumbModule,
+        ToastModule,
+        ToolbarModule,
+        ButtonModule,
+        DialogModule,
+        InputTextModule,
+        DropdownModule,
+        FormsModule,
+        ListboxModule,
+        ReactiveFormsModule,
+        RippleModule,
+        TableModule,
+        ConfirmDialogModule,
+        HttpClientModule,
+        TranslateModule.forRoot(I18N_CONFIG),
+        TagModule,
+        SelectButtonModule,
+        RadioButtonModule,
+        InputNumberModule,
+        CalendarModule,
+        KeyFilterModule,
+        CheckboxModule,
+        DynamicDialogModule
+    ],
   providers: [
     NbSidebarService,
     NbMenuService,
     LayoutService,
-    ConfirmationService
+    ConfirmationService,
+    DialogService
   ],
 })
 
