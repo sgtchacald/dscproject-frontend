@@ -43,6 +43,7 @@ import {KeyFilterModule} from "primeng/keyfilter";
 import {CheckboxModule} from "primeng/checkbox";
 import { ModalSelecaoUsuarioComponent } from './modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component';
 import {DialogService, DynamicDialogModule} from "primeng/dynamicdialog";
+import {ChipModule} from "primeng/chip";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -103,7 +104,8 @@ const I18N_CONFIG = {
         CalendarModule,
         KeyFilterModule,
         CheckboxModule,
-        DynamicDialogModule
+        DynamicDialogModule,
+        ChipModule
     ],
   providers: [
     NbSidebarService,

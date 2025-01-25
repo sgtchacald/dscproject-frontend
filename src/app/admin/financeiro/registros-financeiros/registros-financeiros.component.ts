@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {RegistroFinanceiro} from "../../../../models/registro-financeiro.model";
 import data from "../../../../assets/mock/db.json";
@@ -74,9 +74,13 @@ export class RegistrosFinanceirosComponent {
   instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
   instituicaoFinanceiraUsuarioSelecionada: InstituicaoFinanceira | undefined | null;
 
-  dividirDespesaList: any = [];
+  isDividirDespesa: boolean = false;
 
   ref: DynamicDialogRef | undefined;
+
+  usuarioSelecionadoList: Usuario[] = [];
+
+
 
   ngOnInit() {
     this.breadcrumbItens = [
@@ -100,7 +104,7 @@ export class RegistrosFinanceirosComponent {
 
     this.existePrestacaoList = EnumService.getStatusSimNao();
 
-    this.exibirQtdParcela = false
+    this.exibirQtdParcela = false;
 
     this.getInstituicoesFinanceirasUsuario();
 
@@ -490,19 +494,35 @@ export class RegistrosFinanceirosComponent {
   }
 
   exibirModalUsuarios() {
-    this.ref = this.dialogService.open(ModalSelecaoUsuarioComponent, {
-      header: 'Selecione um usuário para dividir a despesa',
-      width: '70%',
-      contentStyle: { overflow: 'auto' },
-      baseZIndex: 10000,
-      maximizable: true
-    });
+    console.log(this.isDividirDespesa);
+    if (
+      Array.isArray(this.isDividirDespesa) &&
+      this.isDividirDespesa.length === 1 &&
+      this.isDividirDespesa[0] === "true"
+    ){
+      this.ref = this.dialogService.open(ModalSelecaoUsuarioComponent, {
+        header: 'Selecione um usuário para dividir a despesa',
+        width: '100%%',
+        contentStyle: { overflow: 'auto' },
+        baseZIndex: 10000,
+        maximizable: true,
+      });
 
-    this.ref.onClose.subscribe((usuario: Usuario) => {
-      if (usuario) {
-        this.messageService.add({ severity: 'info', summary: 'Usuario Selecionado', detail: usuario.nome });
-      }
-    });
+      this.ref.onClose.subscribe((usuarioSelecionadoList: Usuario[]) => {
+        this.usuarioSelecionadoList = usuarioSelecionadoList;
+        console.log('Dados recebidos:', this.usuarioSelecionadoList);
+      });
+    }else{
+      this.usuarioSelecionadoList = [];
+      console.log('Dados recebidos:', this.usuarioSelecionadoList);
+    }
+
   }
 
+  excluirDivisao(usuario: Usuario) {
+    const index = this.usuarioSelecionadoList.findIndex(item => item.id === usuario.id);
+    if (index !== -1) {
+      this.registrosFinanceirosList.splice(index, 1);
+    }
+  }
 }

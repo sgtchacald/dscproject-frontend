@@ -293,8 +293,14 @@
                     </small>
                   </div>
 
-                  <div class="field col-6">
-                    <p-checkbox name="groupname" value="true" label="Desejo dividir esta despesa." [(ngModel)]="dividirDespesaList" (click)="exibirModalUsuarios()"></p-checkbox>
+                  <div class="field col-12">
+                    <p-checkbox id="isDividirDespesaId" value="true" label="Desejo dividir esta despesa." [(ngModel)]="isDividirDespesa" (click)="exibirModalUsuarios()"></p-checkbox>
+                    <br>
+                    <div *ngFor="let usuario of usuarioSelecionadoList" class="mt-3">
+                      <p-chip label="{{usuario.nome}}" icon="pi pi-user" [removable]="true" (click)="excluirDivisao(usuario)"></p-chip> &nbsp;&nbsp;&nbsp;
+                    </div>
+
+
                   </div>
 
                 </div>

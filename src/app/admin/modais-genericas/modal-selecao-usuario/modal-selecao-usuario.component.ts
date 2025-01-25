@@ -1,7 +1,8 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Usuario} from "../../../../models/usuario.model";
 import {UsuarioService} from "../../../../services/usuario/usuario.service";
 import {Observable} from "rxjs";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-modal-selecao-usuario',
@@ -13,11 +14,17 @@ export class ModalSelecaoUsuarioComponent {
   usuarioList: Usuario[] = [];
 
   usuarioLogado: Observable<Usuario | null> = new Observable<Usuario | null>();
+
   loginUsuarioLogado: string = "";
+
+  usuarioSelecionadoList: Usuario[] = [];
+
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private usuarioService: UsuarioService
+    public ref: DynamicDialogRef, // Referência para o diálogo
+    public config: DynamicDialogConfig, // Configuração recebida na abertura
+    private usuarioService: UsuarioService,
   ) {}
 
   ngOnInit() {
@@ -47,6 +54,7 @@ export class ModalSelecaoUsuarioComponent {
   }
 
   getUsuariosSelecionados() {
-    console.log("selecionou o usuario")
+    this.ref.close(this.usuarioSelecionadoList);
   }
+
 }
