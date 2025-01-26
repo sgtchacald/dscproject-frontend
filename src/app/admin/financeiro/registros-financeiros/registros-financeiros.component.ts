@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, Output, Renderer2, ViewChild} from '@angular/core';
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {RegistroFinanceiro} from "../../../../models/registro-financeiro.model";
 import data from "../../../../assets/mock/db.json";
@@ -36,7 +36,7 @@ export class RegistrosFinanceirosComponent {
     private utils: UtilsService,
     private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService,
     public dialogService: DialogService,
-    public usuarioService: UsuarioService
+    private renderer: Renderer2
 ) {}
 
   @ViewChild('dt') dt: any;
@@ -79,8 +79,6 @@ export class RegistrosFinanceirosComponent {
   ref: DynamicDialogRef | undefined;
 
   usuarioSelecionadoList: Usuario[] = [];
-
-
 
   ngOnInit() {
     this.breadcrumbItens = [
@@ -210,11 +208,26 @@ export class RegistrosFinanceirosComponent {
 
     if(this.isValid(dtVencimento)) {
 
-      const pDtVencimentoPDia = this.registroFinanceiroTemp.dtVencimento;
-      // @ts-ignore
-      this.registroFinanceiroTemp.diaVencimento = String(new Date(pDtVencimentoPDia).data.getDate()).padStart(2, '0');
+      let pDtVencimentoPDia = this.registroFinanceiroTemp.dtVencimento;
+      let dia = null;
+      if(this.isValid(pDtVencimentoPDia)){
+        // @ts-ignore
+        let data = new Date(pDtVencimentoPDia);
+       dia = String(data.getDate()).padStart(2, '0');
+      }
+
+      console.log(dia);
+      this.registroFinanceiroTemp.diaVencimento = dia;
 
       this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
+    }
+
+    if(this.isDividirDespesa && this.isValid(this.usuarioSelecionadoList)){
+      for (let usuario of this.registrosFinanceirosSelecionadosList) {
+        if (typeof usuario.id === "number") {
+          this.registroFinanceiroTemp.usuariosResponsaveis.push(usuario.id);
+        }
+      }
     }
 
     if (
@@ -489,12 +502,13 @@ export class RegistrosFinanceirosComponent {
 
   getInstituicoesFinanceirasUsuario() {
       this.instituicaoFinanceiraUsuarioService.buscarTodos().subscribe(instFinUsu => {
-        this.instituicoesFinanceirasUsuarioList = instFinUsu;
+        if(instFinUsu){
+          this.instituicoesFinanceirasUsuarioList = instFinUsu;
+        }
       });
   }
 
   exibirModalUsuarios() {
-    console.log(this.isDividirDespesa);
     if (
       Array.isArray(this.isDividirDespesa) &&
       this.isDividirDespesa.length === 1 &&
@@ -523,6 +537,13 @@ export class RegistrosFinanceirosComponent {
     const index = this.usuarioSelecionadoList.findIndex(item => item.id === usuario.id);
     if (index !== -1) {
       this.registrosFinanceirosList.splice(index, 1);
+      const elemento = document.getElementById("usuarioSelecionadoItem" + usuario.login);
+
+      if (elemento) {
+        this.renderer.removeChild(elemento.parentElement, elemento);
+        console.log(this.registrosFinanceirosList);
+        this.isDividirDespesa = !!this.registrosFinanceirosList.length;
+      }
     }
   }
 }
