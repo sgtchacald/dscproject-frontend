@@ -216,19 +216,23 @@ export class RegistrosFinanceirosComponent {
        dia = String(data.getDate()).padStart(2, '0');
       }
 
-      console.log(dia);
       this.registroFinanceiroTemp.diaVencimento = dia;
 
       this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
 
-    if(this.isDividirDespesa && this.isValid(this.usuarioSelecionadoList)){
-      for (let usuario of this.registrosFinanceirosSelecionadosList) {
-        if (typeof usuario.id === "number") {
-          this.registroFinanceiroTemp.usuariosResponsaveis.push(usuario.id);
-        }
-      }
+    if (!this.registroFinanceiroTemp.usuariosResponsaveis) {
+      this.registroFinanceiroTemp.usuariosResponsaveis = [];
     }
+
+    for (let usuario of this.usuarioSelecionadoList) {
+      console.log(usuario.id); // Certifique-se de que está imprimindo números
+
+      this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(usuario.id));
+    }
+
+    console.log(this.registroFinanceiroTemp)
+
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)

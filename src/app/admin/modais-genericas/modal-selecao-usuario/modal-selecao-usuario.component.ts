@@ -13,9 +13,9 @@ export class ModalSelecaoUsuarioComponent {
 
   usuarioList: Usuario[] = [];
 
-  usuarioLogado: Observable<Usuario | null> = new Observable<Usuario | null>();
+  usuarioLogadoObservable: Observable<Usuario | null> = new Observable<Usuario | null>();
 
-  loginUsuarioLogado: string = "";
+  usuarioLogadoId: string | undefined = "";
 
   usuarioSelecionadoList: Usuario[] = [];
 
@@ -28,10 +28,10 @@ export class ModalSelecaoUsuarioComponent {
   ) {}
 
   ngOnInit() {
-    this.usuarioLogado = this.usuarioService.retornaUsuario();
-    this.usuarioLogado.subscribe(usuario => {
+    this.usuarioLogadoObservable = this.usuarioService.retornaUsuario();
+    this.usuarioLogadoObservable.subscribe(usuario => {
       if (usuario) {
-        this.loginUsuarioLogado = usuario.login;
+        this.usuarioLogadoId = usuario.id;
       }
     });
 
@@ -42,14 +42,14 @@ export class ModalSelecaoUsuarioComponent {
   atualizarTabela(consumirAPI: boolean) {
     if(consumirAPI){
       this.usuarioService.buscarTodos().subscribe(instituicaoList => {
-        console.log(this.loginUsuarioLogado);
-        this.usuarioList = instituicaoList.filter(usuario => usuario.login !== this.loginUsuarioLogado);
+        console.log(this.usuarioLogadoId);
+        this.usuarioList = instituicaoList.filter(usuario => usuario.id !== this.usuarioLogadoId);
+        console.log(this.usuarioList);
       });
     }else{
       // Cria uma nova referência para forçar a atualização da tabela
-      this.usuarioList = [...this.usuarioList.filter(usuario => usuario.login !== this.loginUsuarioLogado)];
+      this.usuarioList = [...this.usuarioList.filter(usuario => usuario.id !== this.usuarioLogadoId)];
     }
-
     this.cdr.detectChanges();
   }
 
