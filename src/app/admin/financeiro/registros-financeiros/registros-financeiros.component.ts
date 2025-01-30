@@ -35,8 +35,9 @@ export class RegistrosFinanceirosComponent {
     private confirmationService: ConfirmationService,
     private utils: UtilsService,
     private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService,
-    public dialogService: DialogService,
-    private renderer: Renderer2
+    private dialogService: DialogService,
+    private renderer: Renderer2,
+    private usuarioService: UsuarioService
 ) {}
 
   @ViewChild('dt') dt: any;
@@ -78,7 +79,9 @@ export class RegistrosFinanceirosComponent {
 
   ref: DynamicDialogRef | undefined;
 
+  usuarioLogadoObservable: Observable<Usuario | null> = new Observable<Usuario | null>();
   usuarioSelecionadoList: Usuario[] = [];
+  usuarioLogadoId: string | undefined;
 
   ngOnInit() {
     this.breadcrumbItens = [
@@ -105,6 +108,14 @@ export class RegistrosFinanceirosComponent {
     this.exibirQtdParcela = false;
 
     this.getInstituicoesFinanceirasUsuario();
+
+    this.usuarioLogadoObservable = this.usuarioService.retornaUsuario();
+    this.usuarioLogadoObservable.subscribe(usuario => {
+      if (usuario) {
+        this.usuarioLogadoId = usuario.id;
+      }
+    });
+
 
     this.atualizarTabela(true);
 
@@ -175,6 +186,8 @@ export class RegistrosFinanceirosComponent {
         this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[1]);
       }
 
+    }else{
+      this.limparCamposFormNovoRegistroFinanceiro();
     }
   }
 
@@ -182,6 +195,10 @@ export class RegistrosFinanceirosComponent {
     this.limpaCamposForm();
     this.exibirDialogCadastroDespesa = false;
     this.isSubmetido = false;
+  }
+
+  limparCamposFormNovoRegistroFinanceiro() {
+    this.registroFinanceiroTemp = new RegistroFinanceiro();
   }
 
   salvarDespesa() {
@@ -201,14 +218,14 @@ export class RegistrosFinanceirosComponent {
     this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
     this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
-    const dtLancamento: any = this.formatarDataHoraParaEnvio(new Date().toString());
-    this.registroFinanceiroTemp.dtCadastro = dtLancamento;
+    //const dtLancamento: any = this.formatarDataHoraParaEnvio(new Date().toString());
+    //this.registroFinanceiroTemp.dtCadastro = dtLancamento;
 
     const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
 
     if(this.isValid(dtVencimento)) {
 
-      let pDtVencimentoPDia = this.registroFinanceiroTemp.dtVencimento;
+      /*let pDtVencimentoPDia = this.registroFinanceiroTemp.dtVencimento;
       let dia = null;
       if(this.isValid(pDtVencimentoPDia)){
         // @ts-ignore
@@ -216,7 +233,7 @@ export class RegistrosFinanceirosComponent {
        dia = String(data.getDate()).padStart(2, '0');
       }
 
-      this.registroFinanceiroTemp.diaVencimento = dia;
+      this.registroFinanceiroTemp.diaVencimento = dia;*/
 
       this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
@@ -225,14 +242,11 @@ export class RegistrosFinanceirosComponent {
       this.registroFinanceiroTemp.usuariosResponsaveis = [];
     }
 
-    for (let usuario of this.usuarioSelecionadoList) {
-      console.log(usuario.id); // Certifique-se de que está imprimindo números
+    this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(this.usuarioLogadoId));
 
+    for (let usuario of this.usuarioSelecionadoList) {
       this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(usuario.id));
     }
-
-    console.log(this.registroFinanceiroTemp)
-
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)
@@ -404,6 +418,7 @@ export class RegistrosFinanceirosComponent {
     if(consumirAPI){
       this.registroFinanceiroService.buscarTodos().subscribe(registrosList => {
         this.registrosFinanceirosList = registrosList;
+        console.log(this.registrosFinanceirosList);
         this.loading = false;
       });
     }else{
@@ -528,11 +543,9 @@ export class RegistrosFinanceirosComponent {
 
       this.ref.onClose.subscribe((usuarioSelecionadoList: Usuario[]) => {
         this.usuarioSelecionadoList = usuarioSelecionadoList;
-        console.log('Dados recebidos:', this.usuarioSelecionadoList);
       });
     }else{
       this.usuarioSelecionadoList = [];
-      console.log('Dados recebidos:', this.usuarioSelecionadoList);
     }
 
   }

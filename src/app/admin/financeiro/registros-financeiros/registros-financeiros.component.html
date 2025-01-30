@@ -101,7 +101,7 @@
 
                   <td class="text-left">{{registro.descricao }}</td>
 
-                  <td class="text-center">{{registro.dtCadastro}}</td>
+                  <td class="text-center">{{formatarDataHoraParaEnvio(registro.dtLancamento)}}</td>
 
                   <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento}}</span></td>
 
