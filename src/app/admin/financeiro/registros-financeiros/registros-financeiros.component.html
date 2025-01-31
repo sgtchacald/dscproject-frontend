@@ -103,7 +103,7 @@
 
                   <td class="text-center">{{formatarDataHoraParaEnvio(registro.dtLancamento)}}</td>
 
-                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento}}</span></td>
+                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{formatarDataParaEnvio(registro.dtVencimento)}}</span></td>
 
                   <td class="text-center"><span *ngIf="registro.qtdParcela; else hifenSpan">{{registro.qtdParcela}}</span></td>
 
