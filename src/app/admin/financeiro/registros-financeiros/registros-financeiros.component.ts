@@ -244,8 +244,10 @@ export class RegistrosFinanceirosComponent {
 
     this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(this.usuarioLogadoId));
 
-    for (let usuario of this.usuarioSelecionadoList) {
-      this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(usuario.id));
+    if(this.usuarioSelecionadoList){
+      for (let usuario of this.usuarioSelecionadoList) {
+        this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(usuario.id));
+      }
     }
 
     if (
