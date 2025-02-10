@@ -170,6 +170,10 @@ export class RegistrosFinanceirosComponent {
         )
       ];
 
+
+      this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList[0].instituicaoFinanceira;
+      console.log(this.instituicaoFinanceiraUsuarioSelecionada);
+
       this.existePrestacaoSelecionado = this.existePrestacaoList[
         EnumService.getPosicaoEnumPorKey(
           registroFinanceiroGrid.categoriaRegistroFinanceiro,
@@ -288,13 +292,25 @@ export class RegistrosFinanceirosComponent {
     this.registroFinanceiroTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
     this.registroFinanceiroTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.registroFinanceiroTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
-
     this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
     this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
     const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
+
     if(this.isValid(dtVencimento)) {
       this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
+    }
+
+    if (!this.registroFinanceiroTemp.usuariosResponsaveis) {
+      this.registroFinanceiroTemp.usuariosResponsaveis = [];
+    }
+
+    this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(this.usuarioLogadoId));
+
+    if(this.usuarioSelecionadoList){
+      for (let usuario of this.usuarioSelecionadoList) {
+        this.registroFinanceiroTemp.usuariosResponsaveis.push(Number(usuario.id));
+      }
     }
 
     // @ts-ignore
