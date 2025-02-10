@@ -52,6 +52,7 @@ static getGeneros() {
       { key: 'EDUCACAO',                value: 'Educação',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-graduation-cap' },
       { key: 'SERVICOS',                value: 'Serviços',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-wrench' },
       { key: 'EMPRESTIMOS',             value: 'Empréstimos',  tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-credit-card' },
+      { key: 'TAXAS_EMPRESA',           value: 'Taxas PJ',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa fa-percent' },
     ];
   }
 

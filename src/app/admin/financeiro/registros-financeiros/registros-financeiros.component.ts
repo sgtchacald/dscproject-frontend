@@ -565,4 +565,47 @@ export class RegistrosFinanceirosComponent {
       }
     }
   }
+
+  calcularTotalGeral(): number {
+    let valor: number =  this.registrosFinanceirosList.reduce((total, registro) => total + (registro.valor || 0), 0);
+
+    if(valor !== null){
+      return valor;
+    }
+
+    return 0;
+
+  }
+
+  calcularTotalAPagar(): number {
+    let valor: number = this.registrosFinanceirosList.filter(
+        registro =>
+        registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+        registro.statusPagamento === 'NAO' // Filtra apenas pagamentos com status "SIM"
+      ).reduce(
+        (total, registro) => total + (registro.valor || 0), 0
+      );
+
+    if(valor !== null){
+      return valor;
+    }
+
+    return 0;
+  }
+
+  calcularTotalPago(): number {
+    let valor: number = this.registrosFinanceirosList.filter(
+      registro =>
+        registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+        registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"
+    ).reduce(
+      (total, registro) => total + (registro.valor || 0), 0
+    );
+
+    if(valor !== null){
+      return valor;
+    }
+
+    return 0;
+  }
 }

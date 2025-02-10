@@ -46,6 +46,14 @@
               </ng-template>
 
               <ng-template pTemplate="right">
+                <span class="ml-3">
+                  <b>Pago</b> <br>
+                  <p-tag [value]="(calcularTotalPago() | currency)?.toString()" severity="success"></p-tag>
+                </span>
+                <span class="ml-3">
+                  <b>A Pagar</b> <br>
+                  <p-tag [value]="(calcularTotalAPagar() | currency)?.toString()" severity="danger"></p-tag>
+                </span>
               </ng-template>
             </p-toolbar>
           </div>
@@ -138,6 +146,16 @@
                   </td>
 
                   <ng-template #hifenSpan><span>-</span></ng-template>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <tr>
+                  <td colspan="7" class="text-right"><strong>Total Geral:</strong></td>
+                  <td class="text-right">
+                    {{ calcularTotalGeral() | currency }}
+                  </td>
+                  <td colspan="2"></td> <!-- Colunas restantes -->
                 </tr>
               </ng-template>
             </p-table>
