@@ -15,7 +15,7 @@ export class ModalSelecaoUsuarioComponent {
 
   usuarioLogadoObservable: Observable<Usuario | null> = new Observable<Usuario | null>();
 
-  usuarioLogadoId: string | undefined = "";
+  usuarioLogado: Usuario | undefined;
 
   usuarioSelecionadoList: Usuario[] = [];
 
@@ -31,7 +31,7 @@ export class ModalSelecaoUsuarioComponent {
     this.usuarioLogadoObservable = this.usuarioService.retornaUsuario();
     this.usuarioLogadoObservable.subscribe(usuario => {
       if (usuario) {
-        this.usuarioLogadoId = usuario.id;
+        this.usuarioLogado = usuario;
       }
     });
 
@@ -42,13 +42,11 @@ export class ModalSelecaoUsuarioComponent {
   atualizarTabela(consumirAPI: boolean) {
     if(consumirAPI){
       this.usuarioService.buscarTodos().subscribe(instituicaoList => {
-        console.log(this.usuarioLogadoId);
-        this.usuarioList = instituicaoList.filter(usuario => usuario.id !== this.usuarioLogadoId);
-        console.log(this.usuarioList);
+        this.usuarioList = instituicaoList.filter(usuario => usuario.id !== this.usuarioLogado?.id);
       });
     }else{
       // Cria uma nova referência para forçar a atualização da tabela
-      this.usuarioList = [...this.usuarioList.filter(usuario => usuario.id !== this.usuarioLogadoId)];
+      this.usuarioList = [...this.usuarioList.filter(usuario => usuario.id !== this.usuarioLogado?.id)];
     }
     this.cdr.detectChanges();
   }

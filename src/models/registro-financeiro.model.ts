@@ -1,3 +1,5 @@
+import {Usuario} from "./usuario.model";
+
 export class RegistroFinanceiro {
   id: number | null;
   descricao: string | undefined | null;
@@ -10,7 +12,8 @@ export class RegistroFinanceiro {
   categoriaRegistroFinanceiro: string | undefined | null;
   statusPagamento:  string | undefined | null;
   instituicaoFinanceiraUsuarioId: number | undefined | null;
-  usuariosResponsaveis: number[];
+  instituicaoFinanceiraId: number | undefined | null;
+  usuariosResponsaveis: Usuario[];
 
   constructor(
     id: number | null = null,
@@ -24,7 +27,8 @@ export class RegistroFinanceiro {
     categoriaRegistroFinanceiro: string | undefined | null = null,
     statusPagamento: string | undefined | null = null,
     instituicaoFinanceiraUsuarioId: number | undefined | null = null,
-    usuariosResponsaveis: number[] = []
+    instituicaoFinanceiraId: number | undefined | null = null,
+    usuariosResponsaveis: Usuario[] = []
   ) {
     this.id = id;
     this.descricao = descricao;
@@ -37,6 +41,7 @@ export class RegistroFinanceiro {
     this.categoriaRegistroFinanceiro = categoriaRegistroFinanceiro;
     this.statusPagamento = statusPagamento;
     this.instituicaoFinanceiraUsuarioId = instituicaoFinanceiraUsuarioId;
+    this.instituicaoFinanceiraId = instituicaoFinanceiraId;
     this.usuariosResponsaveis = usuariosResponsaveis;
   }
 }
