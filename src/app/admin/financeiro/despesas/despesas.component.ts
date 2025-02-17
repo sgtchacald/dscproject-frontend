@@ -1,12 +1,12 @@
 import {ChangeDetectorRef, Component, Renderer2, ViewChild} from '@angular/core';
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
-import {RegistroFinanceiro} from "../../../../models/registro-financeiro.model";
+import {Despesa} from "../../../../models/despesa.model";
 import {EnumService} from "../../../../services/utils/enum.service";
 import {InstituicaoFinanceiraUsuario} from "../../../../models/instituicao-financeira-usuario.model";
 import {ErroService} from "../../../../services/utils/erro.service";
 import {TranslateService} from "@ngx-translate/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {RegistroFinanceiroService} from "../../../../services/financeiro/registro-financeiro.service";
+import {DespesaService} from "../../../../services/financeiro/despesa.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
 import {
   InstituicaoFinanceiraUsuarioService
@@ -20,14 +20,14 @@ import {Observable} from "rxjs";
 import {UsuarioService} from "../../../../services/usuario/usuario.service";
 
 @Component({
-  selector: 'app-registros-financeiros',
-  templateUrl: './registros-financeiros.component.html',
-  styleUrls: ['./registros-financeiros.component.scss']
+  selector: 'app-despesas',
+  templateUrl: './despesas.component.html',
+  styleUrls: ['./despesas.component.scss']
 })
-export class RegistrosFinanceirosComponent {
+export class DespesasComponent {
 
   constructor(
-    private registroFinanceiroService: RegistroFinanceiroService,
+    private despesaService: DespesaService,
     private erroService: ErroService,
     private messageService: MessageService,
     private cdr: ChangeDetectorRef,
@@ -44,15 +44,14 @@ export class RegistrosFinanceirosComponent {
   protected readonly EnumService = EnumService;
 
   breadcrumbItens: MenuItem[] | undefined;
-  registrosFinanceirosSelecionadosList: RegistroFinanceiro[] = [];
-  registrosFinanceirosList: RegistroFinanceiro[] = [];
-  registroFinanceiro: RegistroFinanceiro = new RegistroFinanceiro();
+  despesasSelecionadosList: Despesa[] = [];
+  despesasList: Despesa[] = [];
+  despesa: Despesa = new Despesa();
   loading: boolean = true;
   exibirDialogPesquisa: boolean = true;
   existeErro: boolean = false;
 
-
-  registroFinanceiroTemp: RegistroFinanceiro = new RegistroFinanceiro();
+  despesaTemp: Despesa = new Despesa();
   isSubmetido: boolean = false;
   exibirQtdParcela: boolean = false;
   exibirDialogCadastroDespesa: boolean = false;
@@ -87,10 +86,10 @@ export class RegistrosFinanceirosComponent {
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
-      {label: 'Gerenciar Registros Financeiros'}
+      {label: 'Gerenciar Despesas'}
     ];
 
-    //this.registrosFinanceirosList = data.registrosFinanceirosList;
+    //this.despesasList = data.despesasList;
 
     this.loading = false;
 
@@ -138,10 +137,10 @@ export class RegistrosFinanceirosComponent {
   pesquisar() {
   }
 
-  abrirModalDespesa(registroFinanceiroGrid: RegistroFinanceiro | null) {
-    this.prefixoModal = (registroFinanceiroGrid ? "Editar" : "Cadastrar") + " Despesa";
-    this.registroFinanceiro = registroFinanceiroGrid ? registroFinanceiroGrid : new RegistroFinanceiro();
-    this.registroFinanceiroTemp = { ...this.registroFinanceiro }; // Cria uma cópia para o objeto temporário
+  abrirModalDespesa(despesaGrid: Despesa | null) {
+    this.prefixoModal = (despesaGrid ? "Editar" : "Cadastrar") + " Despesa";
+    this.despesa = despesaGrid ? despesaGrid : new Despesa();
+    this.despesaTemp = { ...this.despesa }; // Cria uma cópia para o objeto temporário
     this.isSubmetido = false;
     this.exibirDialogCadastroDespesa = true;
 
@@ -150,53 +149,53 @@ export class RegistrosFinanceirosComponent {
     this.statusPagamentoSelecionado = this.statusPagamentoList[1];
     this.existePrestacaoSelecionado = this.existePrestacaoList[1];
 
-    if(registroFinanceiroGrid?.id){
+    if(despesaGrid?.id){
 
-      this.registroFinanceiroTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
-        registroFinanceiroGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()
+      this.despesaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
+        despesaGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()
       );
 
       this.statusPagamentoSelecionado = this.statusPagamentoList[
         EnumService.getPosicaoEnumPorKey(
-          registroFinanceiroGrid.statusPagamento,
+          despesaGrid.statusPagamento,
           this.statusPagamentoList
         )
       ];
 
       this.categoriaRegistroFinanceiroSelecionado = this.categoriaRegistroFinanceiroList[
         EnumService.getPosicaoEnumPorKey(
-          registroFinanceiroGrid.categoriaRegistroFinanceiro,
+          despesaGrid.categoriaRegistroFinanceiro,
           this.categoriaRegistroFinanceiroList
         )
       ];
 
-      this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(registroFinanceiroGrid.dtVencimento);
+      this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(despesaGrid.dtVencimento);
 
-      this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList.find(item => item.id === registroFinanceiroGrid.instituicaoFinanceiraUsuarioId);
+      this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList.find(item => item.id === despesaGrid.instituicaoFinanceiraUsuarioId);
 
       this.existePrestacaoSelecionado = this.existePrestacaoList[
         EnumService.getPosicaoEnumPorKey(
-          registroFinanceiroGrid.categoriaRegistroFinanceiro,
+          despesaGrid.categoriaRegistroFinanceiro,
           this.categoriaRegistroFinanceiroList
         )
       ];
 
       // @ts-ignore
-      if(this.isValid(registroFinanceiroGrid.qtdParcela) && registroFinanceiroGrid.qtdParcela > 1){
+      if(this.isValid(despesaGrid.qtdParcela) && despesaGrid.qtdParcela > 1){
         this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[0]);
         // @ts-ignore
-        this.parcelaSelecionada = this.parcelasList[registroFinanceiroGrid.qtdParcela - 2];
+        this.parcelaSelecionada = this.parcelasList[despesaGrid.qtdParcela - 2];
       }else{
         this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[1]);
       }
 
-      if(Number(registroFinanceiroGrid.usuariosResponsaveis.length) > 1){
+      if(Number(despesaGrid.usuariosResponsaveis.length) > 1){
         this.isDividirDespesa = true;
-        this.usuarioSelecionadoList = registroFinanceiroGrid.usuariosResponsaveis;
+        this.usuarioSelecionadoList = despesaGrid.usuariosResponsaveis;
       }
 
     }else{
-      this.limparCamposFormNovoRegistroFinanceiro();
+      this.limparCamposFormNovoDespesa();
     }
   }
 
@@ -206,12 +205,12 @@ export class RegistrosFinanceirosComponent {
     this.isSubmetido = false;
   }
 
-  limparCamposFormNovoRegistroFinanceiro() {
-    this.registroFinanceiroTemp = new RegistroFinanceiro();
+  limparCamposFormNovoDespesa() {
+    this.despesaTemp = new Despesa();
   }
 
   salvarDespesa() {
-      if(this.registroFinanceiro.id === null){
+      if(this.despesa.id === null){
         this.inserir("DESPESA");
       }else{
         this.editar("DESPESA");
@@ -221,20 +220,20 @@ export class RegistrosFinanceirosComponent {
   private inserir(tipoRegistroFinanceiro: string) {
     this.isSubmetido = true;
 
-    this.registroFinanceiroTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
-    this.registroFinanceiroTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
-    this.registroFinanceiroTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
-    this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
-    this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
+    this.despesaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+    this.despesaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
+    this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
+    this.despesaTemp.qtdParcela = this.parcelaSelecionada?.value;
+    this.despesaTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
     //const dtLancamento: any = this.formatarDataHoraParaEnvio(new Date().toString());
-    //this.registroFinanceiroTemp.dtCadastro = dtLancamento;
+    //this.despesaTemp.dtCadastro = dtLancamento;
 
-    const dtVencimento = this.registroFinanceiroTemp.dtVencimento;
+    const dtVencimento = this.despesaTemp.dtVencimento;
 
     if(this.isValid(dtVencimento)) {
 
-      /*let pDtVencimentoPDia = this.registroFinanceiroTemp.dtVencimento;
+      /*let pDtVencimentoPDia = this.despesaTemp.dtVencimento;
       let dia = null;
       if(this.isValid(pDtVencimentoPDia)){
         // @ts-ignore
@@ -242,39 +241,39 @@ export class RegistrosFinanceirosComponent {
        dia = String(data.getDate()).padStart(2, '0');
       }
 
-      this.registroFinanceiroTemp.diaVencimento = dia;*/
+      this.despesaTemp.diaVencimento = dia;*/
 
-      this.registroFinanceiroTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
+      this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
 
-    if (!this.registroFinanceiroTemp.usuariosResponsaveis) {
-      this.registroFinanceiroTemp.usuariosResponsaveis = [];
+    if (!this.despesaTemp.usuariosResponsaveis) {
+      this.despesaTemp.usuariosResponsaveis = [];
     }
 
     if (this.usuarioLogado) {
-      this.registroFinanceiroTemp.usuariosResponsaveis.push(this.usuarioLogado);
+      this.despesaTemp.usuariosResponsaveis.push(this.usuarioLogado);
     }
 
     console.log(this.usuarioSelecionadoList);
     if(this.usuarioSelecionadoList){
       for (let usuario of this.usuarioSelecionadoList) {
-          this.registroFinanceiroTemp.usuariosResponsaveis.push(usuario);
+          this.despesaTemp.usuariosResponsaveis.push(usuario);
       }
     }
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)
-      && this.isValid(this.registroFinanceiroTemp.descricao)
-      && this.isValid(this.registroFinanceiroTemp.valor)
-      && this.isValid(this.registroFinanceiroTemp.statusPagamento)
+      && this.isValid(this.despesaTemp.descricao)
+      && this.isValid(this.despesaTemp.valor)
+      && this.isValid(this.despesaTemp.statusPagamento)
     ) {
-      this.registroFinanceiroService.cadastrar(this.registroFinanceiroTemp).subscribe(
+      this.despesaService.cadastrar(this.despesaTemp).subscribe(
         () => {
           // Atualiza o objeto original após sucesso
-          this.registroFinanceiro = {...this.registroFinanceiroTemp};
+          this.despesa = {...this.despesaTemp};
 
           //Faz o Push no novo item para a tabela.
-          this.registrosFinanceirosList.push(this.registroFinanceiroTemp);
+          this.despesasList.push(this.despesaTemp);
 
           this.messageService.add({
             severity: 'success',
@@ -297,44 +296,44 @@ export class RegistrosFinanceirosComponent {
     this.isSubmetido = true;
     let erro: string = "";
 
-    this.registroFinanceiroTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
-    this.registroFinanceiroTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
-    this.registroFinanceiroTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
+    this.despesaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+    this.despesaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
+    this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
     if(this.existePrestacaoSelecionado.key === "NAO"){
-      this.registroFinanceiroTemp.qtdParcela = 0;
+      this.despesaTemp.qtdParcela = 0;
       this.parcelaSelecionada = null;
     }else{
-      this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
+      this.despesaTemp.qtdParcela = this.parcelaSelecionada?.value;
     }
 
-    this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
+    this.despesaTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
-    let dtVencimentoAux = this.registroFinanceiroTemp.dtVencimento;
+    let dtVencimentoAux = this.despesaTemp.dtVencimento;
 
-    this.registroFinanceiroTemp.usuariosResponsaveis = [];
+    this.despesaTemp.usuariosResponsaveis = [];
 
-    this.registroFinanceiroTemp.usuariosResponsaveis = this.usuarioSelecionadoList;
+    this.despesaTemp.usuariosResponsaveis = this.usuarioSelecionadoList;
 
     if (this.usuarioLogado) {
-      this.registroFinanceiroTemp.usuariosResponsaveis.push(this.usuarioLogado);
+      this.despesaTemp.usuariosResponsaveis.push(this.usuarioLogado);
     }
 
-    if (this.isValid(this.registroFinanceiroTemp.categoriaRegistroFinanceiro)
-      && this.isValid(this.registroFinanceiroTemp.descricao)
-      && this.isValid(this.registroFinanceiroTemp.valor)
-      && this.isValid(this.registroFinanceiroTemp.qtdParcela)
-      && this.isValid(this.registroFinanceiroTemp.statusPagamento)
+    if (this.isValid(this.despesaTemp.categoriaRegistroFinanceiro)
+      && this.isValid(this.despesaTemp.descricao)
+      && this.isValid(this.despesaTemp.valor)
+      && this.isValid(this.despesaTemp.qtdParcela)
+      && this.isValid(this.despesaTemp.statusPagamento)
     ) {
-      this.registroFinanceiroService.editar(this.registroFinanceiroTemp).subscribe(
+      this.despesaService.editar(this.despesaTemp).subscribe(
         () => {
           // Atualiza o objeto original após sucesso
-          this.registroFinanceiro = { ...this.registroFinanceiroTemp };
+          this.despesa = { ...this.despesaTemp };
 
           // Atualiza a lista de instituições
-          const index = this.registrosFinanceirosList.findIndex(item => item.id === this.registroFinanceiro.id);
+          const index = this.despesasList.findIndex(item => item.id === this.despesa.id);
           if (index !== -1) {
-            this.registrosFinanceirosList[index] = { ...this.registroFinanceiro };
+            this.despesasList[index] = { ...this.despesa };
           }
 
           this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
@@ -354,9 +353,9 @@ export class RegistrosFinanceirosComponent {
 
   }
 
-  excluir(registroFinanceiroGrid: RegistroFinanceiro) {
+  excluir(despesaGrid: Despesa) {
     this.confirmationService.confirm({
-      message: 'Tem certeza que deseja excluir o item: <b>' + registroFinanceiroGrid.descricao + '</b>?',
+      message: 'Tem certeza que deseja excluir o item: <b>' + despesaGrid.descricao + '</b>?',
       header: 'Confirmar Ação',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: "p-button-primary mt-3",
@@ -364,17 +363,17 @@ export class RegistrosFinanceirosComponent {
       acceptLabel: "Sim",
       rejectLabel: "Não",
       accept: () => {
-        this.registroFinanceiroService.excluir(registroFinanceiroGrid).subscribe(
+        this.despesaService.excluir(despesaGrid).subscribe(
           () => {
-            const index = this.registrosFinanceirosList.findIndex(item => item.id === registroFinanceiroGrid.id);
+            const index = this.despesasList.findIndex(item => item.id === despesaGrid.id);
             if (index !== -1) {
-              this.registrosFinanceirosList.splice(index, 1);
+              this.despesasList.splice(index, 1);
               this.atualizarTabela(false); // Atualiza a tabela após excluir
 
               this.messageService.add({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: registroFinanceiroGrid.descricao })
+                detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: despesaGrid.descricao })
               });
             }
           },
@@ -399,12 +398,12 @@ export class RegistrosFinanceirosComponent {
       acceptLabel: "Sim",
       rejectLabel: "Não",
       accept: () => {
-        for (let item of this.registrosFinanceirosSelecionadosList) {
-          this.registroFinanceiroService.excluir(item).subscribe(
+        for (let item of this.despesasSelecionadosList) {
+          this.despesaService.excluir(item).subscribe(
             () => {
-              const index = this.registrosFinanceirosList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
+              const index = this.despesasList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
               if (index !== -1) {
-                this.registrosFinanceirosList.splice(index, 1);
+                this.despesasList.splice(index, 1);
                 this.atualizarTabela(false); // Atualiza a tabela após excluir
                 this.messageService.add(
                   {
@@ -437,22 +436,22 @@ export class RegistrosFinanceirosComponent {
 
   atualizarTabela(consumirAPI: boolean) {
     if(consumirAPI){
-      this.registroFinanceiroService.buscarTodos().subscribe(registrosList => {
-        this.registrosFinanceirosList = registrosList;
+      this.despesaService.buscarTodos().subscribe(registrosList => {
+        this.despesasList = registrosList;
         this.loading = false;
       });
     }else{
       // Cria uma nova referência para forçar a atualização da tabela
-      this.registrosFinanceirosList = [...this.registrosFinanceirosList];
+      this.despesasList = [...this.despesasList];
       this.loading = false;
     }
     this.cdr.detectChanges();
   }
 
   limpaCamposForm(){
-    this.registroFinanceiro = new RegistroFinanceiro();
+    this.despesa = new Despesa();
 
-    this.registroFinanceiroTemp = new RegistroFinanceiro();
+    this.despesaTemp = new Despesa();
 
     this.existePrestacaoSelecionado = null;
 
@@ -578,7 +577,7 @@ export class RegistrosFinanceirosComponent {
       });
     }else{
       this.usuarioSelecionadoList = [];
-      this.registroFinanceiroTemp.usuariosResponsaveis = [];
+      this.despesaTemp.usuariosResponsaveis = [];
     }
 
   }
@@ -586,21 +585,21 @@ export class RegistrosFinanceirosComponent {
   excluirDivisao(usuario: Usuario) {
     const index = this.usuarioSelecionadoList.findIndex(item => item.id === usuario.id);
     if (index !== -1) {
-      this.registrosFinanceirosList.splice(index, 1);
+      this.despesasList.splice(index, 1);
       const elemento = document.getElementById("usuarioSelecionadoItem" + usuario.login);
 
       if (elemento) {
         this.renderer.removeChild(elemento.parentElement, elemento);
-        this.isDividirDespesa = !!this.registrosFinanceirosList.length;
+        this.isDividirDespesa = !!this.despesasList.length;
       }
     }
 
     this.usuarioSelecionadoList = this.usuarioSelecionadoList.filter(u => u.id !== usuario.id);
-    this.registroFinanceiroTemp.usuariosResponsaveis = this.registroFinanceiroTemp.usuariosResponsaveis.filter(u => u.id !== usuario.id);
+    this.despesaTemp.usuariosResponsaveis = this.despesaTemp.usuariosResponsaveis.filter(u => u.id !== usuario.id);
   }
 
   calcularTotalGeral(): number {
-    let valor: number =  this.registrosFinanceirosList.reduce((total, registro) => total + (registro.valor || 0), 0);
+    let valor: number =  this.despesasList.reduce((total, registro) => total + (registro.valor || 0), 0);
 
     if(valor !== null){
       return valor;
@@ -611,7 +610,7 @@ export class RegistrosFinanceirosComponent {
   }
 
   calcularTotalAPagar(): number {
-    let valor: number = this.registrosFinanceirosList.filter(
+    let valor: number = this.despesasList.filter(
         registro =>
         registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
         registro.statusPagamento === 'NAO' // Filtra apenas pagamentos com status "SIM"
@@ -627,7 +626,7 @@ export class RegistrosFinanceirosComponent {
   }
 
   calcularTotalPago(): number {
-    let valor: number = this.registrosFinanceirosList.filter(
+    let valor: number = this.despesasList.filter(
       registro =>
         registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
         registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"

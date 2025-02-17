@@ -35,7 +35,7 @@ export class MenuComponent {
           ],
         },
         {
-          title:'Registros Financeiros',
+          title:'Despesas',
           icon: 'chevron-right-outline',
           link:'/admin/financeiro/registro-financeiro',
         },

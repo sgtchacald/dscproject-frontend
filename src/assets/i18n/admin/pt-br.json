@@ -41,8 +41,8 @@
     },
 
     "registroFinanceiro": {
-      "lbRegistroFinanceiro": "Registro Financeiro",
-      "lbRegistrosFinanceiros": "Registros Financeiros",
+      "lbDespesa": "Despesa",
+      "lbDespesas": "Despesas",
       "descricao": "Descrição",
       "lancamento": "Lançamento",
       "vencimento": "Vencimento",

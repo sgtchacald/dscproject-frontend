@@ -33,7 +33,7 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import { InstituicoesFinanceirasUsuarioComponent } from './financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component';
-import { RegistrosFinanceirosComponent } from './financeiro/registros-financeiros/registros-financeiros.component';
+import { DespesasComponent } from './financeiro/despesas/despesas.component';
 import {TagModule} from "primeng/tag";
 import {SelectButtonModule} from "primeng/selectbutton";
 import {RadioButtonModule} from "primeng/radiobutton";
@@ -66,7 +66,7 @@ const I18N_CONFIG = {
     DashboardComponent,
     InstituicoesFinanceirasComponent,
     InstituicoesFinanceirasUsuarioComponent,
-    RegistrosFinanceirosComponent,
+    DespesasComponent,
     ModalSelecaoUsuarioComponent,
   ],
     imports: [

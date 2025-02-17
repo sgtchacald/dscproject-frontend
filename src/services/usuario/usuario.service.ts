@@ -6,7 +6,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { jwtDecode } from "jwt-decode";
-import {RegistroFinanceiro} from "../../models/registro-financeiro.model";
+import {Despesa} from "../../models/despesa.model";
 
 @Injectable({
   providedIn: 'root'

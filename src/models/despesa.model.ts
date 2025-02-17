@@ -1,7 +1,8 @@
 import {Usuario} from "./usuario.model";
 
-export class RegistroFinanceiro {
+export class Despesa {
   id: number | null;
+  nome: string | undefined | null;
   descricao: string | undefined | null;
   valor: number | undefined | null;
   //dtCadastro: string | undefined | null;
@@ -17,11 +18,10 @@ export class RegistroFinanceiro {
 
   constructor(
     id: number | null = null,
+    nome: string | undefined | null = null,
     descricao: string | undefined | null = null,
     valor: number | undefined | null = null,
-    //dtCadastro: string | undefined | null = null,
     dtVencimento: string | undefined | null = null,
-    //diaVencimento: string | undefined | null = null,
     qtdParcela: number | undefined | null = null,
     tipoRegistroFinanceiro: string | undefined | null = null,
     categoriaRegistroFinanceiro: string | undefined | null = null,
@@ -31,11 +31,10 @@ export class RegistroFinanceiro {
     usuariosResponsaveis: Usuario[] = []
   ) {
     this.id = id;
+    this.nome = nome;
     this.descricao = descricao;
     this.valor = valor;
-    //this.dtCadastro = dtCadastro;
     this.dtVencimento = dtVencimento;
-    //this.diaVencimento = diaVencimento;
     this.qtdParcela = qtdParcela;
     this.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
     this.categoriaRegistroFinanceiro = categoriaRegistroFinanceiro;

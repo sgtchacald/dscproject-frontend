@@ -21,7 +21,7 @@
                 <p-button id="cadastrar"
                     class="mr-4"
                     label="{{ 'label.cadastrar' | translate }}"
-                    pTooltip="{{ 'label.cadastrar' | translate }} {{ 'label.registroFinanceiro.lbRegistroFinanceiro' | translate }}"
+                    pTooltip="{{ 'label.cadastrar' | translate }} {{ 'label.despesa.lbDespesa' | translate }}"
                     tooltipPosition="bottom"
                     icon="pi pi-plus"
                     size="small"
@@ -32,13 +32,13 @@
 
                 <p-button id="excluir"
                   label="{{ 'label.excluir' | translate }}"
-                  pTooltip="{{ 'label.excluirVarios' | translate }} {{ 'label.registroFinanceiro.lbRegistrosFinanceiros' | translate }}"
+                  pTooltip="{{ 'label.excluirVarios' | translate }} {{ 'label.despesa.lbDespesas' | translate }}"
                   tooltipPosition="bottom"
                   icon="pi pi-trash"
                   size="small"
                   severity="danger"
                   [raised]="true"
-                  [disabled]="!registrosFinanceirosSelecionadosList || !registrosFinanceirosSelecionadosList.length"
+                  [disabled]="!despesasSelecionadosList || !despesasSelecionadosList.length"
                   (click)="excluirSelecionados()">
                 </p-button>
 
@@ -61,11 +61,11 @@
           <div id="container" class="mt-3">
             <div id="tabela">
             <p-table
-              [value]="registrosFinanceirosList"
+              [value]="despesasList"
               [paginator]="true"
               [rows]="5"
               [tableStyle]="{ 'min-width': '75rem' }"
-              [(selection)]="registrosFinanceirosSelecionadosList"
+              [(selection)]="despesasSelecionadosList"
               [rowHover]="true"
               [showCurrentPageReport]="true"
               [sortField]="'instituicaoFinanceira.descricao'"
@@ -81,7 +81,7 @@
 
               <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between h-2rem">
-                  <h5 class="m-0">Gerenciar Registros Financeiros</h5>
+                  <h5 class="m-0">Gerenciar Despesas</h5>
                   <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text" (input)="aplicarFiltroPadrao($event)" placeholder="{{ 'label.pesquisar' | translate }}" />
@@ -92,7 +92,7 @@
               <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th style="width: 3rem"> <p-tableHeaderCheckbox /></th>
-                  <th pSortableColumn="descricao" class="text-left">Descrição  <p-sortIcon field="descricao"></p-sortIcon></th>
+                  <th pSortableColumn="nome" class="text-left">Nome  <p-sortIcon field="nome"></p-sortIcon></th>
                   <!--<th pSortableColumn="dtLancamento" class="text-center">Lançamento <p-sortIcon field="dtLancamento"></p-sortIcon></th>-->
                   <th pSortableColumn="dtVencimento" class="text-center">Vencimento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
                   <th pSortableColumn="qtdParcela" class="text-center">Parcelas <p-sortIcon field="qtdParcela"></p-sortIcon></th>
@@ -107,7 +107,7 @@
                 <tr>
                   <td><p-tableCheckbox [value]="registro" /></td>
 
-                  <td class="text-left">{{registro.descricao }}</td>
+                  <td class="text-left">{{registro.nome }}</td>
 
                   <!--<td class="text-center">{{formatarDataHoraParaEnvio(registro.dtLancamento)}}</td>-->
 
@@ -232,14 +232,27 @@
                   </div>
 
                   <div class="field col-12">
+                    <label for="nome" class="font-semibold">Nome</label>
+
+                    <input id="nome"
+                           class="w-full"
+                           type="text"
+                           pInputText [(ngModel)]="despesaTemp.nome">
+
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.nome">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-12">
                     <label for="descricao" class="font-semibold">Descrição</label>
 
                     <input id="descricao"
                       class="w-full"
                       type="text"
-                      pInputText [(ngModel)]="registroFinanceiroTemp.descricao">
+                      pInputText [(ngModel)]="despesaTemp.descricao">
 
-                    <small class="p-error" *ngIf="isSubmetido && !registroFinanceiroTemp.descricao">
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.descricao">
                       {{ 'message.campoObrigatorio' | translate }}
                     </small>
                   </div>
@@ -275,7 +288,7 @@
                     <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
                     <p-calendar
                       id="dtVencimento"
-                      [(ngModel)]="registroFinanceiroTemp.dtVencimento"
+                      [(ngModel)]="despesaTemp.dtVencimento"
                       [showIcon]="true"
                       (onInput)="validarData($event)"
                       [showButtonBar]="true"
@@ -287,7 +300,7 @@
                       class="w-full">
                     </p-calendar>
 
-                    <!--<small class="p-error" *ngIf="isSubmetido && !registroFinanceiroTemp.dtVencimento">
+                    <!--<small class="p-error" *ngIf="isSubmetido && !despesaTemp.dtVencimento">
                       {{ 'message.campoObrigatorio' | translate }}
                     </small> -->
                   </div>
@@ -300,14 +313,14 @@
                       mode="currency"
                       currency="BRL"
                       locale="pt-BR"
-                      [(ngModel)]="registroFinanceiroTemp.valor">
+                      [(ngModel)]="despesaTemp.valor">
                     </p-inputNumber>
 
-                    <small class="p-error" *ngIf="isSubmetido && !registroFinanceiroTemp.valor">
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.valor">
                       {{ 'message.campoObrigatorio' | translate }}
                     </small>
 
-                    <small class="p-error" *ngIf="isSubmetido && registroFinanceiroTemp.valor && registroFinanceiroTemp.valor <= 0">
+                    <small class="p-error" *ngIf="isSubmetido && despesaTemp.valor && despesaTemp.valor <= 0">
                       {{ 'message.campoDeveSerMaiorQueZero' | translate }}
                     </small>
                   </div>
@@ -345,7 +358,7 @@
             <p-confirmDialog />
 
             <!--<div id="dialogPesquisaInicial">
-              <p-dialog [(visible)]="exibirDialogPesquisa" [style]="{ width: '450px' }" header="Gerenciar Registros Financeiros" [modal]="true" styleClass="p-fluid">
+              <p-dialog [(visible)]="exibirDialogPesquisa" [style]="{ width: '450px' }" header="Gerenciar Despesas" [modal]="true" styleClass="p-fluid">
 
                 <ng-template pTemplate="content" class="p-fluid">
                   <p class="mb-4 text-danger font-bold"> Selecione os parâmetros para visualizar os registros conforme sua preferência para facilitar a pesquisa.</p>
