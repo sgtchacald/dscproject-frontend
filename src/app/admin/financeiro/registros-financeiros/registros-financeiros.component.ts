@@ -308,25 +308,17 @@ export class RegistrosFinanceirosComponent {
       this.registroFinanceiroTemp.qtdParcela = this.parcelaSelecionada?.value;
     }
 
-
-
     this.registroFinanceiroTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
-    //this.registroFinanceiroTemp.dtVencimento = this.registroFinanceiroTemp.dtVencimento?.toString().trim();
+    let dtVencimentoAux = this.registroFinanceiroTemp.dtVencimento;
 
-    if (!this.registroFinanceiroTemp.usuariosResponsaveis) {
-      this.registroFinanceiroTemp.usuariosResponsaveis = [];
-    }
+    this.registroFinanceiroTemp.usuariosResponsaveis = [];
 
-    if (this.usuarioLogado && Number(this.registroFinanceiroTemp.usuariosResponsaveis.length == 0)) {
+    this.registroFinanceiroTemp.usuariosResponsaveis = this.usuarioSelecionadoList;
+
+    if (this.usuarioLogado) {
       this.registroFinanceiroTemp.usuariosResponsaveis.push(this.usuarioLogado);
     }
-
-    if(this.usuarioSelecionadoList){
-          this.registroFinanceiroTemp.usuariosResponsaveis.concat(this.usuarioSelecionadoList);
-    }
-
-    console.log(this.registroFinanceiroTemp.usuariosResponsaveis);
 
     if (this.isValid(this.registroFinanceiroTemp.categoriaRegistroFinanceiro)
       && this.isValid(this.registroFinanceiroTemp.descricao)
@@ -356,7 +348,6 @@ export class RegistrosFinanceirosComponent {
           }
         }
       );
-      console.log(this.registroFinanceiroTemp);
     }
 
 
@@ -514,6 +505,14 @@ export class RegistrosFinanceirosComponent {
     return '';
   }
 
+  // Converte uma string dd/MM/aaaa para Date
+  converterStringParaDate(dataString: string | undefined | null): Date | null {
+    if (!dataString) return null;
+
+    const [dia, mes, ano] = dataString.split('/');
+    return new Date(+ano, +mes - 1, +dia); // Mês começa do 0
+  }
+
   formatarDataHoraParaEnvio(pData: string | undefined | null) {
     if (pData) {
       const data = new Date(pData);
@@ -579,6 +578,7 @@ export class RegistrosFinanceirosComponent {
       });
     }else{
       this.usuarioSelecionadoList = [];
+      this.registroFinanceiroTemp.usuariosResponsaveis = [];
     }
 
   }
@@ -591,10 +591,12 @@ export class RegistrosFinanceirosComponent {
 
       if (elemento) {
         this.renderer.removeChild(elemento.parentElement, elemento);
-        console.log(this.registrosFinanceirosList);
         this.isDividirDespesa = !!this.registrosFinanceirosList.length;
       }
     }
+
+    this.usuarioSelecionadoList = this.usuarioSelecionadoList.filter(u => u.id !== usuario.id);
+    this.registroFinanceiroTemp.usuariosResponsaveis = this.registroFinanceiroTemp.usuariosResponsaveis.filter(u => u.id !== usuario.id);
   }
 
   calcularTotalGeral(): number {
