@@ -38,7 +38,7 @@
                   size="small"
                   severity="danger"
                   [raised]="true"
-                  [disabled]="!despesasSelecionadosList || !despesasSelecionadosList.length"
+                  [disabled]="!despesasSelecionadasList || !despesasSelecionadasList.length"
                   (click)="excluirSelecionados()">
                 </p-button>
 
@@ -65,7 +65,7 @@
               [paginator]="true"
               [rows]="5"
               [tableStyle]="{ 'min-width': '75rem' }"
-              [(selection)]="despesasSelecionadosList"
+              [(selection)]="despesasSelecionadasList"
               [rowHover]="true"
               [showCurrentPageReport]="true"
               [sortField]="'instituicaoFinanceira.descricao'"
@@ -111,7 +111,7 @@
 
                   <!--<td class="text-center">{{formatarDataHoraParaEnvio(registro.dtLancamento)}}</td>-->
 
-                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{formatarDataParaEnvio(registro.dtVencimento)}}</span></td>
+                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento | date:'dd/MM/yyyy' }}</span></td>
 
                   <td class="text-center"><span *ngIf="registro.qtdParcela; else hifenSpan">{{registro.qtdParcela}}</span></td>
 
@@ -261,7 +261,7 @@
                     <label class="font-semibold">Deseja parcelar essa despesa?</label>
                     <div class="formgroup-inline">
                       <div *ngFor="let ep of existePrestacaoList" class="field-radiobutton">
-                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionado" (onClick)="atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado)"></p-radioButton>
+                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionada" (onClick)="atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada)"></p-radioButton>
                         <label [for]="ep.key" class="ml-2">{{ ep.value }}</label>
                       </div>
                     </div>
@@ -279,7 +279,7 @@
                       panelStyleClass="dropdown-up"
                       optionLabel="key"></p-dropdown>
 
-                    <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionado.key !== 'SIM' && !parcelaSelecionada">
+                    <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionada.key !== 'SIM' && !parcelaSelecionada">
                       {{ 'message.campoObrigatorio' | translate }}
                     </small>
                   </div>

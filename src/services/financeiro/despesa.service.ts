@@ -20,20 +20,20 @@ export class DespesaService {
   ) {}
 
   cadastrar(despesa : Despesa){
-    return this.httpClient.post(this.apiUrl + '/registros-financeiros/inserir', despesa);
+    return this.httpClient.post(this.apiUrl + '/despesas/inserir', despesa);
   }
 
   editar(despesa: Despesa) {
     const id = despesa.id;
-    return this.httpClient.put(this.apiUrl + `/registros-financeiros/editar/${id}`, despesa);
+    return this.httpClient.put(this.apiUrl + `/despesas/editar/${id}`, despesa);
   }
 
   excluir(despesa: Despesa) {
     const id = despesa.id;
-    return this.httpClient.delete(this.apiUrl + `/registros-financeiros/excluir/${id}`);
+    return this.httpClient.delete(this.apiUrl + `/despesas/excluir/${id}`);
   }
 
   buscarTodos() {
-    return this.httpClient.get<Despesa[]>(this.apiUrl + '/registros-financeiros');
+    return this.httpClient.get<Despesa[]>(this.apiUrl + '/despesas');
   }
 }

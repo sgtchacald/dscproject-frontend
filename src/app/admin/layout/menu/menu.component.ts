@@ -35,9 +35,14 @@ export class MenuComponent {
           ],
         },
         {
-          title:'Despesas',
+          title:'Despesa',
           icon: 'chevron-right-outline',
-          link:'/admin/financeiro/registro-financeiro',
+          link:'/admin/financeiro/despesa',
+        },
+        {
+          title:'Receita',
+          icon: 'chevron-right-outline',
+          link:'/admin/financeiro/receita',
         },
       ],
     },

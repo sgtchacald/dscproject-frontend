@@ -44,7 +44,7 @@ export class DespesasComponent {
   protected readonly EnumService = EnumService;
 
   breadcrumbItens: MenuItem[] | undefined;
-  despesasSelecionadosList: Despesa[] = [];
+  despesasSelecionadasList: Despesa[] = [];
   despesasList: Despesa[] = [];
   despesa: Despesa = new Despesa();
   loading: boolean = true;
@@ -69,7 +69,7 @@ export class DespesasComponent {
   statusPagamentoSelecionado: any = null;
 
   existePrestacaoList:  any = [];
-  existePrestacaoSelecionado: any = null;
+  existePrestacaoSelecionada: any = null;
 
   instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
   instituicaoFinanceiraUsuarioSelecionada: InstituicaoFinanceiraUsuario | undefined;
@@ -147,7 +147,7 @@ export class DespesasComponent {
     this.filtrarCategoriasPorTipo("DESPESA");
     //this.parcelaSelecionada = this.parcelasList[0];
     this.statusPagamentoSelecionado = this.statusPagamentoList[1];
-    this.existePrestacaoSelecionado = this.existePrestacaoList[1];
+    this.existePrestacaoSelecionada = this.existePrestacaoList[1];
 
     if(despesaGrid?.id){
 
@@ -169,11 +169,12 @@ export class DespesasComponent {
         )
       ];
 
-      this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(despesaGrid.dtVencimento);
+      // @ts-ignore
+      this.despesaTemp.dtVencimento = new Date(despesaGrid.dtVencimento);
 
       this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList.find(item => item.id === despesaGrid.instituicaoFinanceiraUsuarioId);
 
-      this.existePrestacaoSelecionado = this.existePrestacaoList[
+      this.existePrestacaoSelecionada = this.existePrestacaoList[
         EnumService.getPosicaoEnumPorKey(
           despesaGrid.categoriaRegistroFinanceiro,
           this.categoriaRegistroFinanceiroList
@@ -182,11 +183,11 @@ export class DespesasComponent {
 
       // @ts-ignore
       if(this.isValid(despesaGrid.qtdParcela) && despesaGrid.qtdParcela > 1){
-        this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[0]);
+        this.atualizarExistePrestacaoSelecionada(this.existePrestacaoList[0]);
         // @ts-ignore
         this.parcelaSelecionada = this.parcelasList[despesaGrid.qtdParcela - 2];
       }else{
-        this.atualizarExistePrestacaoSelecionado(this.existePrestacaoList[1]);
+        this.atualizarExistePrestacaoSelecionada(this.existePrestacaoList[1]);
       }
 
       if(Number(despesaGrid.usuariosResponsaveis.length) > 1){
@@ -300,7 +301,7 @@ export class DespesasComponent {
     this.despesaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
-    if(this.existePrestacaoSelecionado.key === "NAO"){
+    if(this.existePrestacaoSelecionada.key === "NAO"){
       this.despesaTemp.qtdParcela = 0;
       this.parcelaSelecionada = null;
     }else{
@@ -398,7 +399,7 @@ export class DespesasComponent {
       acceptLabel: "Sim",
       rejectLabel: "Não",
       accept: () => {
-        for (let item of this.despesasSelecionadosList) {
+        for (let item of this.despesasSelecionadasList) {
           this.despesaService.excluir(item).subscribe(
             () => {
               const index = this.despesasList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
@@ -453,7 +454,7 @@ export class DespesasComponent {
 
     this.despesaTemp = new Despesa();
 
-    this.existePrestacaoSelecionado = null;
+    this.existePrestacaoSelecionada = null;
 
     this.isDividirDespesa = false;
     this.usuarioSelecionadoList = [];
@@ -492,7 +493,7 @@ export class DespesasComponent {
     event.target.value = input;
   }
 
-  formatarDataParaEnvio(pData: string | undefined | null) {
+  formatarDataParaEnvio(pData: string | Date | null | undefined) {
     if (pData) {
       const data = new Date(pData);
       const dia = String(data.getDate()).padStart(2, '0');
@@ -546,9 +547,9 @@ export class DespesasComponent {
     return value !== null && value !== undefined && !(typeof value === 'string' && value.trim() === "");
   }
 
-  atualizarExistePrestacaoSelecionado(existePrestacaoSelecionado: any) {
-    this.existePrestacaoSelecionado = existePrestacaoSelecionado;
-    this.exibirQtdParcela = this.existePrestacaoSelecionado.key == "SIM";
+  atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada: any) {
+    this.existePrestacaoSelecionada = existePrestacaoSelecionada;
+    this.exibirQtdParcela = this.existePrestacaoSelecionada.key == "SIM";
   }
 
   getInstituicoesFinanceirasUsuario() {

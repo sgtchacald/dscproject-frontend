@@ -44,6 +44,7 @@ import {CheckboxModule} from "primeng/checkbox";
 import { ModalSelecaoUsuarioComponent } from './modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component';
 import {DialogService, DynamicDialogModule} from "primeng/dynamicdialog";
 import {ChipModule} from "primeng/chip";
+import { ReceitasComponent } from './financeiro/receitas/receitas.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -68,6 +69,7 @@ const I18N_CONFIG = {
     InstituicoesFinanceirasUsuarioComponent,
     DespesasComponent,
     ModalSelecaoUsuarioComponent,
+    ReceitasComponent,
   ],
     imports: [
         CommonModule,
