@@ -1,5 +1,6 @@
 export class Receita {
   id: number | null;
+  competencia: string | undefined | null;
   nome: string | undefined | null;
   descricao: string | undefined | null;
   valor: number | undefined | null;
@@ -10,6 +11,7 @@ export class Receita {
 
   constructor(
     id: number | null = null,
+    competencia: string | undefined | null = null,
     nome: string | undefined | null = null,
     descricao: string | undefined | null = null,
     valor: number | undefined | null = null,
@@ -20,6 +22,7 @@ export class Receita {
   ) {
     this.id = id;
     this.nome = nome;
+    this.competencia = competencia;
     this.descricao = descricao;
     this.valor = valor;
     this.tipoRegistroFinanceiro = tipoRegistroFinanceiro;

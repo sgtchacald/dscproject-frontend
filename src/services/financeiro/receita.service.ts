@@ -19,20 +19,20 @@ export class ReceitaService {
   ) {}
 
   cadastrar(receita : Receita){
-    return this.httpClient.post(this.apiUrl + '/receita/inserir', receita);
+    return this.httpClient.post(this.apiUrl + '/receitas/inserir', receita);
   }
 
   editar(receita: Receita) {
     const id = receita.id;
-    return this.httpClient.put(this.apiUrl + `/receita/editar/${id}`, receita);
+    return this.httpClient.put(this.apiUrl + `/receitas/editar/${id}`, receita);
   }
 
   excluir(receita: Receita) {
     const id = receita.id;
-    return this.httpClient.delete(this.apiUrl + `/receita/excluir/${id}`);
+    return this.httpClient.delete(this.apiUrl + `/receitas/excluir/${id}`);
   }
 
   buscarTodos() {
-    return this.httpClient.get<Receita[]>(this.apiUrl + '/receita');
+    return this.httpClient.get<Receita[]>(this.apiUrl + '/receitas');
   }
 }
