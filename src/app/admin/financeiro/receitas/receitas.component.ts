@@ -5,16 +5,10 @@ import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {TranslateService} from "@ngx-translate/core";
 import {UtilsService} from "../../../../services/utils/utils.service";
 import {InstituicaoFinanceiraUsuarioService} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {UsuarioService} from "../../../../services/usuario/usuario.service";
+import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {Receita} from "../../../../models/receita.model";
 import {InstituicaoFinanceiraUsuario} from "../../../../models/instituicao-financeira-usuario.model";
-import {Observable} from "rxjs";
-import {Usuario} from "../../../../models/usuario.model";
 import {HttpErrorResponse} from "@angular/common/http";
-import {
-  ModalSelecaoUsuarioComponent
-} from "../../modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
 import {EnumService} from "../../../../services/utils/enum.service";
 
 @Component({
@@ -37,6 +31,8 @@ export class ReceitasComponent {
 
   @ViewChild('dt') dt: any;
 
+  EnumService = EnumService;
+
   breadcrumbItens: MenuItem[] | undefined;
   receitasSelecionadasList: Receita[] = [];
   receitasList: Receita[] = [];
@@ -51,6 +47,8 @@ export class ReceitasComponent {
 
   competenciasList: any[] = [];
   competenciaSelecionada: any;
+  competenciaSelecionadaParaPesquisa: any;
+  exibirOutrasCompetencias: boolean = false;
 
   tipoRegistroFinanceiroList: any = [];
 
@@ -60,18 +58,18 @@ export class ReceitasComponent {
   instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
   instituicaoFinanceiraUsuarioSelecionada: InstituicaoFinanceiraUsuario | undefined | null;
 
-  ref: DynamicDialogRef | undefined;
 
   ngOnInit() {
+    this.getCompeteciaSelecionada(false);
+
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
-      {label: 'Gerenciar Receitas'}
+      {label: 'Gerenciar Receitas'},
+      {label: this.competenciaSelecionadaParaPesquisa.value},
     ];
 
     this.loading = false;
-
-    this.getCompeteciaSelecionada();
 
     this.tipoRegistroFinanceiroList = EnumService.getTipoRegistroFinanceiro();
 
@@ -79,9 +77,17 @@ export class ReceitasComponent {
 
     this.atualizarTabela(true);
 
+    this.aplicarFiltroPadrao();
+
   }
 
-  getCompeteciaSelecionada() {
+  onCompetenciaChange() {
+    if (this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
+      this.aplicarFiltroPadrao(); // Filtra pela competência ao ser selecionada
+    }
+  }
+
+  getCompeteciaSelecionada(indPreencheObjeto: boolean) {
     const anoCorrente = new Date().getFullYear();
     const mesAtual = new Date().getMonth(); // Retorna de 0 (Janeiro) a 11 (Dezembro)
 
@@ -92,23 +98,36 @@ export class ReceitasComponent {
 
     this.competenciasList = meses.map((mes, index) => {
       const competencia = {
-        value: `${anoCorrente}-${(index + 1).toString().padStart(2, '0')}`,
-        label: `${mes} ${anoCorrente}`
+        key: `${anoCorrente}-${(index + 1).toString().padStart(2, '0')}`,
+        value: `${mes} ${anoCorrente}`
       };
 
       // Define a competência do mês atual como selecionada
       if (index === mesAtual) {
-        this.competenciaSelecionada = competencia;
+        if(indPreencheObjeto){
+          this.competenciaSelecionada = competencia;
+        }else{
+          this.competenciaSelecionadaParaPesquisa = competencia;
+        }
+
       }
 
       return competencia;
     });
+
+    console.log(this.competenciasList);
+
   }
 
-  aplicarFiltroPadrao($event: Event) {
-    const inputElement = $event.target as HTMLInputElement;
-    this.dt.filterGlobal(inputElement.value, "contains");
+  aplicarFiltroPadrao($event?: Event) {
+    if (!this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
+      this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
+    } else {
+      this.dt.clear(); // Remove o filtro caso esteja exibindo todas as competências
+      this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
+    }
   }
+
 
   fecharModalPesquisa() {
     this.limpaCamposFormPesquisa();
@@ -127,15 +146,17 @@ export class ReceitasComponent {
     this.exibirDialogCadastroReceita = true;
 
     this.filtrarCategoriasPorTipo("RECEITA");
+    this.getCompeteciaSelecionada(true);
 
     if(receitaGrid?.id){
-
       this.competenciaSelecionada = this.competenciasList[
         EnumService.getPosicaoEnumPorKey(
           receitaGrid.competencia,
           this.competenciasList
         )
       ];
+
+      console.log(this.competenciaSelecionada);
 
       this.receitaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
         receitaGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()
@@ -155,6 +176,7 @@ export class ReceitasComponent {
 
     }else{
       this.limparCamposFormNovoReceita();
+      this.getCompeteciaSelecionada(true);
     }
   }
 
@@ -185,7 +207,7 @@ export class ReceitasComponent {
     this.receitaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
     this.receitaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.receitaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
-    this.receitaTemp.competencia = this.competenciaSelecionada?.value;
+    this.receitaTemp.competencia = this.competenciaSelecionada?.key
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)
@@ -223,7 +245,7 @@ export class ReceitasComponent {
     let erro: string = "";
 
     this.receitaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
-    this.receitaTemp.competencia = this.competenciaSelecionada?.value;
+    this.receitaTemp.competencia = this.competenciaSelecionada?.key;
     this.receitaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.receitaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
@@ -380,5 +402,14 @@ export class ReceitasComponent {
     });
   }
 
-  protected readonly EnumService = EnumService;
+  setExibirOutrasCompetencias() {
+    if (this.exibirOutrasCompetencias) {
+      this.getCompeteciaSelecionada(false);
+      this.dt.clear(); // Remove o filtro de competência
+    } else {
+      this.aplicarFiltroPadrao(); // Aplica o filtro pela competência selecionada
+    }
+  }
+
+
 }
