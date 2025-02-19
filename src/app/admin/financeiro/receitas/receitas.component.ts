@@ -66,7 +66,8 @@ export class ReceitasComponent {
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
       {label: 'Gerenciar Receitas'},
-      {label: this.competenciaSelecionadaParaPesquisa.value},
+      {label: 'Competência Atual'},
+      {label: this.competenciaSelecionadaParaPesquisa.value}
     ];
 
     this.loading = false;
@@ -156,8 +157,6 @@ export class ReceitasComponent {
         )
       ];
 
-      console.log(this.competenciaSelecionada);
-
       this.receitaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
         receitaGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()
       );
@@ -168,9 +167,6 @@ export class ReceitasComponent {
           this.categoriaRegistroFinanceiroList
         )
       ];
-
-      // @ts-ignore
-      this.receitaTemp.dtVencimento = new Date(receitaGrid.dtVencimento);
 
       this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList.find(item => item.id === receitaGrid.instituicaoFinanceiraUsuarioId);
 
