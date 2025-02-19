@@ -44,6 +44,7 @@ export class DespesasComponent {
   protected readonly EnumService = EnumService;
 
   breadcrumbItens: MenuItem[] | undefined;
+
   despesasSelecionadasList: Despesa[] = [];
   despesasList: Despesa[] = [];
   despesa: Despesa = new Despesa();
@@ -58,6 +59,11 @@ export class DespesasComponent {
   prefixoModal: string | undefined = "";
 
   tipoRegistroFinanceiroList: any = [];
+
+  competenciasList: any[] = [];
+  competenciaSelecionada: any;
+  competenciaSelecionadaParaPesquisa: any;
+  exibirOutrasCompetencias: boolean = false;
 
   categoriaRegistroFinanceiroList:  any = [];
   categoriaRegistroFinanceiroSelecionado: { key: string; value: string; icon: string } | undefined | null;
@@ -82,11 +88,17 @@ export class DespesasComponent {
   usuarioSelecionadoList: Usuario[] = [];
   usuarioLogado: Usuario | undefined;
 
+
+
   ngOnInit() {
+    this.getCompeteciaSelecionada(false);
+
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
-      {label: 'Gerenciar Despesas'}
+      {label: 'Gerenciar Despesas'},
+      {label: 'Competência Atual'},
+      {label: this.competenciaSelecionadaParaPesquisa.value}
     ];
 
     //this.despesasList = data.despesasList;
@@ -118,11 +130,55 @@ export class DespesasComponent {
 
     this.atualizarTabela(true);
 
+    this.aplicarFiltroPadrao();
+
   }
 
-  aplicarFiltroPadrao($event: Event) {
-    const inputElement = $event.target as HTMLInputElement;
-    this.dt.filterGlobal(inputElement.value, "contains");
+  onCompetenciaChange() {
+    if (this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
+      this.aplicarFiltroPadrao(); // Filtra pela competência ao ser selecionada
+    }
+  }
+
+  getCompeteciaSelecionada(indPreencheObjeto: boolean) {
+    const anoCorrente = new Date().getFullYear();
+    const mesAtual = new Date().getMonth(); // Retorna de 0 (Janeiro) a 11 (Dezembro)
+
+    const meses = [
+      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+
+    this.competenciasList = meses.map((mes, index) => {
+      const competencia = {
+        key: `${anoCorrente}-${(index + 1).toString().padStart(2, '0')}`,
+        value: `${mes} ${anoCorrente}`
+      };
+
+      // Define a competência do mês atual como selecionada
+      if (index === mesAtual) {
+        if(indPreencheObjeto){
+          this.competenciaSelecionada = competencia;
+        }else{
+          this.competenciaSelecionadaParaPesquisa = competencia;
+        }
+
+      }
+
+      return competencia;
+    });
+
+    console.log(this.competenciasList);
+
+  }
+
+  aplicarFiltroPadrao($event?: Event) {
+    if (!this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
+      this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
+    } else {
+      this.dt.clear(); // Remove o filtro caso esteja exibindo todas as competências
+      this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
+    }
   }
 
   fecharModalPesquisa() {
@@ -150,6 +206,12 @@ export class DespesasComponent {
     this.existePrestacaoSelecionada = this.existePrestacaoList[1];
 
     if(despesaGrid?.id){
+      this.competenciaSelecionada = this.competenciasList[
+        EnumService.getPosicaoEnumPorKey(
+          despesaGrid.competencia,
+          this.competenciasList
+        )
+      ];
 
       this.despesaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
         despesaGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()
@@ -197,6 +259,7 @@ export class DespesasComponent {
 
     }else{
       this.limparCamposFormNovoDespesa();
+      this.getCompeteciaSelecionada(true);
     }
   }
 
@@ -226,24 +289,11 @@ export class DespesasComponent {
     this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
     this.despesaTemp.qtdParcela = this.parcelaSelecionada?.value;
     this.despesaTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
-
-    //const dtLancamento: any = this.formatarDataHoraParaEnvio(new Date().toString());
-    //this.despesaTemp.dtCadastro = dtLancamento;
+    this.despesaTemp.competencia = this.competenciaSelecionada?.key
 
     const dtVencimento = this.despesaTemp.dtVencimento;
 
     if(this.isValid(dtVencimento)) {
-
-      /*let pDtVencimentoPDia = this.despesaTemp.dtVencimento;
-      let dia = null;
-      if(this.isValid(pDtVencimentoPDia)){
-        // @ts-ignore
-        let data = new Date(pDtVencimentoPDia);
-       dia = String(data.getDate()).padStart(2, '0');
-      }
-
-      this.despesaTemp.diaVencimento = dia;*/
-
       this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
 
@@ -255,7 +305,6 @@ export class DespesasComponent {
       this.despesaTemp.usuariosResponsaveis.push(this.usuarioLogado);
     }
 
-    console.log(this.usuarioSelecionadoList);
     if(this.usuarioSelecionadoList){
       for (let usuario of this.usuarioSelecionadoList) {
           this.despesaTemp.usuariosResponsaveis.push(usuario);
@@ -267,6 +316,7 @@ export class DespesasComponent {
       && this.isValid(this.despesaTemp.descricao)
       && this.isValid(this.despesaTemp.valor)
       && this.isValid(this.despesaTemp.statusPagamento)
+      && this.isValid(this.despesaTemp.competencia)
     ) {
       this.despesaService.cadastrar(this.despesaTemp).subscribe(
         () => {
@@ -298,6 +348,7 @@ export class DespesasComponent {
     let erro: string = "";
 
     this.despesaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+    this.despesaTemp.competencia = this.competenciaSelecionada?.key;
     this.despesaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
@@ -325,6 +376,7 @@ export class DespesasComponent {
       && this.isValid(this.despesaTemp.valor)
       && this.isValid(this.despesaTemp.qtdParcela)
       && this.isValid(this.despesaTemp.statusPagamento)
+      && this.isValid(this.despesaTemp.competencia)
     ) {
       this.despesaService.editar(this.despesaTemp).subscribe(
         () => {
@@ -349,9 +401,6 @@ export class DespesasComponent {
         }
       );
     }
-
-
-
   }
 
   excluir(despesaGrid: Despesa) {
@@ -640,5 +689,14 @@ export class DespesasComponent {
     }
 
     return 0;
+  }
+
+  setExibirOutrasCompetencias() {
+    if (this.exibirOutrasCompetencias) {
+      this.getCompeteciaSelecionada(false);
+      this.dt.clear(); // Remove o filtro de competência
+    } else {
+      this.aplicarFiltroPadrao(); // Aplica o filtro pela competência selecionada
+    }
   }
 }

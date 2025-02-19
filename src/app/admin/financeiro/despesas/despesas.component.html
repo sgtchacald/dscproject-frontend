@@ -59,6 +59,45 @@
           </div>
 
           <div id="container" class="mt-3">
+            <!-- Checkbox para exibir outras competências -->
+            <div class="field col-12">
+              <p-checkbox
+                id="exibirOutrasCompetencias"
+                [binary]="true"
+                [(ngModel)]="exibirOutrasCompetencias"
+                (onChange)="setExibirOutrasCompetencias()"
+                label="Exibir outras competências.">
+              </p-checkbox>
+            </div>
+
+            <!-- Dropdown para selecionar a competência -->
+            <div class="field col-12" *ngIf="exibirOutrasCompetencias">
+              <p-dropdown
+                id="competenciaPesquisa"
+                [options]="competenciasList"
+                [(ngModel)]="competenciaSelecionadaParaPesquisa"
+                [filter]="true"
+                [showClear]="true"
+                filterBy="value"
+                optionLabel="value"
+                placeholder="Selecione a Competência"
+                class="w-full"
+                (onChange)="onCompetenciaChange()">  <!-- Chama a função quando o usuário altera a seleção -->
+
+                <ng-template pTemplate="selectedItem">
+                  <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionadaParaPesquisa">
+                    <div>{{ competenciaSelecionadaParaPesquisa.value }}</div>
+                  </div>
+                </ng-template>
+                <ng-template let-competencia pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ competencia.value }}</div>
+                  </div>
+                </ng-template>
+
+              </p-dropdown>
+            </div>
+
             <div id="tabela">
             <p-table
               [value]="despesasList"
@@ -108,8 +147,6 @@
                   <td><p-tableCheckbox [value]="registro" /></td>
 
                   <td class="text-left">{{registro.nome }}</td>
-
-                  <!--<td class="text-center">{{formatarDataHoraParaEnvio(registro.dtLancamento)}}</td>-->
 
                   <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento | date:'dd/MM/yyyy' }}</span></td>
 
@@ -166,14 +203,60 @@
               <ng-template pTemplate="content">
 
                 <div class="grid">
+
                   <div class="field col-12">
-                    <label class="font-semibold">Esta despesa foi paga?</label>
-                    <div class="formgroup-inline">
-                      <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
-                        <p-radioButton id="{{status.key}}" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
-                        <label [for]="status.key" class="ml-2">{{ status.value }}</label>
-                      </div>
-                    </div>
+                    <label for="competencia" class="font-semibold">Competência</label>
+                    <p-dropdown
+                      id="competencia"
+                      [options]="competenciasList"
+                      [(ngModel)]="competenciaSelecionada"
+                      [filter]="true"
+                      [showClear]="true"
+                      filterBy="value"
+                      optionLabel="value"
+                      placeholder="Selecione a Competência"
+                      class="w-full">
+
+                      <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionada">
+                          <div>{{ competenciaSelecionada.value }}</div>
+                        </div>
+                      </ng-template>
+                      <ng-template let-competencia pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                          <div>{{ competencia.value }}</div>
+                        </div>
+                      </ng-template>
+
+                    </p-dropdown>
+
+                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
+                  </div>
+
+                  <div class="field col-12">
+                    <label for="nome" class="font-semibold">Nome</label>
+
+                    <input id="nome"
+                           class="w-full"
+                           type="text"
+                           pInputText [(ngModel)]="despesaTemp.nome">
+
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.nome">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-12">
+                    <label for="descricao" class="font-semibold">Descrição</label>
+
+                    <input id="descricao"
+                           class="w-full"
+                           type="text"
+                           pInputText [(ngModel)]="despesaTemp.descricao">
+
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.descricao">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
                   </div>
 
                   <div class="field col-12">
@@ -229,32 +312,6 @@
                       </ng-template>
                     </p-listbox>
                     <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraUsuarioSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
-                  </div>
-
-                  <div class="field col-12">
-                    <label for="nome" class="font-semibold">Nome</label>
-
-                    <input id="nome"
-                           class="w-full"
-                           type="text"
-                           pInputText [(ngModel)]="despesaTemp.nome">
-
-                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.nome">
-                      {{ 'message.campoObrigatorio' | translate }}
-                    </small>
-                  </div>
-
-                  <div class="field col-12">
-                    <label for="descricao" class="font-semibold">Descrição</label>
-
-                    <input id="descricao"
-                      class="w-full"
-                      type="text"
-                      pInputText [(ngModel)]="despesaTemp.descricao">
-
-                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.descricao">
-                      {{ 'message.campoObrigatorio' | translate }}
-                    </small>
                   </div>
 
                   <div class="field col-4">
@@ -341,7 +398,16 @@
                       </div>
                     </div>
                   </div>
+                </div>
 
+                <div class="field col-12">
+                  <label class="font-semibold">Esta despesa foi paga?</label>
+                  <div class="formgroup-inline">
+                    <div *ngFor="let status of statusPagamentoList" class="field-radiobutton">
+                      <p-radioButton id="{{status.key}}" name="status" [value]="status" [(ngModel)]="statusPagamentoSelecionado"></p-radioButton>
+                      <label [for]="status.key" class="ml-2">{{ status.value }}</label>
+                    </div>
+                  </div>
                 </div>
               </ng-template>
 
