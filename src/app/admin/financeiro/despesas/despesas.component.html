@@ -109,14 +109,13 @@
               [showCurrentPageReport]="true"
               [sortField]="'instituicaoFinanceira.descricao'"
               [sortOrder]="1"
-              [globalFilterFields]="['descricao', 'dtLancamento', 'dtVencimento', 'qtdParcela', 'tipoRegistroFinanceiro', 'tipoReceitaDespesa', 'valor', 'statusPagamento']"
+              [globalFilterFields]="['nome', 'dtVencimento', 'dtVencimento', 'categoriaRegistroFinanceiro', 'valor', 'statusPagamento']"
               [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
               [loading]="loading"
               #dt
               dataKey="id"
               currentPageReportTemplate="{{ 'label.exibindoRegistrosTabela' | translate }}"
             >
-              <!--[scrollable]="true" scrollHeight="370px"-->
 
               <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between h-2rem">
@@ -132,10 +131,8 @@
                 <tr>
                   <th style="width: 3rem"> <p-tableHeaderCheckbox /></th>
                   <th pSortableColumn="nome" class="text-left">Nome  <p-sortIcon field="nome"></p-sortIcon></th>
-                  <!--<th pSortableColumn="dtLancamento" class="text-center">Lançamento <p-sortIcon field="dtLancamento"></p-sortIcon></th>-->
                   <th pSortableColumn="dtVencimento" class="text-center">Vencimento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
-                  <th pSortableColumn="qtdParcela" class="text-center">Parcelas <p-sortIcon field="qtdParcela"></p-sortIcon></th>
-                  <th pSortableColumn="tipoRegistroFinanceiro" class="text-left">Tipo <p-sortIcon field="tipoRegistroFinanceiro"></p-sortIcon></th>
+                  <th pSortableColumn="nrParcela" class="text-center">Parcela <p-sortIcon field="qtdParcela"></p-sortIcon></th>
                   <th pSortableColumn="categoriaRegistroFinanceiro" class="text-left">Categoria <p-sortIcon field="categoriaRegistroFinanceiro"></p-sortIcon></th>
                   <th pSortableColumn="valor" class="text-right">Valor <p-sortIcon field="valor"></p-sortIcon></th>
                   <th pSortableColumn="statusPagamento" class="text-center">Pago?<p-sortIcon field="statusPagamento"></p-sortIcon></th>
@@ -150,14 +147,7 @@
 
                   <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento | date:'dd/MM/yyyy' }}</span></td>
 
-                  <td class="text-center"><span *ngIf="registro.qtdParcela; else hifenSpan">{{registro.qtdParcela}}</span></td>
-
-                  <td class="text-center">
-                    <p-tag
-                      [value]="EnumService.getLabelEnum(registro.tipoRegistroFinanceiro,EnumService.getTipoRegistroFinanceiro())"
-                      [severity]="EnumService.getSeveridadeEnum(registro.tipoRegistroFinanceiro, EnumService.getTipoRegistroFinanceiro())"
-                    ></p-tag>
-                  </td>
+                  <td class="text-center"><span *ngIf="registro.existeParcela; else hifenSpan">{{registro.nrParcela + "/" + registro.qtdParcela}}</span></td>
 
                   <td class="text-left">
                     {{ EnumService.getLabelEnum(registro.categoriaRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()) }}
@@ -173,6 +163,10 @@
                   </td>
 
                   <td class="text-center">
+                    <span *ngIf="registro.existeParcela; else imprimirNadaSpan" pTooltip="Clique para ver as parcelas" tooltipPosition="left">
+                       <i class="fa fa-credit-card-alt mr-3" aria-hidden="true" (click)="abrirModalParcelas(registro);"></i>
+                    </span>
+
                     <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="right">
                       <i class="pi pi-pencil mr-3" style="font-size: 1rem; color:green" (click)="abrirModalDespesa(registro);"></i>
                     </span>
@@ -182,13 +176,14 @@
                     </span>
                   </td>
 
+                  <ng-template #imprimirNadaSpan><span></span></ng-template>
                   <ng-template #hifenSpan><span>-</span></ng-template>
                 </tr>
               </ng-template>
 
               <ng-template pTemplate="footer">
                 <tr>
-                  <td colspan="7" class="text-right"><strong>Total Geral:</strong></td>
+                  <td colspan="6" class="text-right"><strong>Total Geral:</strong></td>
                   <td class="text-right">
                     {{ calcularTotalGeral() | currency }}
                   </td>
@@ -230,7 +225,7 @@
 
                     </p-dropdown>
 
-                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
+                    <small class="p-error" *ngIf="isSubmetido && !competenciaSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
                   </div>
 
                   <div class="field col-12">
@@ -286,7 +281,7 @@
                       </ng-template>
 
                     </p-dropdown>
-                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
+                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">{{ 'message.campoObrigatorio' | translate }}</small>
                   </div>
 
                   <div class="field col-12">
@@ -314,17 +309,38 @@
                     <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraUsuarioSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
                   </div>
 
-                  <div class="field col-4">
-                    <label class="font-semibold">Deseja parcelar essa despesa?</label>
+                  <div class="field col-12">
+                    <label class="font-semibold">Deseja parcelar esta despesa?</label>
                     <div class="formgroup-inline">
                       <div *ngFor="let ep of existePrestacaoList" class="field-radiobutton">
-                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionada" (onClick)="atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada)"></p-radioButton>
+                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionada" (onClick)="atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada)" [disabled]="despesaTemp.id != null"></p-radioButton>
                         <label [for]="ep.key" class="ml-2">{{ ep.value }}</label>
                       </div>
                     </div>
                   </div>
 
-                  <div class="field col-4" *ngIf="exibirQtdParcela">
+                  <div class="field col-12" *ngIf="exibirValorParcelado">
+                    <label for="valorParcelado" class="font-semibold">Valor a parcelar</label>
+                    <p-inputNumber
+                      id="valorParcelado"
+                      class="w-full"
+                      mode="currency"
+                      currency="BRL"
+                      locale="pt-BR"
+                      [(ngModel)]="despesaTemp.valorParcelado"
+                      [disabled]="despesaTemp.id != null">
+                    </p-inputNumber>
+
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.valorParcelado">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+
+                    <small class="p-error" *ngIf="isSubmetido && despesaTemp.valorParcelado && despesaTemp.valorParcelado <= 0">
+                      {{ 'message.campoDeveSerMaiorQueZero' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-12" *ngIf="exibirQtdParcela">
                     <label for="qtdParcela" class="font-semibold">Parcelas</label>
                     <p-dropdown
                       id="qtdParcela"
@@ -334,7 +350,8 @@
                       [showClear]="true"
                       appendTo="body"
                       panelStyleClass="dropdown-up"
-                      optionLabel="key"></p-dropdown>
+                      optionLabel="key"
+                      [disabled]="despesaTemp.id != null"></p-dropdown>
 
                     <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionada.key !== 'SIM' && !parcelaSelecionada">
                       {{ 'message.campoObrigatorio' | translate }}
@@ -354,7 +371,8 @@
                       placeholder="dia/mês/ano"
                       appendTo="body"
                       panelStyleClass="dropdown-up"
-                      class="w-full">
+                      class="w-full"
+                      (ngModelChange)="calcularParcelas()">
                     </p-calendar>
 
                     <!--<small class="p-error" *ngIf="isSubmetido && !despesaTemp.dtVencimento">
@@ -370,7 +388,8 @@
                       mode="currency"
                       currency="BRL"
                       locale="pt-BR"
-                      [(ngModel)]="despesaTemp.valor">
+                      [(ngModel)]="despesaTemp.valor"
+                      >
                     </p-inputNumber>
 
                     <small class="p-error" *ngIf="isSubmetido && !despesaTemp.valor">

@@ -55,6 +55,7 @@ export class DespesasComponent {
   despesaTemp: Despesa = new Despesa();
   isSubmetido: boolean = false;
   exibirQtdParcela: boolean = false;
+  exibirValorParcelado: boolean = false;
   exibirDialogCadastroDespesa: boolean = false;
   prefixoModal: string | undefined = "";
 
@@ -117,6 +118,7 @@ export class DespesasComponent {
     this.existePrestacaoList = EnumService.getStatusSimNao();
 
     this.exibirQtdParcela = false;
+    this.exibirValorParcelado = false;
 
     this.getInstituicoesFinanceirasUsuario();
 
@@ -271,6 +273,10 @@ export class DespesasComponent {
 
   limparCamposFormNovoDespesa() {
     this.despesaTemp = new Despesa();
+    this.parcelaSelecionada = null;
+    this.exibirValorParcelado = false;
+    this.exibirQtdParcela = false;
+
   }
 
   salvarDespesa() {
@@ -289,7 +295,9 @@ export class DespesasComponent {
     this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
     this.despesaTemp.qtdParcela = this.parcelaSelecionada?.value;
     this.despesaTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
-    this.despesaTemp.competencia = this.competenciaSelecionada?.key
+    this.despesaTemp.competencia = this.competenciaSelecionada?.key;
+    this.despesaTemp.existeParcela = this.existePrestacaoSelecionada.key == "SIM";
+    this.despesaTemp.nrParcela = 1;
 
     const dtVencimento = this.despesaTemp.dtVencimento;
 
@@ -599,6 +607,7 @@ export class DespesasComponent {
   atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada: any) {
     this.existePrestacaoSelecionada = existePrestacaoSelecionada;
     this.exibirQtdParcela = this.existePrestacaoSelecionada.key == "SIM";
+    this.exibirValorParcelado = this.existePrestacaoSelecionada.key == "SIM";
   }
 
   getInstituicoesFinanceirasUsuario() {
@@ -697,6 +706,19 @@ export class DespesasComponent {
       this.dt.clear(); // Remove o filtro de competência
     } else {
       this.aplicarFiltroPadrao(); // Aplica o filtro pela competência selecionada
+    }
+  }
+
+  abrirModalParcelas(registro: any) {
+
+  }
+
+  // Calcula o valor parcelado automaticamente
+  calcularParcelas() {
+    if (this.despesaTemp.valorParcelado && this.parcelaSelecionada) {
+      this.despesaTemp.valor = this.despesaTemp.valorParcelado / this.parcelaSelecionada.value;
+    } else {
+      this.despesaTemp.valorParcelado = null;
     }
   }
 }
