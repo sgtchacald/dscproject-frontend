@@ -89,6 +89,9 @@ export class DespesasComponent {
   usuarioSelecionadoList: Usuario[] = [];
   usuarioLogado: Usuario | undefined;
 
+  valorOriginal: number | undefined | null;
+  isDividirIgualmente: boolean = false;
+
 
 
   ngOnInit() {
@@ -620,7 +623,7 @@ export class DespesasComponent {
 
   exibirModalUsuarios() {
 
-    console.log(this.isDividirDespesa);
+    this.valorOriginal = this.despesaTemp.valor;
 
     if (this.isDividirDespesa){
       this.ref = this.dialogService.open(ModalSelecaoUsuarioComponent, {
@@ -721,4 +724,63 @@ export class DespesasComponent {
       this.despesaTemp.valorParcelado = null;
     }
   }
+
+  atualizarTotal() {
+    // Calcula o total dos valores informados na divisão
+    let totalDividido = this.usuarioSelecionadoList
+      .filter(usuario => parseFloat(usuario.valorDividido) > 0) // Filtra apenas valores positivos
+      .reduce((acc, usuario) => acc + parseFloat(usuario.valorDividido), 0);
+
+    // Atualiza o valor da despesa para refletir o restante
+    // @ts-ignore
+    this.despesaTemp.valor = this.valorOriginal - totalDividido;
+  }
+
+  dividirIgualmente() {
+
+    if (!this.despesaTemp.valor || this.despesaTemp.valor <= 0) {
+      this.resetDivisao(); // Se o valor for apagado, reinicia os campos
+      return;
+    }
+
+    if (this.isDividirIgualmente) {
+      let totalParticipantes = this.usuarioSelecionadoList.length + 1; // Usuários + o próprio campo despesaTemp.valor
+
+      if (totalParticipantes > 0) {
+
+        // @ts-ignore
+        let valorPorParte = this.despesaTemp.valor / totalParticipantes; // Divide entre todos os envolvidos
+
+        // Atualiza o valor de cada usuário
+        this.usuarioSelecionadoList.forEach(usuario => {
+          usuario.valorDividido = String(parseFloat(valorPorParte.toFixed(2)));
+        });
+
+        // Atualiza o campo despesaTemp.valor com a parte que cabe a ele
+        this.despesaTemp.valor = valorPorParte;
+      }
+    }else{
+      this.despesaTemp.valor = null;
+
+      // Atualiza o valor de cada usuário
+      this.usuarioSelecionadoList.forEach(usuario => {
+        // @ts-ignore
+        usuario.valorDividido = null;
+      });
+    }
+  }
+
+  // Método para zerar a divisão e recomeçar
+  resetDivisao() {
+    this.isDividirIgualmente = false;
+    this.despesaTemp.valor = null;
+    this.valorOriginal = 0; // Zera o valor inicial
+
+    // Zera os valores de todos os usuários
+    this.usuarioSelecionadoList.forEach(usuario => {
+      // @ts-ignore
+      usuario.valorDividido = null;
+    });
+  }
+
 }
