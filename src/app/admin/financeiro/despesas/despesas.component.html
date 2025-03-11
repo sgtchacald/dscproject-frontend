@@ -214,9 +214,10 @@
 
                       <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionada">
-                          <div>{{ competenciaSelecionada.value }}</div>
+                          <div>{{ competenciaSelecionada.key }}</div>
                         </div>
                       </ng-template>
+
                       <ng-template let-competencia pTemplate="item">
                         <div class="flex align-items-center gap-2">
                           <div>{{ competencia.value }}</div>
@@ -389,7 +390,9 @@
                       currency="BRL"
                       locale="pt-BR"
                       [(ngModel)]="despesaTemp.valor"
-                      >
+                      (onBlur)="setValorOriginal()"
+                      [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"
+                    >
                     </p-inputNumber>
 
                     <small class="p-error" *ngIf="isSubmetido && !despesaTemp.valor">

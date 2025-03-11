@@ -190,7 +190,7 @@
 
                     </p-dropdown>
 
-                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
+                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">{{ 'message.campoObrigatorio' | translate }}</small>
                   </div>
 
                   <div class="field col-12">
@@ -246,7 +246,7 @@
                       </ng-template>
 
                     </p-dropdown>
-                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">Categoria é obrigatório.</small>
+                    <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">{{ 'message.campoObrigatorio' | translate }}</small>
                   </div>
 
                   <div class="field col-12">

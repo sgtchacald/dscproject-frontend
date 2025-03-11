@@ -172,9 +172,6 @@ export class DespesasComponent {
 
       return competencia;
     });
-
-    console.log(this.competenciasList);
-
   }
 
   aplicarFiltroPadrao($event?: Event) {
@@ -211,6 +208,21 @@ export class DespesasComponent {
     this.existePrestacaoSelecionada = this.existePrestacaoList[1];
 
     if(despesaGrid?.id){
+
+      // @ts-ignore
+      this.valorOriginal = this.valorOriginal + despesaGrid.valor;
+      console.log(this.valorOriginal)
+
+      despesaGrid.usuariosResponsaveis.forEach(usuario => {
+        if(usuario.valorDividido == null || usuario.valorDividido == null == undefined){
+          usuario.valorDividido = 0;
+        }
+
+        // @ts-ignore
+        this.valorOriginal =  this.valorOriginal + Number(usuario.valorDividido);
+
+      });
+
       this.competenciaSelecionada = this.competenciasList[
         EnumService.getPosicaoEnumPorKey(
           despesaGrid.competencia,
@@ -263,6 +275,7 @@ export class DespesasComponent {
       }
 
     }else{
+      this.resetDivisao();
       this.limparCamposFormNovoDespesa();
       this.getCompeteciaSelecionada(true);
     }
@@ -660,8 +673,18 @@ export class DespesasComponent {
     this.despesaTemp.usuariosResponsaveis = this.despesaTemp.usuariosResponsaveis.filter(u => u.id !== usuario.id);
   }
 
+  setValorOriginal() {
+    if (this.valorOriginal !== this.despesaTemp.valor) {
+      this.valorOriginal = this.despesaTemp.valor;
+    }
+  }
+
   calcularTotalGeral(): number {
-    let valor: number =  this.despesasList.reduce((total, registro) => total + (registro.valor || 0), 0);
+    let valor: number =  this.despesasList.filter(
+      registro =>
+        registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+        registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
+    ).reduce((total, registro) => total + (registro.valor || 0), 0);
 
     if(valor !== null){
       return valor;
@@ -672,13 +695,26 @@ export class DespesasComponent {
   }
 
   calcularTotalAPagar(): number {
-    let valor: number = this.despesasList.filter(
+    let valor: number = 0;
+
+    if (!this.exibirOutrasCompetencias) {
+      valor = this.despesasList.filter(
         registro =>
-        registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
-        registro.statusPagamento === 'NAO' // Filtra apenas pagamentos com status "SIM"
+          registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+          registro.statusPagamento === 'NAO' && // Filtra apenas pagamentos com status "SIM"
+          registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
       ).reduce(
         (total, registro) => total + (registro.valor || 0), 0
       );
+    } else {
+      valor = this.despesasList.filter(
+        registro =>
+          registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+          registro.statusPagamento === 'NAO' // Filtra apenas pagamentos com status "SIM"
+      ).reduce(
+        (total, registro) => total + (registro.valor || 0), 0
+      );
+    }
 
     if(valor !== null){
       return valor;
@@ -688,13 +724,27 @@ export class DespesasComponent {
   }
 
   calcularTotalPago(): number {
-    let valor: number = this.despesasList.filter(
-      registro =>
-        registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
-        registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"
-    ).reduce(
-      (total, registro) => total + (registro.valor || 0), 0
-    );
+
+    let valor: number = 0;
+
+    if (!this.exibirOutrasCompetencias) {
+      valor = this.despesasList.filter(
+        registro =>
+          registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+          registro.statusPagamento === 'SIM' && // Filtra apenas pagamentos com status "SIM"
+          registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
+      ).reduce(
+        (total, registro) => total + (registro.valor || 0), 0
+      );
+    }else{
+      valor = this.despesasList.filter(
+        registro =>
+          registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+          registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"
+      ).reduce(
+        (total, registro) => total + (registro.valor || 0), 0
+      );
+    }
 
     if(valor !== null){
       return valor;
@@ -728,8 +778,8 @@ export class DespesasComponent {
   atualizarTotal() {
     // Calcula o total dos valores informados na divisão
     let totalDividido = this.usuarioSelecionadoList
-      .filter(usuario => parseFloat(usuario.valorDividido) > 0) // Filtra apenas valores positivos
-      .reduce((acc, usuario) => acc + parseFloat(usuario.valorDividido), 0);
+      .filter(usuario =>usuario.valorDividido > 0) // Filtra apenas valores positivos
+      .reduce((acc, usuario) => acc + usuario.valorDividido, 0);
 
     // Atualiza o valor da despesa para refletir o restante
     // @ts-ignore
@@ -753,7 +803,7 @@ export class DespesasComponent {
 
         // Atualiza o valor de cada usuário
         this.usuarioSelecionadoList.forEach(usuario => {
-          usuario.valorDividido = String(parseFloat(valorPorParte.toFixed(2)));
+          usuario.valorDividido = Number(valorPorParte.toFixed(2));
         });
 
         // Atualiza o campo despesaTemp.valor com a parte que cabe a ele
@@ -774,7 +824,7 @@ export class DespesasComponent {
   resetDivisao() {
     this.isDividirIgualmente = false;
     this.despesaTemp.valor = null;
-    this.valorOriginal = 0; // Zera o valor inicial
+    this.valorOriginal = null; // Zera o valor inicial
 
     // Zera os valores de todos os usuários
     this.usuarioSelecionadoList.forEach(usuario => {

@@ -3,7 +3,7 @@ export interface Usuario {
   nome: string;
   genero: string;
   email: string;
-  valorDividido: string;
+  valorDividido: number;
   login: string;
   senha: string;
 }

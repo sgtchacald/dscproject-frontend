@@ -40,9 +40,22 @@
       "desvincularTodas": "Desvincular Todas"
     },
 
-    "registroFinanceiro": {
+    "despesa": {
       "lbDespesa": "Despesa",
       "lbDespesas": "Despesas",
+      "descricao": "Descrição",
+      "lancamento": "Lançamento",
+      "vencimento": "Vencimento",
+      "parcelas": "Parcelas",
+      "tipo": "Tipo",
+      "categoria": "Categoria",
+      "valor": "Valor",
+      "pago": "Pago?"
+    },
+
+    "receita": {
+      "lbReceita": "Receita",
+      "lbReceitas": "Receitas",
       "descricao": "Descrição",
       "lancamento": "Lançamento",
       "vencimento": "Vencimento",
