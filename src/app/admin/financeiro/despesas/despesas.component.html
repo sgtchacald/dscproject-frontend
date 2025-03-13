@@ -210,7 +210,9 @@
                       filterBy="value"
                       optionLabel="value"
                       placeholder="Selecione a Competência"
-                      class="w-full">
+                      class="w-full"
+                      [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"
+                    >
 
                       <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionada">
@@ -235,7 +237,8 @@
                     <input id="nome"
                            class="w-full"
                            type="text"
-                           pInputText [(ngModel)]="despesaTemp.nome">
+                           pInputText [(ngModel)]="despesaTemp.nome"
+                           [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true">
 
                     <small class="p-error" *ngIf="isSubmetido && !despesaTemp.nome">
                       {{ 'message.campoObrigatorio' | translate }}
@@ -248,7 +251,9 @@
                     <input id="descricao"
                            class="w-full"
                            type="text"
-                           pInputText [(ngModel)]="despesaTemp.descricao">
+                           pInputText
+                           [(ngModel)]="despesaTemp.descricao"
+                           [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true">
 
                     <small class="p-error" *ngIf="isSubmetido && !despesaTemp.descricao">
                       {{ 'message.campoObrigatorio' | translate }}
@@ -266,7 +271,8 @@
                       filterBy="value"
                       optionLabel="value"
                       placeholder="Selecione a Categoria"
-                      class="w-full">
+                      class="w-full"
+                      [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true">
 
                       <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="categoriaRegistroFinanceiroSelecionado">
@@ -292,7 +298,8 @@
                       optionLabel="instituicaoFinanceira.nome"
                       optionDisabled="disabled"
                       [options]="instituicoesFinanceirasUsuarioList"
-                      [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
+                      [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada"
+                      [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true">
                       <ng-template let-instituicao pTemplate="instituicaoFinanceiraUsuario">
                         <div class="" *ngIf="instituicao.instituicaoFinanceira.tipoInstituicao == 'BANCO'">
                           <i class="fa fa-university mr-2" aria-hidden="true"></i>
@@ -314,7 +321,7 @@
                     <label class="font-semibold">Deseja parcelar esta despesa?</label>
                     <div class="formgroup-inline">
                       <div *ngFor="let ep of existePrestacaoList" class="field-radiobutton">
-                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionada" (onClick)="atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada)" [disabled]="despesaTemp.id != null"></p-radioButton>
+                        <p-radioButton [inputId]="ep.key" name="status" [value]="ep" [(ngModel)]="existePrestacaoSelecionada" (onClick)="atualizarExistePrestacaoSelecionada(existePrestacaoSelecionada)" [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"></p-radioButton>
                         <label [for]="ep.key" class="ml-2">{{ ep.value }}</label>
                       </div>
                     </div>
@@ -329,7 +336,7 @@
                       currency="BRL"
                       locale="pt-BR"
                       [(ngModel)]="despesaTemp.valorParcelado"
-                      [disabled]="despesaTemp.id != null">
+                      [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true">
                     </p-inputNumber>
 
                     <small class="p-error" *ngIf="isSubmetido && !despesaTemp.valorParcelado">
@@ -352,7 +359,7 @@
                       appendTo="body"
                       panelStyleClass="dropdown-up"
                       optionLabel="key"
-                      [disabled]="despesaTemp.id != null"></p-dropdown>
+                      [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"></p-dropdown>
 
                     <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionada.key !== 'SIM' && !parcelaSelecionada">
                       {{ 'message.campoObrigatorio' | translate }}
@@ -404,8 +411,8 @@
                     </small>
                   </div>
 
-                  <div class="field col-12">
-                    <div class="flex flex-row flex-wrap">
+                  <div class="field col-12" *ngIf="!despesaTemp.id != null && !despesaTemp.existeParcela == true">
+                  <div class="flex flex-row flex-wrap">
                       <div class="flex align-items-center justify-content-center m-2">
                         <p-checkbox id="isDividirDespesaId" value="true" label="Desejo dividir esta despesa." [binary]="true" [(ngModel)]="isDividirDespesa" (click)="exibirModalUsuarios()"></p-checkbox>
                       </div>
@@ -417,13 +424,10 @@
                       </div>
                     </div>
 
-
-
-                    <br><br>
                     <div *ngFor="let usuario of usuarioSelecionadoList" class="card flex flex-wrap gap-2 mt-2 w-full">
                       <div class="flex-auto" *ngIf="usuario.id !== usuarioLogado?.id">
                         <p-chip id="usuarioSelecionadoItem{{usuario.login}}" styleClass="pl-0 pr-3">
-                        <span class="bg-red-300 border-circle w-2rem h-2rem flex align-items-center justify-content-center" (click)="excluirDivisao(usuario)">
+                        <span class="bg-red-300 border-circle w-2rem h-2rem flex align-items-center justify-content-center" (click)="excluirDivisao(usuario)" *ngIf="(despesaTemp.id && despesaTemp.existeParcela == false) || despesaTemp.id == null">
                           <i class="pi pi-times"></i>
                         </span>
                           <span class="ml-2 w-full">
@@ -441,7 +445,8 @@
                           class="input-number-chip ml-0 w-12"
                           placeholder="Digite o valor para dividir"
                           [(ngModel)]="usuario.valorDividido"
-                          (onInput)="atualizarTotal()"></p-inputNumber>
+                          (onInput)="atualizarTotal()"
+                          [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"></p-inputNumber>
                       </div>
 
                     </div>

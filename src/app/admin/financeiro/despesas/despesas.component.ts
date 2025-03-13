@@ -331,6 +331,13 @@ export class DespesasComponent {
 
     if(this.usuarioSelecionadoList){
       for (let usuario of this.usuarioSelecionadoList) {
+
+          if(usuario.id === this.usuarioLogado?.id){
+            if (this.despesaTemp.valor != null) {
+              usuario.valorDividido = this.despesaTemp.valor;
+            }
+          }
+
           this.despesaTemp.usuariosResponsaveis.push(usuario);
       }
     }
