@@ -133,6 +133,7 @@
                   <th pSortableColumn="nome" class="text-left">Nome  <p-sortIcon field="nome"></p-sortIcon></th>
                   <th pSortableColumn="dtVencimento" class="text-center">Vencimento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
                   <th pSortableColumn="nrParcela" class="text-center">Parcela <p-sortIcon field="qtdParcela"></p-sortIcon></th>
+                  <th pSortableColumn="instituicaoFinanceira" class="text-left">Instituicão <p-sortIcon field="instituicaoFinanceira"></p-sortIcon></th>
                   <th pSortableColumn="categoriaRegistroFinanceiro" class="text-left">Categoria <p-sortIcon field="categoriaRegistroFinanceiro"></p-sortIcon></th>
                   <th pSortableColumn="valor" class="text-right">Valor <p-sortIcon field="valor"></p-sortIcon></th>
                   <th pSortableColumn="statusPagamento" class="text-center">Pago?<p-sortIcon field="statusPagamento"></p-sortIcon></th>
@@ -148,6 +149,10 @@
                   <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento | date:'dd/MM/yyyy' }}</span></td>
 
                   <td class="text-center"><span *ngIf="registro.existeParcela; else hifenSpan">{{registro.nrParcela + "/" + registro.qtdParcela}}</span></td>
+
+                  <td class="text-left">
+                    {{ registro.instituicaoFinanceira }}
+                  </td>
 
                   <td class="text-left">
                     {{ EnumService.getLabelEnum(registro.categoriaRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()) }}

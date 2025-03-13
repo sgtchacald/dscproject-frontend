@@ -15,6 +15,7 @@ export class Despesa {
   tipoRegistroFinanceiro: string | undefined | null;
   categoriaRegistroFinanceiro: string | undefined | null;
   statusPagamento:  string | undefined | null;
+  instituicaoFinanceira: string | undefined | null;
   instituicaoFinanceiraUsuarioId: number | undefined | null;
   instituicaoFinanceiraId: number | undefined | null;
   usuariosResponsaveis: Usuario[];
@@ -34,6 +35,7 @@ export class Despesa {
     tipoRegistroFinanceiro: string | undefined | null = null,
     categoriaRegistroFinanceiro: string | undefined | null = null,
     statusPagamento: string | undefined | null = null,
+    instituicaoFinanceira: string | undefined | null = null,
     instituicaoFinanceiraUsuarioId: number | undefined | null = null,
     instituicaoFinanceiraId: number | undefined | null = null,
     usuariosResponsaveis: Usuario[] = []
@@ -52,6 +54,7 @@ export class Despesa {
     this.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
     this.categoriaRegistroFinanceiro = categoriaRegistroFinanceiro;
     this.statusPagamento = statusPagamento;
+    this.instituicaoFinanceira = instituicaoFinanceira;
     this.instituicaoFinanceiraUsuarioId = instituicaoFinanceiraUsuarioId;
     this.instituicaoFinanceiraId = instituicaoFinanceiraId;
     this.usuariosResponsaveis = usuariosResponsaveis;
