@@ -35,14 +35,14 @@ export class MenuComponent {
           ],
         },
         {
-          title:'Despesa',
-          icon: 'chevron-right-outline',
-          link:'/admin/financeiro/despesa',
-        },
-        {
           title:'Receita',
           icon: 'chevron-right-outline',
           link:'/admin/financeiro/receita',
+        },
+        {
+          title:'Despesa',
+          icon: 'chevron-right-outline',
+          link:'/admin/financeiro/despesa',
         },
       ],
     },

@@ -8,6 +8,7 @@ export class Despesa {
   valor: number | undefined | null;
   dtVencimento: string | undefined | null | Date;
   existeParcela: boolean | undefined | null;
+  existeDivisao: boolean | undefined | null;
   idParcelaPai: number | undefined | null;
   nrParcela: number | undefined | null;
   qtdParcela: number | undefined | null;
@@ -28,6 +29,7 @@ export class Despesa {
     valor: number | undefined | null = null,
     dtVencimento: string | undefined | null = null,
     existeParcela: boolean | undefined | null = null,
+    existeDivisao: boolean | undefined | null = null,
     idParcelaPai: number | undefined | null = null,
     nrParcela: number | undefined | null = null,
     qtdParcela: number | undefined | null = null,
@@ -47,6 +49,7 @@ export class Despesa {
     this.valor = valor;
     this.dtVencimento = dtVencimento;
     this.existeParcela = existeParcela;
+    this.existeDivisao = existeDivisao;
     this.idParcelaPai = idParcelaPai;
     this.nrParcela = nrParcela;
     this.qtdParcela = qtdParcela;

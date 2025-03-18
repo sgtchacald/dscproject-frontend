@@ -144,9 +144,9 @@
                 <tr>
                   <td><p-tableCheckbox [value]="registro" /></td>
 
-                  <td class="text-left">{{registro.nome }}</td>
+                  <td class="text-left">{{registro.nome }} </td>
 
-                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan">{{registro.dtVencimento | date:'dd/MM/yyyy' }}</span></td>
+                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan"> <p-tag severity="{{ retornaSeverityDtVencimento(registro.dtVencimento, registro.statusPagamento) }}" value="{{registro.dtVencimento | date:'dd/MM/yyyy' }}" /></span></td>
 
                   <td class="text-center"><span *ngIf="registro.existeParcela; else hifenSpan">{{registro.nrParcela + "/" + registro.qtdParcela}}</span></td>
 
@@ -167,9 +167,14 @@
                     ></p-tag>
                   </td>
 
-                  <td class="text-center">
-                    <span *ngIf="registro.existeParcela; else imprimirNadaSpan" pTooltip="Clique para ver as parcelas" tooltipPosition="left">
+                  <td class="text-right">
+
+                    <span *ngIf="registro.existeParcela; else imprimirNadaSpan" pTooltip="Esta é uma despesa parcelada" tooltipPosition="left">
                        <i class="fa fa-credit-card-alt mr-3" aria-hidden="true" (click)="abrirModalParcelas(registro);"></i>
+                    </span>
+
+                    <span *ngIf="registro.existeDivisao; else imprimirNadaSpan" pTooltip="Esta é uma despesa compartilhada" tooltipPosition="left">
+                       <i class="fa fa-share-alt mr-3" aria-hidden="true" (click)="abrirModalParcelas(registro);"></i>
                     </span>
 
                     <span id="botaoEditar" pTooltip="{{ 'label.editar' | translate }}" tooltipPosition="left" placeholder="right">

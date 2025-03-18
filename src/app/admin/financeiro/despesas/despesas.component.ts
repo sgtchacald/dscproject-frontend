@@ -195,6 +195,34 @@ export class DespesasComponent {
   pesquisar() {
   }
 
+  retornaSeverityDtVencimento( dtVencimento: any, statusPagamento: any){
+    let hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    dtVencimento = new Date(dtVencimento)
+    dtVencimento.setHours(0, 0, 0, 0);
+
+    console.log(dtVencimento);
+    console.log(hoje);
+
+    if(dtVencimento < hoje && statusPagamento === "NAO"){
+      console.log("danger");
+      return "danger";
+    }
+
+    if(dtVencimento === hoje && statusPagamento === "NAO"){
+      console.log("warning");
+      return "warning";
+    }
+
+    if(dtVencimento > hoje && statusPagamento === "NAO"){
+      console.log("success");
+      return "success";
+    }
+
+    return "";
+  }
+
   abrirModalDespesa(despesaGrid: Despesa | null) {
     this.prefixoModal = (despesaGrid ? "Editar" : "Cadastrar") + " Despesa";
     this.despesa = despesaGrid ? despesaGrid : new Despesa();
@@ -249,7 +277,8 @@ export class DespesasComponent {
       ];
 
       // @ts-ignore
-      this.despesaTemp.dtVencimento = new Date(despesaGrid.dtVencimento);
+      const partes = despesaGrid.dtVencimento.split('-'); // ['2025', '03', '15']
+      this.despesaTemp.dtVencimento = new Date(+partes[0], +partes[1] - 1, +partes[2]); // Ano, mês (0-based), dia
 
       this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList.find(item => item.id === despesaGrid.instituicaoFinanceiraUsuarioId);
 
