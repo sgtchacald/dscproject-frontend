@@ -129,6 +129,11 @@ export class ReceitasComponent {
     }
   }
 
+  aplicarFiltroPadraoInputText($event: Event) {
+    const inputElement = $event.target as HTMLInputElement;
+    this.dt.filterGlobal(inputElement.value, "contains");
+  }
+
 
   fecharModalPesquisa() {
     this.limpaCamposFormPesquisa();

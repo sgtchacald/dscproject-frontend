@@ -109,7 +109,7 @@
               [showCurrentPageReport]="true"
               [sortField]="'instituicaoFinanceira.descricao'"
               [sortOrder]="1"
-              [globalFilterFields]="['nome', 'dtVencimento', 'dtVencimento', 'categoriaRegistroFinanceiro', 'valor', 'statusPagamento']"
+              [globalFilterFields]="['nome', 'dtVencimento', 'categoriaRegistroFinanceiro', 'valor', 'statusPagamento']"
               [rowsPerPageOptions]="[5, 10, 25, 50, 100]"
               [loading]="loading"
               #dt
@@ -122,7 +122,7 @@
                   <h5 class="m-0">Gerenciar Despesas</h5>
                   <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="aplicarFiltroPadrao($event)" placeholder="{{ 'label.pesquisar' | translate }}" />
+                    <input pInputText type="text" (input)="aplicarFiltroPadraoInputText($event)" placeholder="{{ 'label.pesquisar' | translate }}" />
                   </span>
                 </div>
               </ng-template>
@@ -146,7 +146,13 @@
 
                   <td class="text-left">{{registro.nome }} </td>
 
-                  <td class="text-center"><span *ngIf="registro.dtVencimento; else hifenSpan"> <p-tag severity="{{ retornaSeverityDtVencimento(registro.dtVencimento, registro.statusPagamento) }}" value="{{registro.dtVencimento | date:'dd/MM/yyyy' }}" /></span></td>
+                  <td class="text-center">
+                    <span *ngIf="registro.dtVencimento; else hifenSpan">
+                      <span *ngIf="retornaSeverityDtVencimento(registro.dtVencimento, registro.statusPagamento) !== null; else dataVencimentoSemTag">
+                        <p-tag severity="{{ retornaSeverityDtVencimento(registro.dtVencimento, registro.statusPagamento) }}" value="{{registro.dtVencimento | date:'dd/MM/yyyy' }}" />
+                      </span>
+                    </span>
+                  </td>
 
                   <td class="text-center"><span *ngIf="registro.existeParcela; else hifenSpan">{{registro.nrParcela + "/" + registro.qtdParcela}}</span></td>
 
@@ -188,6 +194,7 @@
 
                   <ng-template #imprimirNadaSpan><span></span></ng-template>
                   <ng-template #hifenSpan><span>-</span></ng-template>
+                  <ng-template #dataVencimentoSemTag><span>{{registro.dtVencimento | date:'dd/MM/yyyy' }}</span></ng-template>
                 </tr>
               </ng-template>
 

@@ -64,6 +64,7 @@ export class DespesasComponent {
   competenciasList: any[] = [];
   competenciaSelecionada: any;
   competenciaSelecionadaParaPesquisa: any;
+  competenciaSelecionadaBreadcrumb: any;
   exibirOutrasCompetencias: boolean = false;
 
   categoriaRegistroFinanceiroList:  any = [];
@@ -97,15 +98,17 @@ export class DespesasComponent {
   ngOnInit() {
     this.getCompeteciaSelecionada(false);
 
+    this.competenciaSelecionadaBreadcrumb = this.competenciaSelecionadaParaPesquisa;
+
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
       {label: 'Gerenciar Despesas'},
       {label: 'Competência Atual'},
-      {label: this.competenciaSelecionadaParaPesquisa.value}
+      {label: this.competenciaSelecionadaBreadcrumb.value}
     ];
 
-    //this.despesasList = data.despesasList;
+
 
     this.loading = false;
 
@@ -175,12 +178,19 @@ export class DespesasComponent {
   }
 
   aplicarFiltroPadrao($event?: Event) {
-    if (!this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
+    if (!this.exibirOutrasCompetencias && this.isValid(this.competenciaSelecionadaParaPesquisa)) {
       this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
     } else {
       this.dt.clear(); // Remove o filtro caso esteja exibindo todas as competências
-      this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
+      if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
+        this.dt.filter(this.competenciaSelecionadaParaPesquisa.key, 'competencia', 'contains');
+      }
     }
+  }
+
+  aplicarFiltroPadraoInputText($event: Event) {
+    const inputElement = $event.target as HTMLInputElement;
+    this.dt.filterGlobal(inputElement.value, "contains");
   }
 
   fecharModalPesquisa() {
@@ -195,33 +205,30 @@ export class DespesasComponent {
   pesquisar() {
   }
 
-  retornaSeverityDtVencimento( dtVencimento: any, statusPagamento: any){
+  retornaSeverityDtVencimento(dtVencimento: any, statusPagamento: any) {
+
+    dtVencimento = new Date(dtVencimento).toISOString();
+
+    if(this.isValid(dtVencimento)){
+      const partes = dtVencimento.split("T")[0].split("-"); // Pega apenas YYYY-MM-DD
+      dtVencimento = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2])); // Mês começa do zero
+    }
+
+    // Criar um objeto Date para hoje e zerar as horas
     let hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
 
-    dtVencimento = new Date(dtVencimento)
-    dtVencimento.setHours(0, 0, 0, 0);
-
-    console.log(dtVencimento);
-    console.log(hoje);
-
-    if(dtVencimento < hoje && statusPagamento === "NAO"){
-      console.log("danger");
+    if (dtVencimento.getTime() < hoje.getTime() && statusPagamento === "NAO") {
       return "danger";
     }
 
-    if(dtVencimento === hoje && statusPagamento === "NAO"){
-      console.log("warning");
+    if (dtVencimento.getTime() === hoje.getTime() && statusPagamento === "NAO") {
       return "warning";
     }
 
-    if(dtVencimento > hoje && statusPagamento === "NAO"){
-      console.log("success");
-      return "success";
-    }
-
-    return "";
+    return null;
   }
+
 
   abrirModalDespesa(despesaGrid: Despesa | null) {
     this.prefixoModal = (despesaGrid ? "Editar" : "Cadastrar") + " Despesa";
@@ -716,11 +723,20 @@ export class DespesasComponent {
   }
 
   calcularTotalGeral(): number {
-    let valor: number =  this.despesasList.filter(
-      registro =>
-        registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
-        registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
-    ).reduce((total, registro) => total + (registro.valor || 0), 0);
+    let valor: number =   0
+
+    if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
+      valor = this.despesasList.filter(
+        registro =>
+          registro.tipoRegistroFinanceiro === 'DESPESA' &&
+          registro.competencia === this.competenciaSelecionadaParaPesquisa.key
+      ).reduce((total, registro) => total + (registro.valor || 0), 0);
+    }else{
+      valor = this.despesasList.filter(
+        registro =>
+          registro.tipoRegistroFinanceiro === 'DESPESA' // Filtra apenas DESPESAS
+      ).reduce((total, registro) => total + (registro.valor || 0), 0);
+    }
 
     if(valor !== null){
       return valor;
@@ -790,10 +806,13 @@ export class DespesasComponent {
   }
 
   setExibirOutrasCompetencias() {
+
     if (this.exibirOutrasCompetencias) {
       this.getCompeteciaSelecionada(false);
       this.dt.clear(); // Remove o filtro de competência
+      this.competenciaSelecionadaParaPesquisa = null;
     } else {
+      this.competenciaSelecionadaParaPesquisa = this.competenciaSelecionadaBreadcrumb;
       this.aplicarFiltroPadrao(); // Aplica o filtro pela competência selecionada
     }
   }
