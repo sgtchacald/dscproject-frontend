@@ -6,6 +6,7 @@ export class Despesa {
   nome: string | undefined | null;
   descricao: string | undefined | null;
   valor: number | undefined | null;
+  dtLancamento: string | undefined | null | Date;
   dtVencimento: string | undefined | null | Date;
   existeParcela: boolean | undefined | null;
   existeDivisao: boolean | undefined | null;
@@ -27,6 +28,7 @@ export class Despesa {
     nome: string | undefined | null = null,
     descricao: string | undefined | null = null,
     valor: number | undefined | null = null,
+    dtLancamento: string | undefined | null = null,
     dtVencimento: string | undefined | null = null,
     existeParcela: boolean | undefined | null = null,
     existeDivisao: boolean | undefined | null = null,
@@ -47,6 +49,7 @@ export class Despesa {
     this.nome = nome;
     this.descricao = descricao;
     this.valor = valor;
+    this.dtLancamento = dtLancamento;
     this.dtVencimento = dtVencimento;
     this.existeParcela = existeParcela;
     this.existeDivisao = existeDivisao;

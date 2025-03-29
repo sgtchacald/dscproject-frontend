@@ -47,12 +47,15 @@
 
               <ng-template pTemplate="right">
                 <span class="ml-3">
-                  <b>Pago</b> <br>
-                  <p-tag [value]="(calcularTotalPago() | currency)?.toString()" severity="success"></p-tag>
+                  <p-tag icon="pi pi-check" class="tag-custom" [value]="calcularTotalPago()" severity="success" [style]="{ width: '150px', height: '40px'}" pTooltip="Pagas" tooltipPosition="top"></p-tag>
                 </span>
+
                 <span class="ml-3">
-                  <b>A Pagar</b> <br>
-                  <p-tag [value]="(calcularTotalAPagar() | currency)?.toString()" severity="danger"></p-tag>
+                  <p-tag icon="pi pi-exclamation-triangle" class="tag-custom" [value]="calcularTotalAPagar()" severity="danger" [style]="{ width: '150px', height: '40px'}" pTooltip="A Pagar" tooltipPosition="top"></p-tag>
+                </span>
+
+                <span class="ml-3">
+                  <p-tag icon="fa fa-share-alt" class="tag-custom" [value]="calcularTotalCompartilhado()" severity="info" [style]="{ width: '150px', height: '40px'}" pTooltip="Compartilhadas" tooltipPosition="top"></p-tag>
                 </span>
               </ng-template>
             </p-toolbar>
@@ -131,6 +134,7 @@
                 <tr>
                   <th style="width: 3rem"> <p-tableHeaderCheckbox /></th>
                   <th pSortableColumn="nome" class="text-left">Nome  <p-sortIcon field="nome"></p-sortIcon></th>
+                  <th pSortableColumn="dtLancamento" class="text-center">Lançamento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
                   <th pSortableColumn="dtVencimento" class="text-center">Vencimento <p-sortIcon field="dtVencimento"></p-sortIcon></th>
                   <th pSortableColumn="nrParcela" class="text-center">Parcela <p-sortIcon field="qtdParcela"></p-sortIcon></th>
                   <th pSortableColumn="instituicaoFinanceira" class="text-left">Instituicão <p-sortIcon field="instituicaoFinanceira"></p-sortIcon></th>
@@ -145,6 +149,8 @@
                   <td><p-tableCheckbox [value]="registro" /></td>
 
                   <td class="text-left">{{registro.nome }} </td>
+
+                  <td class="text-left">{{registro.dtLancamento | date:'dd/MM/yyyy' }}</td>
 
                   <td class="text-center">
                     <span *ngIf="registro.dtVencimento; else hifenSpan">
@@ -379,6 +385,26 @@
                       [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"></p-dropdown>
 
                     <small class="p-error" *ngIf="isSubmetido && existePrestacaoSelecionada.key !== 'SIM' && !parcelaSelecionada">
+                      {{ 'message.campoObrigatorio' | translate }}
+                    </small>
+                  </div>
+
+                  <div class="field col-12">
+                    <label for="dtLancamento" class="font-semibold">Data Lançamento</label>
+                    <p-calendar
+                      id="dtLancamento"
+                      [(ngModel)]="despesaTemp.dtLancamento"
+                      [showIcon]="true"
+                      (onInput)="validarData($event)"
+                      [showButtonBar]="true"
+                      [readonlyInput]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="dia/mês/ano"
+                      appendTo="body"
+                      panelStyleClass="dropdown-up"
+                      class="w-full"></p-calendar>
+
+                    <small class="p-error" *ngIf="isSubmetido && !despesaTemp.dtLancamento">
                       {{ 'message.campoObrigatorio' | translate }}
                     </small>
                   </div>

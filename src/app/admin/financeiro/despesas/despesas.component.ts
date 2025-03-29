@@ -227,8 +227,8 @@ export class DespesasComponent {
     }
 
     return null;
-  }
 
+  }
 
   abrirModalDespesa(despesaGrid: Despesa | null) {
     this.prefixoModal = (despesaGrid ? "Editar" : "Cadastrar") + " Despesa";
@@ -246,7 +246,6 @@ export class DespesasComponent {
 
       // @ts-ignore
       this.valorOriginal = this.valorOriginal + despesaGrid.valor;
-      console.log(this.valorOriginal)
 
       despesaGrid.usuariosResponsaveis.forEach(usuario => {
         if(usuario.valorDividido == null || usuario.valorDividido == null == undefined){
@@ -284,6 +283,8 @@ export class DespesasComponent {
       ];
 
       // @ts-ignore
+
+      despesaGrid.dtVencimento = new Date(despesaGrid.dtVencimento).toString();
       const partes = despesaGrid.dtVencimento.split('-'); // ['2025', '03', '15']
       this.despesaTemp.dtVencimento = new Date(+partes[0], +partes[1] - 1, +partes[2]); // Ano, mês (0-based), dia
 
@@ -746,7 +747,7 @@ export class DespesasComponent {
 
   }
 
-  calcularTotalAPagar(): number {
+  calcularTotalAPagar(): string {
     let valor: number = 0;
 
     if (!this.exibirOutrasCompetencias) {
@@ -754,28 +755,38 @@ export class DespesasComponent {
         registro =>
           registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
           registro.statusPagamento === 'NAO' && // Filtra apenas pagamentos com status "SIM"
-          registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
+          registro.competencia === this.competenciaSelecionadaBreadcrumb.key  // Filtra por competencia
       ).reduce(
         (total, registro) => total + (registro.valor || 0), 0
       );
     } else {
-      valor = this.despesasList.filter(
-        registro =>
-          registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
-          registro.statusPagamento === 'NAO' // Filtra apenas pagamentos com status "SIM"
-      ).reduce(
-        (total, registro) => total + (registro.valor || 0), 0
-      );
+      if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
+        valor = this.despesasList.filter(
+          registro =>
+            registro.tipoRegistroFinanceiro === 'DESPESA' &&
+            registro.statusPagamento === 'NAO' &&
+            registro.competencia === this.competenciaSelecionadaParaPesquisa.key
+        ).reduce(
+          (total, registro) => total + (registro.valor || 0), 0
+        );
+      }else{
+        valor = this.despesasList.filter(
+          registro =>
+            registro.tipoRegistroFinanceiro === 'DESPESA' &&
+            registro.statusPagamento === 'NAO'
+        ).reduce(
+          (total, registro) => total + (registro.valor || 0), 0
+        );
+      }
     }
 
-    if(valor !== null){
-      return valor;
-    }
-
-    return 0;
+    return valor.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
   }
 
-  calcularTotalPago(): number {
+  calcularTotalPago(): string {
 
     let valor: number = 0;
 
@@ -784,25 +795,66 @@ export class DespesasComponent {
         registro =>
           registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
           registro.statusPagamento === 'SIM' && // Filtra apenas pagamentos com status "SIM"
-          registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
+          registro.competencia === this.competenciaSelecionadaBreadcrumb.key  // Filtra por competencia
       ).reduce(
         (total, registro) => total + (registro.valor || 0), 0
       );
     }else{
+      if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
+        valor = this.despesasList.filter(
+          registro =>
+            registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+            registro.statusPagamento === 'SIM' &&// Filtra apenas pagamentos com status "SIM"
+            registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
+        ).reduce(
+          (total, registro) => total + (registro.valor || 0), 0
+        );
+      }else{
+        valor = this.despesasList.filter(
+          registro =>
+            registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
+            registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"
+        ).reduce(
+          (total, registro) => total + (registro.valor || 0), 0
+        );
+      }
+    }
+
+    return valor.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+
+  }
+
+  calcularTotalCompartilhado(): string {
+    let valor: number = 0;
+
+    if (!this.exibirOutrasCompetencias) {
       valor = this.despesasList.filter(
         registro =>
-          registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
-          registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"
-      ).reduce(
-        (total, registro) => total + (registro.valor || 0), 0
-      );
+          registro.existeDivisao && // Filtra apenas pagamentos com status "SIM"
+          registro.competencia === this.competenciaSelecionadaBreadcrumb.key  // Filtra por competencia
+      ).reduce((total, registro) => total + (registro.valor || 0), 0);
+    }else{
+      if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
+        valor = this.despesasList.filter(
+          registro =>
+            registro.existeDivisao &&
+            registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
+        ).reduce((total, registro) => total + (registro.valor || 0), 0);
+      }else{
+        valor = this.despesasList.filter(registro => registro.existeDivisao).reduce(
+          (total, registro) => total + (registro.valor || 0), 0
+        );
+      }
     }
 
-    if(valor !== null){
-      return valor;
-    }
+    return valor.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
 
-    return 0;
   }
 
   setExibirOutrasCompetencias() {
