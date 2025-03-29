@@ -52,6 +52,19 @@ export class ModalSelecaoUsuarioComponent {
   }
 
   getUsuariosSelecionados() {
+
+    if (this.usuarioLogado) {
+      this.usuarioLogado.nome = "Minha Cota";
+      this.usuarioLogado.logado = true;
+      this.usuarioSelecionadoList.push(this.usuarioLogado)
+    }
+
+    this.usuarioSelecionadoList.sort((a, b) => {
+      if (a.logado && !b.logado) return -1;
+      if (!a.logado && b.logado) return 1;
+      return a.nome.localeCompare(b.nome);
+    });
+
     this.ref.close(this.usuarioSelecionadoList);
   }
 

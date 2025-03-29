@@ -47,15 +47,15 @@
 
               <ng-template pTemplate="right">
                 <span class="ml-3">
-                  <p-tag icon="pi pi-check" class="tag-custom" [value]="calcularTotalPago()" severity="success" [style]="{ width: '150px', height: '40px'}" pTooltip="Pagas" tooltipPosition="top"></p-tag>
+                  <p-tag icon="pi pi-check" class="tag-custom" [value]="calcularTotalPago()" severity="success" [style]="{ width: '150px', height: '40px'}" pTooltip="Desp. Paga" tooltipPosition="top"></p-tag>
                 </span>
 
                 <span class="ml-3">
-                  <p-tag icon="pi pi-exclamation-triangle" class="tag-custom" [value]="calcularTotalAPagar()" severity="danger" [style]="{ width: '150px', height: '40px'}" pTooltip="A Pagar" tooltipPosition="top"></p-tag>
+                  <p-tag icon="pi pi-exclamation-triangle" class="tag-custom" [value]="calcularTotalAPagar()" severity="danger" [style]="{ width: '150px', height: '40px'}" pTooltip="Desp. a Pagar" tooltipPosition="top"></p-tag>
                 </span>
 
                 <span class="ml-3">
-                  <p-tag icon="fa fa-share-alt" class="tag-custom" [value]="calcularTotalCompartilhado()" severity="info" [style]="{ width: '150px', height: '40px'}" pTooltip="Compartilhadas" tooltipPosition="top"></p-tag>
+                  <p-tag icon="fa fa-share-alt" class="tag-custom" [value]="calcularTotalCompartilhado()" severity="info" [style]="{ width: '150px', height: '40px'}" pTooltip="Desp. Compartilhada" tooltipPosition="top"></p-tag>
                 </span>
               </ng-template>
             </p-toolbar>
@@ -206,7 +206,7 @@
 
               <ng-template pTemplate="footer">
                 <tr>
-                  <td colspan="6" class="text-right"><strong>Total Geral:</strong></td>
+                  <td colspan="7" class="text-right"><strong>Total Geral:</strong></td>
                   <td class="text-right">
                     {{ calcularTotalGeral() | currency }}
                   </td>
@@ -432,7 +432,7 @@
                   </div>
 
                   <div class="field col-12">
-                    <label for="valor" class="font-semibold">Valor</label>
+                    <label for="valor" class="font-semibold">Valor Total Despesa</label>
                     <p-inputNumber
                       id="valor"
                       class="w-full"
@@ -459,40 +459,80 @@
                       <div class="flex align-items-center justify-content-center m-2">
                         <p-checkbox id="isDividirDespesaId" value="true" label="Desejo dividir esta despesa." [binary]="true" [(ngModel)]="isDividirDespesa" (click)="exibirModalUsuarios()"></p-checkbox>
                       </div>
-                      <div class="flex align-items-center justify-content-center border-round m-2">
-                        <p-checkbox id="isDividirIgualmente" class="ml-2" label="Desejo dividir igualmente o valor." [binary]="true" [(ngModel)]="isDividirIgualmente" (onChange)="dividirIgualmente()"></p-checkbox>
-                      </div>
-                      <div class="flex align-items-center justify-content-center m-2">
-                        <p-button label="Zerar Cálculos" icon="fa fa-eraser" [loading]="loading" (onClick)="resetDivisao()" size="small" />
-                      </div>
                     </div>
 
-                    <div *ngFor="let usuario of usuarioSelecionadoList" class="card flex flex-wrap gap-2 mt-2 w-full">
-                      <div class="flex-auto" *ngIf="usuario.id !== usuarioLogado?.id">
-                        <p-chip id="usuarioSelecionadoItem{{usuario.login}}" styleClass="pl-0 pr-3">
-                        <span class="bg-red-300 border-circle w-2rem h-2rem flex align-items-center justify-content-center" (click)="excluirDivisao(usuario)" *ngIf="(despesaTemp.id && despesaTemp.existeParcela == false) || despesaTemp.id == null">
-                          <i class="pi pi-times"></i>
-                        </span>
-                          <span class="ml-2 w-full">
-                            {{usuario.nome}}
-                          </span>
-                        </p-chip>
-                      </div>
+                    <div *ngIf="usuarioSelecionadoList.length > 0">
+                      <p-table [value]="usuarioSelecionadoList" [tableStyle]="{ 'min-width': '100%' }">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th style="width:40%">Nome</th>
+                            <th style="width:35%">Valor</th>
+                            <th style="width:10%" class="text-center">Pago</th>
+                            <th style="width:15%" class="text-center">Ações</th>
+                          </tr>
+                        </ng-template>
 
-                      <div class="flex-auto align-items-end" *ngIf="usuario.id !== usuarioLogado?.id">
-                        <p-inputNumber
-                          id="valorDivididoUsuario{{usuario.id}}"
-                          mode="currency"
-                          currency="BRL"
-                          locale="pt-BR"
-                          class="input-number-chip ml-0 w-12"
-                          placeholder="Digite o valor para dividir"
-                          [(ngModel)]="usuario.valorDividido"
-                          (onInput)="atualizarTotal()"
-                          [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"></p-inputNumber>
-                      </div>
+                        <ng-template pTemplate="body" let-usuario>
+                          <tr id="usuarioSelecionadoItem{{usuario.id}}">
+                            <td>{{ usuario.nome }}</td>
 
+                            <td>
+                              <p-inputNumber id="valorDivididoUsuario{{usuario.id}}"
+                                             mode="currency"
+                                             currency="BRL"
+                                             locale="pt-BR"
+                                             class=""
+                                             [(ngModel)]="usuario.valorDividido"
+                                             (onInput)="atualizarTotal()"
+                                             [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true">
+                              </p-inputNumber>
+                            </td>
+
+                            <td class="text-center">
+                              <p-checkbox
+                                id="statusPagamentoUsuario{{usuario.id}}"
+                                [binary]="true"
+                                [(ngModel)]="usuario.statusPagamento">
+                              </p-checkbox>
+                            </td>
+
+                            <td class="text-center">
+                              <span id="botaoExcluirUsuario{{usuario.id}}"
+                                    pTooltip="{{ 'label.excluir' | translate }}"
+                                    tooltipPosition="right"
+                                    (click)="excluirDivisao(usuario)"
+                                    *ngIf="(despesaTemp.id && despesaTemp.existeParcela == false && !usuario.logado) || despesaTemp.id == null && !usuario.logado">
+                                <i class="pi pi-trash" style="font-size: 1rem; color:red"></i>
+                              </span>
+                            </td>
+                          </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="footer">
+                          <tr>
+                            <td colspan="2" class="text-left">
+                              <p-checkbox
+                                id="isDividirIgualmente"
+                                class="ml-2"
+                                label="Desejo dividir igualmente o valor."
+                                [binary]="true"
+                                [(ngModel)]="isDividirIgualmente"
+                                (onChange)="dividirIgualmente()">
+                              </p-checkbox>
+                            </td>
+                            <td colspan="2" class="text-right">
+                              <p-button
+                                icon="fa fa-eraser"
+                                pTooltip="Zerar Valores"
+                                tooltipPosition="left"
+                                [loading]="loading"
+                                (onClick)="resetDivisao()"/>
+                            </td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
                     </div>
+
                   </div>
                 </div>
 

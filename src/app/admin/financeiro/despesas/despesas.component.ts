@@ -699,6 +699,8 @@ export class DespesasComponent {
       this.despesaTemp.usuariosResponsaveis = [];
     }
 
+    console.log(this.usuarioSelecionadoList);
+
   }
 
   excluirDivisao(usuario: Usuario) {
@@ -884,13 +886,13 @@ export class DespesasComponent {
 
   atualizarTotal() {
     // Calcula o total dos valores informados na divisão
-    let totalDividido = this.usuarioSelecionadoList
+    /*let totalDividido = this.usuarioSelecionadoList
       .filter(usuario =>usuario.valorDividido > 0) // Filtra apenas valores positivos
       .reduce((acc, usuario) => acc + usuario.valorDividido, 0);
 
     // Atualiza o valor da despesa para refletir o restante
     // @ts-ignore
-    this.despesaTemp.valor = this.valorOriginal - totalDividido;
+    this.despesaTemp.valor = this.valorOriginal - totalDividido;*/
   }
 
   dividirIgualmente() {
@@ -901,7 +903,7 @@ export class DespesasComponent {
     }
 
     if (this.isDividirIgualmente) {
-      let totalParticipantes = this.usuarioSelecionadoList.length + 1; // Usuários + o próprio campo despesaTemp.valor
+      let totalParticipantes = this.usuarioSelecionadoList.length; // Usuários + o próprio campo despesaTemp.valor
 
       if (totalParticipantes > 0) {
 
@@ -913,12 +915,8 @@ export class DespesasComponent {
           usuario.valorDividido = Number(valorPorParte.toFixed(2));
         });
 
-        // Atualiza o campo despesaTemp.valor com a parte que cabe a ele
-        this.despesaTemp.valor = valorPorParte;
       }
     }else{
-      this.despesaTemp.valor = null;
-
       // Atualiza o valor de cada usuário
       this.usuarioSelecionadoList.forEach(usuario => {
         // @ts-ignore
@@ -930,8 +928,6 @@ export class DespesasComponent {
   // Método para zerar a divisão e recomeçar
   resetDivisao() {
     this.isDividirIgualmente = false;
-    this.despesaTemp.valor = null;
-    this.valorOriginal = null; // Zera o valor inicial
 
     // Zera os valores de todos os usuários
     this.usuarioSelecionadoList.forEach(usuario => {
