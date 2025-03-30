@@ -36,7 +36,6 @@ export class ModalSelecaoUsuarioComponent {
     });
 
     this.atualizarTabela(true);
-
   }
 
   atualizarTabela(consumirAPI: boolean) {

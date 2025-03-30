@@ -8,13 +8,9 @@ import {TranslateService} from "@ngx-translate/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DespesaService} from "../../../../services/financeiro/despesa.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
-import {
-  InstituicaoFinanceiraUsuarioService
-} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
+import {InstituicaoFinanceiraUsuarioService} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {
-  ModalSelecaoUsuarioComponent
-} from "../../modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
+import {ModalSelecaoUsuarioComponent} from "../../modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
 import {Usuario} from "../../../../models/usuario.model";
 import {Observable} from "rxjs";
 import {UsuarioService} from "../../../../services/usuario/usuario.service";
@@ -38,7 +34,7 @@ export class DespesasComponent {
     private dialogService: DialogService,
     private renderer: Renderer2,
     private usuarioService: UsuarioService
-) {}
+  ) {}
 
   @ViewChild('dt') dt: any;
   protected readonly EnumService = EnumService;
@@ -90,7 +86,6 @@ export class DespesasComponent {
   usuarioSelecionadoList: Usuario[] = [];
   usuarioLogado: Usuario | undefined;
 
-  valorOriginal: number | undefined | null;
   isDividirIgualmente: boolean = false;
 
   msgErroDivisaoDespesas: string = "";
@@ -109,7 +104,6 @@ export class DespesasComponent {
       {label: 'Competência Atual'},
       {label: this.competenciaSelecionadaBreadcrumb.value}
     ];
-
 
 
     this.loading = false;
@@ -137,11 +131,9 @@ export class DespesasComponent {
       }
     });
 
-
     this.atualizarTabela(true);
 
     this.aplicarFiltroPadrao();
-
   }
 
   onCompetenciaChange() {
@@ -172,7 +164,6 @@ export class DespesasComponent {
         }else{
           this.competenciaSelecionadaParaPesquisa = competencia;
         }
-
       }
 
       return competencia;
@@ -196,15 +187,7 @@ export class DespesasComponent {
   }
 
   fecharModalPesquisa() {
-    this.limpaCamposFormPesquisa();
     this.exibirDialogPesquisa = false;
-  }
-
-  limpaCamposFormPesquisa(){
-
-  }
-
-  pesquisar() {
   }
 
   retornaSeverityDtVencimento(dtVencimento: any, statusPagamento: any) {
@@ -229,7 +212,6 @@ export class DespesasComponent {
     }
 
     return null;
-
   }
 
   abrirModalDespesa(despesaGrid: Despesa | null) {
@@ -240,24 +222,11 @@ export class DespesasComponent {
     this.exibirDialogCadastroDespesa = true;
 
     this.filtrarCategoriasPorTipo("DESPESA");
-    //this.parcelaSelecionada = this.parcelasList[0];
+
     this.statusPagamentoSelecionado = this.statusPagamentoList[1];
     this.existePrestacaoSelecionada = this.existePrestacaoList[1];
 
     if(despesaGrid?.id){
-
-      // @ts-ignore
-      this.valorOriginal = this.valorOriginal + despesaGrid.valor;
-
-      despesaGrid.usuariosResponsaveis.forEach(usuario => {
-        if(usuario.valorDividido == null || usuario.valorDividido == null == undefined){
-          usuario.valorDividido = 0;
-        }
-
-        // @ts-ignore
-        this.valorOriginal =  this.valorOriginal + Number(usuario.valorDividido);
-
-      });
 
       this.competenciaSelecionada = this.competenciasList[
         EnumService.getPosicaoEnumPorKey(
@@ -284,12 +253,23 @@ export class DespesasComponent {
         )
       ];
 
-      // @ts-ignore
+      //converte as datas para o componente p-calendar
+      let partesDtLancamento = despesaGrid.dtLancamento?.toString().split('-');
+      let partesDtVencimento = despesaGrid.dtVencimento?.toString().split('-');
 
-      despesaGrid.dtVencimento = new Date(despesaGrid.dtVencimento).toString();
-      const partes = despesaGrid.dtVencimento.split('-'); // ['2025', '03', '15']
-      this.despesaTemp.dtVencimento = new Date(+partes[0], +partes[1] - 1, +partes[2]); // Ano, mês (0-based), dia
+      console.log(partesDtVencimento);
+      console.log(partesDtLancamento);
 
+
+      if (partesDtLancamento) {
+        this.despesaTemp.dtLancamento = new Date(+partesDtLancamento[0], +partesDtLancamento[1] - 1, +partesDtLancamento[2]);
+      }
+
+      if (partesDtVencimento) {
+        this.despesaTemp.dtVencimento = new Date(+partesDtVencimento[0], +partesDtVencimento[1] - 1, +partesDtVencimento[2]);
+      }
+
+      //Seleciona Instituicao Financeira
       this.instituicaoFinanceiraUsuarioSelecionada = this.instituicoesFinanceirasUsuarioList.find(item => item.id === despesaGrid.instituicaoFinanceiraUsuarioId);
 
       this.existePrestacaoSelecionada = this.existePrestacaoList[
@@ -299,6 +279,7 @@ export class DespesasComponent {
         )
       ];
 
+      //Configura o parcelamento
       // @ts-ignore
       if(this.isValid(despesaGrid.qtdParcela) && despesaGrid.qtdParcela > 1){
         this.atualizarExistePrestacaoSelecionada(this.existePrestacaoList[0]);
@@ -308,13 +289,13 @@ export class DespesasComponent {
         this.atualizarExistePrestacaoSelecionada(this.existePrestacaoList[1]);
       }
 
+      //Preenche a parte da divisão
+      console.log(despesaGrid);
       if(Number(despesaGrid.usuariosResponsaveis.length) > 1){
         this.isDividirDespesa = true;
         this.usuarioSelecionadoList = despesaGrid.usuariosResponsaveis;
       }
-
     }else{
-      this.resetDivisao();
       this.limparCamposFormNovoDespesa();
       this.getCompeteciaSelecionada(true);
     }
@@ -331,17 +312,16 @@ export class DespesasComponent {
     this.parcelaSelecionada = null;
     this.exibirValorParcelado = false;
     this.exibirQtdParcela = false;
-
   }
 
   salvarDespesa() {
-    this.validarDivisaoDespesa()
-
+    if(!this.isValid(this.validarDivisaoDespesa())){
       if(this.despesa.id === null){
         this.inserir("DESPESA");
       }else{
         this.editar("DESPESA");
       }
+    }
   }
 
   private inserir(tipoRegistroFinanceiro: string) {
@@ -357,31 +337,42 @@ export class DespesasComponent {
     this.despesaTemp.nrParcela = 1;
 
     const dtVencimento = this.despesaTemp.dtVencimento;
+    const dtLancamento = this.despesaTemp.dtLancamento;
 
     if(this.isValid(dtVencimento)) {
       this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
 
-    if (this.despesaTemp.usuariosResponsaveis.length === 0 && this.usuarioLogado) {
-      this.despesaTemp.usuariosResponsaveis = [];
-
-      let usuario: Usuario = {
-        id: this.usuarioLogado.id,
-        nome: this.usuarioLogado.nome,
-        genero: this.usuarioLogado.genero,
-        email: this.usuarioLogado.email,
-        login: this.usuarioLogado.login,
-        senha: "",
-        valorDividido: this.despesaTemp.valor ?? 0,
-        statusPagamento: this.despesaTemp.statusPagamento === "SIM",
-        logado: true
-      };
-
-      //Criando um novo array com um NOVO objeto (spread operator para forçar nova referência)
-      this.despesaTemp.usuariosResponsaveis = [...this.despesaTemp.usuariosResponsaveis, { ...usuario }];
+    if(this.isValid(dtLancamento)) {
+      this.despesaTemp.dtLancamento = this.formatarDataParaEnvio(dtLancamento);
     }
 
-    console.log(this.despesaTemp);
+    this.despesaTemp.usuariosResponsaveis = [];
+
+    this.usuarioSelecionadoList.forEach(usuario => {
+      this.despesaTemp.usuariosResponsaveis.push(usuario)
+    });
+
+    if(
+        ( this.despesaTemp.usuariosResponsaveis.length === 0 && this.usuarioLogado) ||
+        ( this.despesaTemp.usuariosResponsaveis.length === 1 && this.despesaTemp.usuariosResponsaveis[0].id === this.usuarioLogado?.id )
+    ){
+
+        let usuario: Usuario = {
+          id: this.usuarioLogado.id,
+          nome: this.usuarioLogado.nome,
+          genero: this.usuarioLogado.genero,
+          email: this.usuarioLogado.email,
+          login: this.usuarioLogado.login,
+          senha: "",
+          valorDividido: this.despesaTemp.valor ?? 0,
+          statusPagamento: this.despesaTemp.statusPagamento === "SIM",
+          logado: true
+        };
+
+        //Criando um novo array com um NOVO objeto (spread operator para forçar nova referência)
+        this.despesaTemp.usuariosResponsaveis = [...this.despesaTemp.usuariosResponsaveis, { ...usuario }];
+    }
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)
@@ -404,7 +395,7 @@ export class DespesasComponent {
             detail: this.translate.instant('message.cadastradoSucesso')
           });
           this.fecharModal();
-          this.atualizarTabela(true); // Atualiza a tabela após inserir
+          this.atualizarTabela(true);
         },(error : any) => {
           const erro: string = this.erroService.retornaErroStatusCode(error);
           if (erro !== "") {
@@ -433,14 +424,42 @@ export class DespesasComponent {
 
     this.despesaTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
 
-    let dtVencimentoAux = this.despesaTemp.dtVencimento;
+    const dtLancamento = this.despesaTemp.dtLancamento;
+    const dtVencimento = this.despesaTemp.dtVencimento;
+
+    if(this.isValid(dtLancamento)) {
+      this.despesaTemp.dtLancamento = this.formatarDataParaEnvio(dtLancamento?.toString());
+    }
+
+    if(this.isValid(dtVencimento)) {
+      this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento?.toString());
+    }
 
     this.despesaTemp.usuariosResponsaveis = [];
 
-    this.despesaTemp.usuariosResponsaveis = this.usuarioSelecionadoList;
+    this.usuarioSelecionadoList.forEach(usuario => {
+      this.despesaTemp.usuariosResponsaveis.push(usuario)
+    });
 
-    if (this.usuarioLogado) {
-      this.despesaTemp.usuariosResponsaveis.push(this.usuarioLogado);
+    if(
+      ( this.despesaTemp.usuariosResponsaveis.length === 0 && this.usuarioLogado) ||
+      ( this.despesaTemp.usuariosResponsaveis.length === 1 && this.despesaTemp.usuariosResponsaveis[0].id === this.usuarioLogado?.id )
+    ){
+
+      let usuario: Usuario = {
+        id: this.usuarioLogado.id,
+        nome: this.usuarioLogado.nome,
+        genero: this.usuarioLogado.genero,
+        email: this.usuarioLogado.email,
+        login: this.usuarioLogado.login,
+        senha: "",
+        valorDividido: this.despesaTemp.valor ?? 0,
+        statusPagamento: this.despesaTemp.statusPagamento === "SIM",
+        logado: true
+      };
+
+      //Criando um novo array com um NOVO objeto (spread operator para forçar nova referência)
+      this.despesaTemp.usuariosResponsaveis = [...this.despesaTemp.usuariosResponsaveis, { ...usuario }];
     }
 
     if (this.isValid(this.despesaTemp.categoriaRegistroFinanceiro)
@@ -463,7 +482,7 @@ export class DespesasComponent {
 
           this.messageService.add({severity: 'success', summary: 'Sucesso', detail: this.translate.instant('message.editadoSucesso')});
           this.fecharModal();
-          this.atualizarTabela(false); // Atualiza a tabela após editar
+          this.atualizarTabela(true); // Atualiza a tabela após editar
         },
         (error) => {
           erro = this.erroService.retornaErroStatusCode(error);
@@ -621,7 +640,7 @@ export class DespesasComponent {
       const mes = String(data.getMonth() + 1).padStart(2, '0');
       const ano = data.getFullYear();
 
-      return `${dia}/${mes}/${ano}`;
+      return `${ano}-${mes}-${dia}`;
     }
     return '';
   }
@@ -684,12 +703,10 @@ export class DespesasComponent {
 
   exibirModalUsuarios() {
 
-    this.valorOriginal = this.despesaTemp.valor;
-
     if (this.isDividirDespesa){
       this.ref = this.dialogService.open(ModalSelecaoUsuarioComponent, {
         header: 'Selecione um usuário para dividir a despesa',
-        width: '100%%',
+        width: '50%',
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
         maximizable: true,
@@ -702,9 +719,6 @@ export class DespesasComponent {
       this.usuarioSelecionadoList = [];
       this.despesaTemp.usuariosResponsaveis = [];
     }
-
-    console.log(this.usuarioSelecionadoList);
-
   }
 
   excluirDivisao(usuario: Usuario) {
@@ -723,12 +737,6 @@ export class DespesasComponent {
     this.despesaTemp.usuariosResponsaveis = this.despesaTemp.usuariosResponsaveis.filter(u => u.id !== usuario.id);
   }
 
-  setValorOriginal() {
-    if (this.valorOriginal !== this.despesaTemp.valor) {
-      this.valorOriginal = this.despesaTemp.valor;
-    }
-  }
-
   calcularTotalGeral(): number {
     let valor: number =   0
 
@@ -737,12 +745,12 @@ export class DespesasComponent {
         registro =>
           registro.tipoRegistroFinanceiro === 'DESPESA' &&
           registro.competencia === this.competenciaSelecionadaParaPesquisa.key
-      ).reduce((total, registro) => total + (registro.valor || 0), 0);
+      ).reduce((total, registro) => total + (this.retornaColunaValor(registro) || 0), 0);
     }else{
       valor = this.despesasList.filter(
         registro =>
           registro.tipoRegistroFinanceiro === 'DESPESA' // Filtra apenas DESPESAS
-      ).reduce((total, registro) => total + (registro.valor || 0), 0);
+      ).reduce((total, registro) => total + (this.retornaColunaValor(registro) || 0), 0);
     }
 
     if(valor !== null){
@@ -763,7 +771,7 @@ export class DespesasComponent {
           registro.statusPagamento === 'NAO' && // Filtra apenas pagamentos com status "SIM"
           registro.competencia === this.competenciaSelecionadaBreadcrumb.key  // Filtra por competencia
       ).reduce(
-        (total, registro) => total + (registro.valor || 0), 0
+        (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
       );
     } else {
       if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
@@ -773,7 +781,7 @@ export class DespesasComponent {
             registro.statusPagamento === 'NAO' &&
             registro.competencia === this.competenciaSelecionadaParaPesquisa.key
         ).reduce(
-          (total, registro) => total + (registro.valor || 0), 0
+          (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
         );
       }else{
         valor = this.despesasList.filter(
@@ -781,7 +789,7 @@ export class DespesasComponent {
             registro.tipoRegistroFinanceiro === 'DESPESA' &&
             registro.statusPagamento === 'NAO'
         ).reduce(
-          (total, registro) => total + (registro.valor || 0), 0
+          (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
         );
       }
     }
@@ -803,7 +811,7 @@ export class DespesasComponent {
           registro.statusPagamento === 'SIM' && // Filtra apenas pagamentos com status "SIM"
           registro.competencia === this.competenciaSelecionadaBreadcrumb.key  // Filtra por competencia
       ).reduce(
-        (total, registro) => total + (registro.valor || 0), 0
+        (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
       );
     }else{
       if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
@@ -813,7 +821,7 @@ export class DespesasComponent {
             registro.statusPagamento === 'SIM' &&// Filtra apenas pagamentos com status "SIM"
             registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
         ).reduce(
-          (total, registro) => total + (registro.valor || 0), 0
+          (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
         );
       }else{
         valor = this.despesasList.filter(
@@ -821,7 +829,7 @@ export class DespesasComponent {
             registro.tipoRegistroFinanceiro === 'DESPESA' && // Filtra apenas DESPESAS
             registro.statusPagamento === 'SIM' // Filtra apenas pagamentos com status "SIM"
         ).reduce(
-          (total, registro) => total + (registro.valor || 0), 0
+          (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
         );
       }
     }
@@ -841,17 +849,17 @@ export class DespesasComponent {
         registro =>
           registro.existeDivisao && // Filtra apenas pagamentos com status "SIM"
           registro.competencia === this.competenciaSelecionadaBreadcrumb.key  // Filtra por competencia
-      ).reduce((total, registro) => total + (registro.valor || 0), 0);
+      ).reduce((total, registro) => total + (this.retornaColunaValor(registro) || 0), 0);
     }else{
       if(this.isValid(this.competenciaSelecionadaParaPesquisa)){
         valor = this.despesasList.filter(
           registro =>
             registro.existeDivisao &&
             registro.competencia === this.competenciaSelecionadaParaPesquisa.key  // Filtra por competencia
-        ).reduce((total, registro) => total + (registro.valor || 0), 0);
+        ).reduce((total, registro) => total + (this.retornaColunaValor(registro) || 0), 0);
       }else{
         valor = this.despesasList.filter(registro => registro.existeDivisao).reduce(
-          (total, registro) => total + (registro.valor || 0), 0
+          (total, registro) => total + (this.retornaColunaValor(registro) || 0), 0
         );
       }
     }
@@ -929,8 +937,7 @@ export class DespesasComponent {
     }
   }
 
-  validarDivisaoDespesa(): void {
-
+  validarDivisaoDespesa(): string {
     const tolerancia = 0.09; // Tolerância
     let valorTotalDespesa: number = 0;
     let valorTotalDeCotas: number = 0;
@@ -949,8 +956,7 @@ export class DespesasComponent {
       msgErro = 'A soma de todas as cotas deve ser igual ao VALOR TOTAL DESPESA';
     }
 
-    this.msgErroDivisaoDespesas = msgErro;
-    console.log(valorTotalDespesa + "_" + valorTotalDeCotas);
+    return this.msgErroDivisaoDespesas = msgErro;
   }
 
   resetDivisao() {
@@ -963,4 +969,11 @@ export class DespesasComponent {
     });
   }
 
+  retornaColunaValor(registro: Despesa) {
+    if(registro.valorDividido){
+      return registro.valorDividido;
+    }else {
+      return registro.valor;
+    }
+  }
 }
