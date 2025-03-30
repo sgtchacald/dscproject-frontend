@@ -93,6 +93,8 @@ export class DespesasComponent {
   valorOriginal: number | undefined | null;
   isDividirIgualmente: boolean = false;
 
+  msgErroDivisaoDespesas: string = "";
+
 
 
   ngOnInit() {
@@ -333,6 +335,8 @@ export class DespesasComponent {
   }
 
   salvarDespesa() {
+    this.validarDivisaoDespesa()
+
       if(this.despesa.id === null){
         this.inserir("DESPESA");
       }else{
@@ -358,26 +362,26 @@ export class DespesasComponent {
       this.despesaTemp.dtVencimento = this.formatarDataParaEnvio(dtVencimento);
     }
 
-    if (!this.despesaTemp.usuariosResponsaveis) {
+    if (this.despesaTemp.usuariosResponsaveis.length === 0 && this.usuarioLogado) {
       this.despesaTemp.usuariosResponsaveis = [];
+
+      let usuario: Usuario = {
+        id: this.usuarioLogado.id,
+        nome: this.usuarioLogado.nome,
+        genero: this.usuarioLogado.genero,
+        email: this.usuarioLogado.email,
+        login: this.usuarioLogado.login,
+        senha: "",
+        valorDividido: this.despesaTemp.valor ?? 0,
+        statusPagamento: this.despesaTemp.statusPagamento === "SIM",
+        logado: true
+      };
+
+      //Criando um novo array com um NOVO objeto (spread operator para forçar nova referência)
+      this.despesaTemp.usuariosResponsaveis = [...this.despesaTemp.usuariosResponsaveis, { ...usuario }];
     }
 
-    if (this.usuarioLogado) {
-      this.despesaTemp.usuariosResponsaveis.push(this.usuarioLogado);
-    }
-
-    if(this.usuarioSelecionadoList){
-      for (let usuario of this.usuarioSelecionadoList) {
-
-          if(usuario.id === this.usuarioLogado?.id){
-            if (this.despesaTemp.valor != null) {
-              usuario.valorDividido = this.despesaTemp.valor;
-            }
-          }
-
-          this.despesaTemp.usuariosResponsaveis.push(usuario);
-      }
-    }
+    console.log(this.despesaTemp);
 
     if (
       this.isValid(this.categoriaRegistroFinanceiroSelecionado)
@@ -925,7 +929,30 @@ export class DespesasComponent {
     }
   }
 
-  // Método para zerar a divisão e recomeçar
+  validarDivisaoDespesa(): void {
+
+    const tolerancia = 0.09; // Tolerância
+    let valorTotalDespesa: number = 0;
+    let valorTotalDeCotas: number = 0;
+    let msgErro: string = '';
+
+    // @ts-ignore
+    valorTotalDespesa = this.despesaTemp.valor;
+
+    this.usuarioSelecionadoList.forEach(usuario => {
+      valorTotalDeCotas += usuario.valorDividido
+    });
+
+    valorTotalDeCotas = Math.round(valorTotalDeCotas);
+
+    if(this.isDividirDespesa && this.isValid(this.despesaTemp.valor) && !(Math.abs(valorTotalDespesa - valorTotalDeCotas) < tolerancia)){
+      msgErro = 'A soma de todas as cotas deve ser igual ao VALOR TOTAL DESPESA';
+    }
+
+    this.msgErroDivisaoDespesas = msgErro;
+    console.log(valorTotalDespesa + "_" + valorTotalDeCotas);
+  }
+
   resetDivisao() {
     this.isDividirIgualmente = false;
 

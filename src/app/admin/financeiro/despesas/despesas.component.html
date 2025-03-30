@@ -459,7 +459,7 @@
                       <div class="flex align-items-center justify-content-center m-2">
                         <p-checkbox id="isDividirDespesaId" value="true" label="Desejo dividir esta despesa." [binary]="true" [(ngModel)]="isDividirDespesa" (click)="exibirModalUsuarios()"></p-checkbox>
                       </div>
-                    </div>
+                  </div>
 
                     <div *ngIf="usuarioSelecionadoList.length > 0">
                       <p-table [value]="usuarioSelecionadoList" [tableStyle]="{ 'min-width': '100%' }">
@@ -527,6 +527,13 @@
                                 tooltipPosition="left"
                                 [loading]="loading"
                                 (onClick)="resetDivisao()"/>
+                            </td>
+                          </tr>
+                          <tr *ngIf="isValid(msgErroDivisaoDespesas)">
+                            <td colspan="4" class="text-left">
+                              <small class="p-error">
+                                {{ msgErroDivisaoDespesas }}
+                              </small>
                             </td>
                           </tr>
                         </ng-template>
