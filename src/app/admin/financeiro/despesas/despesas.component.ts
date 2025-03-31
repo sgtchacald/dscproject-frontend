@@ -939,20 +939,18 @@ export class DespesasComponent {
 
   validarDivisaoDespesa(): string {
     const tolerancia = 0.09; // Tolerância
-    let valorTotalDespesa: number = 0;
+    // @ts-ignore
+    let valorTotalDespesa: number = parseFloat(this.despesaTemp.valor.toFixed(2));
     let valorTotalDeCotas: number = 0;
     let msgErro: string = '';
 
-    // @ts-ignore
-    valorTotalDespesa = this.despesaTemp.valor;
-
     this.usuarioSelecionadoList.forEach(usuario => {
-      valorTotalDeCotas += usuario.valorDividido
+      valorTotalDeCotas += usuario.valorDividido;
     });
 
-    valorTotalDeCotas = Math.round(valorTotalDeCotas);
+    valorTotalDeCotas = parseFloat(valorTotalDeCotas.toFixed(2));
 
-    if(this.isDividirDespesa && this.isValid(this.despesaTemp.valor) && !(Math.abs(valorTotalDespesa - valorTotalDeCotas) < tolerancia)){
+    if (this.isDividirDespesa && this.isValid(this.despesaTemp.valor) && !(Math.abs(valorTotalDespesa - valorTotalDeCotas) <= tolerancia)) {
       msgErro = 'A soma de todas as cotas deve ser igual ao VALOR TOTAL DESPESA';
     }
 
