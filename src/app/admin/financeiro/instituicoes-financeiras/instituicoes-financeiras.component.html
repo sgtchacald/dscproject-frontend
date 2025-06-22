@@ -119,6 +119,14 @@
             <small class="p-error" *ngIf="isSubmetido && !instituicaoTemp.nome">Nome é obrigatório.</small>
           </div>
 
+          <div class="field pt-4">
+            <label for="nome" class="font-semibold">Código</label>
+
+            <input pInputText id="codigo" [(ngModel)]="instituicaoTemp.codigo" class="w-full" autocomplete="off" maxlength="3"/>
+
+            <small class="p-error" *ngIf="isSubmetido && !instituicaoTemp.codigo">Código é obrigatório.</small>
+          </div>
+
           <div class="field pt-2">
             <label for="tipo" class="font-semibold">Tipo</label>
             <p-listbox id="tipo" [options]="tipoInstituicaoFinanceiraList" [(ngModel)]="tipoInstituicaoFinanceiraSelecionada" optionLabel="value"></p-listbox>
