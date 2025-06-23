@@ -1,0 +1,133 @@
+<nb-layout>
+  <nb-layout-header>
+    <app-header></app-header>
+  </nb-layout-header>
+
+  <nb-sidebar start>
+    <app-menu></app-menu>
+  </nb-sidebar>
+
+  <nb-layout-column class="p-2">
+    <div id="breadcrumb" class="pb-2">
+      <p-breadcrumb [model]="breadcrumbItens"></p-breadcrumb>
+    </div>
+
+    <nb-card id="container">
+      <nb-card-header>
+        <h5 class="m-0">Importar Despesas</h5>
+      </nb-card-header>
+
+      <nb-card-body>
+        <div class="flex">
+          <div class="flex flex-column">
+            <div class="flex flex-column gap-2 mb-7 mt-4">
+              <label for="competencia" class="font-semibold">Competência</label>
+
+              <p-dropdown
+                id="competencia"
+                [options]="competenciasList"
+                [(ngModel)]="competenciaSelecionada"
+                [filter]="true"
+                [showClear]="true"
+                filterBy="value"
+                optionLabel="value"
+                placeholder="Selecione a Competência"
+                class="w-full">
+
+                <ng-template pTemplate="selectedItem">
+                  <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionada">
+                    <div>{{ competenciaSelecionada.value }}</div>
+                  </div>
+                </ng-template>
+
+                <ng-template let-competencia pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ competencia.value }}</div>
+                  </div>
+                </ng-template>
+
+              </p-dropdown>
+
+              <small class="p-error" *ngIf="isSubmetido && !competenciaSelecionada">
+                {{ 'message.campoObrigatorio' | translate }}
+              </small>
+            </div>
+
+            <div class="flex flex-column gap-2">
+              <label for="instituicaoFinanceiraUsuario" class="font-semibold">Instituição Financeira</label>
+              <p-listbox
+                id="instituicaoFinanceiraUsuario"
+                optionLabel="instituicaoFinanceira.nome"
+                optionDisabled="disabled"
+                [options]="instituicoesFinanceirasUsuarioList"
+                [(ngModel)]="instituicaoFinanceiraUsuarioSelecionada">
+                <ng-template let-instituicao pTemplate="instituicaoFinanceiraUsuario">
+                  <div class="" *ngIf="instituicao.instituicaoFinanceira.tipoInstituicao == 'BANCO'">
+                    <i class="fa fa-university mr-2" aria-hidden="true"></i>
+                    {{ instituicao.instituicaoFinanceira.nome }}
+                  </div>
+
+                  <div class="" *ngIf="instituicao.instituicaoFinanceira.tipoInstituicao == 'CORRETORA'">
+                    <i class="fa fa-btc mr-3" aria-hidden="true"></i>
+                    {{ instituicao.instituicaoFinanceira.nome }}
+                  </div>
+
+                </ng-template>
+              </p-listbox>
+              <small class="p-error" *ngIf="isSubmetido && !instituicaoFinanceiraUsuarioSelecionada">{{ 'message.campoObrigatorio' | translate }}</small>
+            </div>
+          </div>
+
+          <!-- Div lateral -->
+          <div class="flex align-items-left justify-content-left">
+            <div class="card mt-5 ml-4">
+                <p-fileUpload
+                        name="file"
+                        method="post"
+                        chooseLabel="Selecionar Arquivo"
+                        uploadLabel="Fazer Upload"
+                        cancelLabel="Cancelar"
+                        url="{{uploadAPIUrl}}"
+                        (onBeforeUpload)="onBeforeUpload($event)"
+                        (onUpload)="onUpload($event)"
+                        (onError)="onError($event)"
+                        [multiple]="false"
+                        accept=".xls,.ofx,application/vnd.ms-excel"
+                        [maxFileSize]="1000000"
+                        class="w-full pt-8">
+
+                    <ng-template pTemplate="toolbar" class="pb-0">
+                        <div id="msgs-informativas-upload">
+                            <span>&nbsp;</span>
+                            <p class="text-gray-600">Faça upload de até 1 arquivo do tipo OFX ou XLS.</p>
+                            <p class="text-gray-600">Você também pode arrastar arquivos para a região abaixo.</p>
+                        </div>
+                    </ng-template>
+
+                    <ng-template pTemplate="file" let-file>
+                        <div class="flex align-items-center gap-2">
+                            <ng-container [ngSwitch]="getFileExtension(file.name)">
+                                <span *ngSwitchCase="'xls'"><i class="fa fa-file-excel-o text-green-500 text-2xl" aria-hidden="true"></i></span>
+                                <span *ngSwitchCase="'xlsx'"><i class="fa fa-file-excel-o text-green-500 text-2xl" aria-hidden="true"></i></span>
+                                <span *ngSwitchCase="'ofx'"><i class="fa fa-file-code-o text-blue-500 text-2xl" aria-hidden="true"></i></span>
+                                <span *ngSwitchDefault><i class="fa fa-file-o text-2xl" aria-hidden="true"></i></span>
+                            </ng-container>
+                            <span class="text-xl">{{ file.name }}</span>
+                        </div>
+                    </ng-template>
+
+                </p-fileUpload>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+
+      <nb-card-footer></nb-card-footer>
+    </nb-card>
+  </nb-layout-column>
+
+
+  <nb-layout-footer>
+    <app-footer></app-footer>
+  </nb-layout-footer>
+</nb-layout>

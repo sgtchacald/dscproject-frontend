@@ -42,7 +42,18 @@ export class MenuComponent {
         {
           title:'Despesa',
           icon: 'chevron-right-outline',
-          link:'/admin/financeiro/despesa',
+          children: [
+            {
+              title:'Manter',
+              icon: 'chevron-right-outline',
+              link:'/admin/financeiro/despesa',
+            },
+            {
+              title:'Importar',
+              icon: 'chevron-right-outline',
+              link:'/admin/financeiro/despesa/importar'
+            }
+          ]
         },
       ],
     },

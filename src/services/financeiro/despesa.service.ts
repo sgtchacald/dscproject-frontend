@@ -36,4 +36,8 @@ export class DespesaService {
   buscarTodos() {
     return this.httpClient.get<Despesa[]>(this.apiUrl + '/despesas');
   }
+
+  getUrlServicoUploadDespesa(){
+    return this.apiUrl + '/despesas/importar-dados-cartao';
+  }
 }
