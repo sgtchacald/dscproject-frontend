@@ -1,0 +1,27 @@
+/* Primeiro botão (Selecionar) */
+::ng-deep .p-fileupload-buttonbar .p-button:nth-child(1) {
+  margin-right: 1rem;
+}
+
+/* Segundo botão (Fazer Upload) */
+::ng-deep .p-fileupload-buttonbar .p-button:nth-child(2) {
+  margin-right: 1rem;
+}
+
+/* Terceiro botão (Cancelar) */
+::ng-deep .p-fileupload-buttonbar .p-button:nth-child(3) {
+}
+
+::ng-deep .p-fileupload-content {
+  height: 170px;
+}
+
+::ng-deep .pi-file-excel {
+  font-size: 1.4rem;
+}
+
+::ng-deep .pi-file {
+  font-size: 1.4rem;
+}
+
+

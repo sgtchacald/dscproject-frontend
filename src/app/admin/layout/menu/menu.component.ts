@@ -35,6 +35,17 @@ export class MenuComponent {
           ],
         },
         {
+          title:'Transações Bancárias',
+          icon: 'chevron-right-outline',
+          children: [
+            {
+              title:'Importar',
+              icon: 'chevron-right-outline',
+              link:'/admin/financeiro/transacoes-bancarias/importar',
+            }
+          ],
+        },
+        {
           title:'Receita',
           icon: 'chevron-right-outline',
           link:'/admin/financeiro/receita',

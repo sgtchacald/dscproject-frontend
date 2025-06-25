@@ -50,6 +50,7 @@ import {CardModule} from "primeng/card";
 import {FileUploadModule} from "primeng/fileupload";
 import {BadgeModule} from "primeng/badge";
 import {MessageModule} from "primeng/message";
+import { TransacaoBanariaImportarComponent } from './financeiro/transacao-banaria-importar/transacao-banaria-importar.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -76,6 +77,7 @@ const I18N_CONFIG = {
     ModalSelecaoUsuarioComponent,
     ReceitasComponent,
     DespesasImportarComponent,
+    TransacaoBanariaImportarComponent,
   ],
   imports: [
     CommonModule,

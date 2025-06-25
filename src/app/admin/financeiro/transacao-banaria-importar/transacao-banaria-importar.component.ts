@@ -5,21 +5,15 @@ import {
   InstituicaoFinanceiraUsuarioService
 } from "../../../../services/financeiro/instituicao-financeira-usuario.service";
 import {FileBeforeUploadEvent, FileUploadEvent} from "primeng/fileupload";
-import {DespesaService} from 'src/services/financeiro/despesa.service';
-import {HttpErrorResponse} from '@angular/common/http';
-
-interface UploadEvent {
-  originalEvent: Event;
-  files: File[];
-}
+import {HttpErrorResponse} from "@angular/common/http";
+import {TransacaoBancariaService} from "../../../../services/financeiro/transacao-bancaria.service";
 
 @Component({
-  selector: 'app-despesas-importar',
-  templateUrl: './despesas-importar.component.html',
-  styleUrls: ['./despesas-importar.component.scss']
+  selector: 'app-transacao-banaria-importar',
+  templateUrl: './transacao-banaria-importar.component.html',
+  styleUrls: ['./transacao-banaria-importar.component.scss']
 })
-
-export class DespesasImportarComponent {
+export class TransacaoBanariaImportarComponent {
 
   breadcrumbItens: MenuItem[] | undefined;
 
@@ -37,7 +31,7 @@ export class DespesasImportarComponent {
     private config: PrimeNGConfig,
     private messageService: MessageService,
     private instituicaoFinanceiraUsuarioService: InstituicaoFinanceiraUsuarioService,
-    private despesaService: DespesaService
+    private transacaoBancariaService: TransacaoBancariaService
   ) {}
 
   ngOnInit() {
@@ -46,23 +40,23 @@ export class DespesasImportarComponent {
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
-      {label: 'Despesa'},
-      {label: 'Importar Despesas'},
+      {label: 'Transações Bancárias'},
+      {label: 'Importar Extratos de Transações Bancárias'},
     ];
 
     this.getInstituicoesFinanceirasUsuario();
 
-    this.uploadAPIUrl = this.despesaService.getUrlServicoUploadDespesa();
+    this.uploadAPIUrl = this.transacaoBancariaService.getUrlServicoUploadTransacaoBancaria();
 
   }
 
   onBeforeUpload(event: FileBeforeUploadEvent) {
 
-    if (this.competenciaSelecionada == null ||  this.competenciaSelecionada == undefined || this.competenciaSelecionada == "") {
+    if (this.competenciaSelecionada == null || this.competenciaSelecionada == "") {
       this.messageService.add({severity: 'error', summary: 'Erro Upload', detail: 'Competencia deve ser selecionada.'});
     }
 
-    if (this.instituicaoFinanceiraUsuarioSelecionada == null ||  this.instituicaoFinanceiraUsuarioSelecionada == undefined) {
+    if (this.instituicaoFinanceiraUsuarioSelecionada == null) {
       this.messageService.add({severity: 'error', summary: 'Erro Upload', detail: 'Instituição Financeira deve ser selecionada.'});
     }
 
@@ -156,5 +150,4 @@ export class DespesasImportarComponent {
       return 'Erro inesperado no servidor. Verifique o arquivo ou tente novamente.';
     }
   }
-
 }
