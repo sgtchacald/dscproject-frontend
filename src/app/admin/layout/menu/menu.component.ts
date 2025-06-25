@@ -12,7 +12,7 @@ export class MenuComponent {
     {
       title: 'Home',
       icon: 'home-outline',
-      link:'/administracao',
+      link:'/admin',
     },
     {
       title: 'Financeiro',
@@ -20,48 +20,54 @@ export class MenuComponent {
       children: [
         {
           title:'Instituições Financeiras',
-          icon: 'chevron-right-outline',
+          icon: 'briefcase',
           children: [
             {
               title:'Manter',
-              icon: 'chevron-right-outline',
+              icon: 'plus-square-outline',
               link:'/admin/financeiro/instituicao-financeira',
             },
             {
               title:'Vincular ao Usuário',
-              icon: 'chevron-right-outline',
+              icon: 'sync',
               link:'/admin/financeiro/instituicao-financeira-usuario',
             }
           ],
         },
         {
           title:'Transações Bancárias',
-          icon: 'chevron-right-outline',
+          icon: 'expand-outline',
           children: [
             {
-              title:'Importar',
-              icon: 'chevron-right-outline',
+              title:'Importar Extratos',
+              icon: 'cloud-upload-outline',
               link:'/admin/financeiro/transacoes-bancarias/importar',
             }
           ],
         },
         {
           title:'Receita',
-          icon: 'chevron-right-outline',
-          link:'/admin/financeiro/receita',
-        },
-        {
-          title:'Despesa',
-          icon: 'chevron-right-outline',
+          icon: 'trending-up',
           children: [
             {
               title:'Manter',
-              icon: 'chevron-right-outline',
+              icon: 'plus-outline',
+              link:'/admin/financeiro/receita'
+            }
+          ]
+        },
+        {
+          title:'Despesa',
+          icon: 'trending-down',
+          children: [
+            {
+              title:'Manter',
+              icon: 'plus-outline',
               link:'/admin/financeiro/despesa',
             },
             {
-              title:'Importar',
-              icon: 'chevron-right-outline',
+              title:'Importar do Cartão',
+              icon: 'cloud-upload-outline',
               link:'/admin/financeiro/despesa/importar'
             }
           ]
