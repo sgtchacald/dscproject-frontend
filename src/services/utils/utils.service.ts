@@ -22,4 +22,8 @@ export class UtilsService {
 
     return resultado ? resultado : undefined;
   }
+
+  alternaValor(valor: boolean){
+    return !valor;
+  }
 }

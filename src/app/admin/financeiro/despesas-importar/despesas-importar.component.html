@@ -20,7 +20,7 @@
       <nb-card-body>
         <div class="flex">
           <div class="flex flex-column">
-            <div class="flex flex-column gap-2 mb-7 mt-4">
+            <div class="flex flex-column gap-2  mt-4">
               <label for="competencia" class="font-semibold">Competência</label>
 
               <p-dropdown
@@ -51,6 +51,27 @@
               <small class="p-error" *ngIf="isSubmetido && !competenciaSelecionada">
                 {{ 'message.campoObrigatorio' | translate }}
               </small>
+            </div>
+
+            <div class="flex flex-column gap-2 mb-4 mt-4">
+              <label for="dtVencimento" class="font-semibold">Data Vencimento</label>
+              <p-calendar
+                id="dtVencimento"
+                [(ngModel)]="dtVencimento"
+                [showIcon]="true"
+                (onInput)="validarData($event)"
+                [showButtonBar]="true"
+                [readonlyInput]="true"
+                dateFormat="dd/mm/yy"
+                placeholder="dia/mês/ano"
+                appendTo="body"
+                panelStyleClass="dropdown-up"
+                class="w-full">
+              </p-calendar>
+
+              <!--<small class="p-error" *ngIf="isSubmetido && !despesaTemp.dtVencimento">
+                {{ 'message.campoObrigatorio' | translate }}
+              </small> -->
             </div>
 
             <div class="flex flex-column gap-2">

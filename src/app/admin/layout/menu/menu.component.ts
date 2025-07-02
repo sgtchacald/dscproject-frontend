@@ -19,12 +19,12 @@ export class MenuComponent {
       icon: 'credit-card-outline',
       children: [
         {
-          title:'Instituições Financeiras',
+          title:'Instituição Financeira',
           icon: 'briefcase',
           children: [
             {
               title:'Manter',
-              icon: 'plus-square-outline',
+              icon: 'chevron-right-outline',
               link:'/admin/financeiro/instituicao-financeira',
             },
             {
@@ -35,42 +35,31 @@ export class MenuComponent {
           ],
         },
         {
-          title:'Transações Bancárias',
-          icon: 'expand-outline',
-          children: [
-            {
-              title:'Importar Extratos',
-              icon: 'cloud-upload-outline',
-              link:'/admin/financeiro/transacoes-bancarias/importar',
-            }
-          ],
-        },
-        {
           title:'Receita',
           icon: 'trending-up',
-          children: [
-            {
-              title:'Manter',
-              icon: 'plus-outline',
-              link:'/admin/financeiro/receita'
-            }
-          ]
+          link:'/admin/financeiro/receita',
         },
         {
           title:'Despesa',
           icon: 'trending-down',
-          children: [
-            {
-              title:'Manter',
-              icon: 'plus-outline',
-              link:'/admin/financeiro/despesa',
-            },
-            {
-              title:'Importar do Cartão',
-              icon: 'cloud-upload-outline',
-              link:'/admin/financeiro/despesa/importar'
-            }
-          ]
+          link:'/admin/financeiro/despesa'
+        },
+
+        {
+          title:'Importações',
+          icon: 'cloud-upload-outline',
+            children: [
+              {
+                title:'Despesas Cartão',
+                icon: 'chevron-right-outline',
+                link:'/admin/financeiro/despesa/importar'
+              },
+              {
+                title:'T. Bancária',
+                icon: 'chevron-right-outline',
+                link:'/admin/financeiro/transacoes-bancarias/importar',
+              }
+            ]
         },
       ],
     },

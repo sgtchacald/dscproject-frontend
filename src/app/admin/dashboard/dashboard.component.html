@@ -13,16 +13,26 @@
     </div>
 
     <div id="conteudo">
-      <nb-card>
-        <nb-card-body>
-          <p>
-            Aqui irão os <b>CARDS</b> com os gráficos da página de dashboards do sistema.
-          </p>
-        </nb-card-body>
-      </nb-card>
+      <div class="flex flex-wrap gap-3">
+
+      <div class="flex flex-column p-0 flex-1 min-w-15rem">
+        <app-total-receitas-competencia></app-total-receitas-competencia>
+      </div>
+
+        <div class="flex flex-column p-0 flex-1 min-w-15rem">
+        <app-total-despesas-competencia></app-total-despesas-competencia>
+      </div>
+
+        <div class="flex flex-column p-0 flex-1 min-w-15rem">
+          <app-total-saldo-mensal-competencia></app-total-saldo-mensal-competencia>
+        </div>
+
+        <div class="flex flex-column p-0 flex-1 min-w-15rem">
+          <app-total-saldo-geral-competencia></app-total-saldo-geral-competencia>
+        </div>
+      </div>
     </div>
   </nb-layout-column>
-
 
   <nb-layout-footer>
     <app-footer></app-footer>

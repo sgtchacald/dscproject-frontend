@@ -30,6 +30,8 @@ export class DespesasImportarComponent {
   competenciasList: any[] = [];
   competenciaSelecionada: any;
 
+  dtVencimento: string | undefined | null | Date;
+
   instituicoesFinanceirasUsuarioList: InstituicaoFinanceiraUsuario[] = [];
   instituicaoFinanceiraUsuarioSelecionada: InstituicaoFinanceiraUsuario | undefined;
 
@@ -62,9 +64,15 @@ export class DespesasImportarComponent {
       this.messageService.add({severity: 'error', summary: 'Erro Upload', detail: 'Competencia deve ser selecionada.'});
     }
 
+    if(!(this.dtVencimento !== null && this.dtVencimento !== undefined && !(typeof this.dtVencimento === 'string' && this.dtVencimento.trim() === ""))) {
+      this.messageService.add({severity: 'error', summary: 'Erro Upload', detail: 'Data Vencimento deve ser selecionada.'});
+    }
+
     if (this.instituicaoFinanceiraUsuarioSelecionada == null ||  this.instituicaoFinanceiraUsuarioSelecionada == undefined) {
       this.messageService.add({severity: 'error', summary: 'Erro Upload', detail: 'Instituição Financeira deve ser selecionada.'});
     }
+
+    event.formData.append('dtVencimento', JSON.stringify(this.dtVencimento));
 
     event.formData.append('competencia', this.competenciaSelecionada.key);
 
@@ -155,6 +163,27 @@ export class DespesasImportarComponent {
     } catch {
       return 'Erro inesperado no servidor. Verifique o arquivo ou tente novamente.';
     }
+  }
+
+  validarData(event: any) {
+    let input = event.target.value;
+
+    // Remove caracteres não numéricos (exceto barras já adicionadas)
+    input = input.replace(/[^0-9/]/g, '');
+
+    // Adiciona a barra automaticamente após 2 e 5 caracteres
+    if (input.length === 2 || input.length === 5) {
+      if (!input.endsWith('/')) {
+        input += '/';
+      }
+    }
+
+    // Limita o comprimento máximo para "dd/mm/yyyy"
+    if (input.length > 10) {
+      input = input.slice(0, 10);
+    }
+
+    event.target.value = input;
   }
 
 }

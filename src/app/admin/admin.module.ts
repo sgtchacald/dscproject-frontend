@@ -51,6 +51,10 @@ import {FileUploadModule} from "primeng/fileupload";
 import {BadgeModule} from "primeng/badge";
 import {MessageModule} from "primeng/message";
 import { TransacaoBanariaImportarComponent } from './financeiro/transacao-banaria-importar/transacao-banaria-importar.component';
+import { TotalDespesasCompetenciaComponent } from './dashboard/total-despesas-competencia/total-despesas-competencia.component';
+import { TotalReceitasCompetenciaComponent } from './dashboard/total-receitas-competencia/total-receitas-competencia.component';
+import { TotalSaldoMensalCompetenciaComponent } from './dashboard/total-saldo-mensal-competencia/total-saldo-mensal-competencia.component';
+import { TotalSaldoGeralCompetenciaComponent } from './dashboard/total-saldo-geral-competencia/total-saldo-geral-competencia.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -78,6 +82,10 @@ const I18N_CONFIG = {
     ReceitasComponent,
     DespesasImportarComponent,
     TransacaoBanariaImportarComponent,
+    TotalDespesasCompetenciaComponent,
+    TotalReceitasCompetenciaComponent,
+    TotalSaldoMensalCompetenciaComponent,
+    TotalSaldoGeralCompetenciaComponent,
   ],
   imports: [
     CommonModule,
