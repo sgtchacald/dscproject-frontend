@@ -64,16 +64,16 @@ import {
 } from './financeiro/transacao-banaria-importar/transacao-banaria-importar.component';
 import {
   TotalDespesasCompetenciaComponent
-} from './dashboard/total-despesas-competencia/total-despesas-competencia.component';
+} from './dashboard/card-total-despesas-competencia/total-despesas-competencia.component';
 import {
   TotalReceitasCompetenciaComponent
-} from './dashboard/total-receitas-competencia/total-receitas-competencia.component';
+} from './dashboard/card-total-receitas-competencia/total-receitas-competencia.component';
 import {
   TotalSaldoMensalCompetenciaComponent
-} from './dashboard/total-saldo-mensal-competencia/total-saldo-mensal-competencia.component';
+} from './dashboard/card-total-saldo-mensal-competencia/total-saldo-mensal-competencia.component';
 import {
   TotalSaldoGeralCompetenciaComponent
-} from './dashboard/total-saldo-geral-competencia/total-saldo-geral-competencia.component';
+} from './dashboard/card-total-saldo-geral-competencia/total-saldo-geral-competencia.component';
 import {InibeValoresComponent} from './component-util/inibe-valores/inibe-valores.component';
 
 export function HttpLoaderFactory(http: HttpClient) {

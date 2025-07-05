@@ -11,7 +11,7 @@ import {DialogService} from "primeng/dynamicdialog";
 import {UsuarioService} from "../../../../services/usuario/usuario.service";
 
 @Component({
-  selector: 'app-total-receitas-competencia',
+  selector: 'app-card-total-receitas-competencia',
   templateUrl: './total-receitas-competencia.component.html',
   styleUrls: ['./total-receitas-competencia.component.scss']
 })
