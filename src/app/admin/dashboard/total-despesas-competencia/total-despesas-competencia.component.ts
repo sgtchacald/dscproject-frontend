@@ -7,18 +7,6 @@ import {UtilsService} from "../../../../services/utils/utils.service";
   styleUrls: ['./total-despesas-competencia.component.scss']
 })
 export class TotalDespesasCompetenciaComponent {
-  exibeSaldo: boolean = false;
-
-  constructor(
-    private utilService: UtilsService
-  ) {}
-
-  ngOnInit() {
-    this.exibeSaldo = false;
-  }
-
-  exibirSaldo(){
-    console.log('exibirSaldo' + this.exibeSaldo);
-    return this.utilService.alternaValor(this.exibeSaldo);
-  }
+  constructor() {}
+  ngOnInit() {}
 }

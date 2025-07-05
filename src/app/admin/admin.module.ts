@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, NgModule} from "@angular/core";
+import {NgModule} from "@angular/core";
 import {HeaderComponent} from "./layout/header/header.component";
 import {MenuComponent} from "./layout/menu/menu.component";
 import {FooterComponent} from "./layout/footer/footer.component";
@@ -7,16 +7,23 @@ import {CommonModule} from "@angular/common";
 import {AdminRoutingModule} from "./admin-routing.module";
 import {
   NbActionsModule,
-  NbCardModule, NbContextMenuModule, NbIconModule,
-  NbLayoutModule, NbMenuModule, NbMenuService,
-  NbSidebarModule, NbSidebarService,
+  NbCardModule,
+  NbContextMenuModule,
+  NbIconModule,
+  NbLayoutModule,
+  NbMenuModule,
+  NbMenuService,
+  NbSidebarModule,
+  NbSidebarService,
   NbThemeModule,
   NbUserModule
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {LayoutService} from "../../utils/layout.service";
-import { InstituicoesFinanceirasComponent } from './financeiro/instituicoes-financeiras/instituicoes-financeiras.component';
+import {
+  InstituicoesFinanceirasComponent
+} from './financeiro/instituicoes-financeiras/instituicoes-financeiras.component';
 import {ToastModule} from "primeng/toast";
 import {ToolbarModule} from "primeng/toolbar";
 import {ButtonModule} from "primeng/button";
@@ -32,8 +39,10 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
-import { InstituicoesFinanceirasUsuarioComponent } from './financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component';
-import { DespesasComponent } from './financeiro/despesas/despesas.component';
+import {
+  InstituicoesFinanceirasUsuarioComponent
+} from './financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component';
+import {DespesasComponent} from './financeiro/despesas/despesas.component';
 import {TagModule} from "primeng/tag";
 import {SelectButtonModule} from "primeng/selectbutton";
 import {RadioButtonModule} from "primeng/radiobutton";
@@ -41,20 +50,31 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {CalendarModule} from "primeng/calendar";
 import {KeyFilterModule} from "primeng/keyfilter";
 import {CheckboxModule} from "primeng/checkbox";
-import { ModalSelecaoUsuarioComponent } from './modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component';
+import {ModalSelecaoUsuarioComponent} from './component-util/modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component';
 import {DialogService, DynamicDialogModule} from "primeng/dynamicdialog";
 import {ChipModule} from "primeng/chip";
-import { ReceitasComponent } from './financeiro/receitas/receitas.component';
-import { DespesasImportarComponent } from './financeiro/despesas-importar/despesas-importar.component';
+import {ReceitasComponent} from './financeiro/receitas/receitas.component';
+import {DespesasImportarComponent} from './financeiro/despesas-importar/despesas-importar.component';
 import {CardModule} from "primeng/card";
 import {FileUploadModule} from "primeng/fileupload";
 import {BadgeModule} from "primeng/badge";
 import {MessageModule} from "primeng/message";
-import { TransacaoBanariaImportarComponent } from './financeiro/transacao-banaria-importar/transacao-banaria-importar.component';
-import { TotalDespesasCompetenciaComponent } from './dashboard/total-despesas-competencia/total-despesas-competencia.component';
-import { TotalReceitasCompetenciaComponent } from './dashboard/total-receitas-competencia/total-receitas-competencia.component';
-import { TotalSaldoMensalCompetenciaComponent } from './dashboard/total-saldo-mensal-competencia/total-saldo-mensal-competencia.component';
-import { TotalSaldoGeralCompetenciaComponent } from './dashboard/total-saldo-geral-competencia/total-saldo-geral-competencia.component';
+import {
+  TransacaoBanariaImportarComponent
+} from './financeiro/transacao-banaria-importar/transacao-banaria-importar.component';
+import {
+  TotalDespesasCompetenciaComponent
+} from './dashboard/total-despesas-competencia/total-despesas-competencia.component';
+import {
+  TotalReceitasCompetenciaComponent
+} from './dashboard/total-receitas-competencia/total-receitas-competencia.component';
+import {
+  TotalSaldoMensalCompetenciaComponent
+} from './dashboard/total-saldo-mensal-competencia/total-saldo-mensal-competencia.component';
+import {
+  TotalSaldoGeralCompetenciaComponent
+} from './dashboard/total-saldo-geral-competencia/total-saldo-geral-competencia.component';
+import {InibeValoresComponent} from './component-util/inibe-valores/inibe-valores.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -86,6 +106,7 @@ const I18N_CONFIG = {
     TotalReceitasCompetenciaComponent,
     TotalSaldoMensalCompetenciaComponent,
     TotalSaldoGeralCompetenciaComponent,
+    InibeValoresComponent,
   ],
   imports: [
     CommonModule,

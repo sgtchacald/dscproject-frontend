@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,4 @@ export class UtilsService {
     return resultado ? resultado : undefined;
   }
 
-  alternaValor(valor: boolean){
-    return !valor;
-  }
 }

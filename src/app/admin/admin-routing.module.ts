@@ -7,7 +7,7 @@ import {
   InstituicoesFinanceirasUsuarioComponent
 } from "./financeiro/instituicoes-financeiras-usuario/instituicoes-financeiras-usuario.component";
 import {DespesasComponent} from "./financeiro/despesas/despesas.component";
-import {ModalSelecaoUsuarioComponent} from "./modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
+import {ModalSelecaoUsuarioComponent} from "./component-util/modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
 import {ReceitasComponent} from "./financeiro/receitas/receitas.component";
 import {DespesasImportarComponent} from "./financeiro/despesas-importar/despesas-importar.component";
 import {

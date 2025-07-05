@@ -26,8 +26,4 @@ export class TotalReceitasCompetenciaComponent {
     this.exibeSaldo = false;
   }
 
-  exibirSaldo(){
-    return this.utilService.alternaValor(this.exibeSaldo);
-  }
-
 }

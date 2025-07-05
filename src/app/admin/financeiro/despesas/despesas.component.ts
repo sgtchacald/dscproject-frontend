@@ -10,7 +10,7 @@ import {DespesaService} from "../../../../services/financeiro/despesa.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
 import {InstituicaoFinanceiraUsuarioService} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {ModalSelecaoUsuarioComponent} from "../../modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
+import {ModalSelecaoUsuarioComponent} from "../../component-util/modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
 import {Usuario} from "../../../../models/usuario.model";
 import {Observable} from "rxjs";
 import {UsuarioService} from "../../../../services/usuario/usuario.service";

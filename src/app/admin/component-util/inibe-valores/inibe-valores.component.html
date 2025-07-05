@@ -1,0 +1,9 @@
+<span *ngIf="!exibeValor; else exibirValorBlock">
+  <i (click)="exibirValor()" class="cursor-pointer text-xl pi text-500 pi pi-eye"></i>
+  *******
+</span>
+
+<ng-template #exibirValorBlock>
+  <i (click)="exibirValor()" class="cursor-pointer text-xl pi text-500 pi pi-eye-slash"></i>
+  {{ valor }}
+</ng-template>

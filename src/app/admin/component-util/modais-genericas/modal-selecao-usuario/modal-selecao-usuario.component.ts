@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Usuario} from "../../../../models/usuario.model";
-import {UsuarioService} from "../../../../services/usuario/usuario.service";
+import {Usuario} from "../../../../../models/usuario.model";
+import {UsuarioService} from "../../../../../services/usuario/usuario.service";
 import {Observable} from "rxjs";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 

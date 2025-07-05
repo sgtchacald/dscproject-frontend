@@ -7,14 +7,12 @@
 
     <div id="card-despesa-saldo" class="flex justify-content-between align-items-center mt-3 text-xl text-left">
       <span>R$ </span>
-      <span><span *ngIf="!exibeSaldo; else exibirSaldoBlock"><i (click)="exibirSaldo()" class="text-lg pi text-500 pi pi-eye-slash"></i></span> ***** </span>
+      <app-inibe-valores [valor]="'8.000,00'"></app-inibe-valores>
     </div>
   </nb-card-body>
 </nb-card>
 
-<ng-template #exibirSaldoBlock>
-  <i class="text-3xl pi text-500 pi pi-eye"></i>
-</ng-template>
+
 
 
 
