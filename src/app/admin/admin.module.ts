@@ -75,6 +75,8 @@ import {
   TotalSaldoGeralCompetenciaComponent
 } from './dashboard/card-total-saldo-geral-competencia/total-saldo-geral-competencia.component';
 import {InibeValoresComponent} from './component-util/inibe-valores/inibe-valores.component';
+import { GraficoDespesasPorCategoriaComponent } from './dashboard/grafico-despesas-por-categoria/grafico-despesas-por-categoria.component';
+import { GraficoResumoAnualComponent } from './dashboard/grafico-resumo-anual/grafico-resumo-anual.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/admin/', '.json');
@@ -107,6 +109,8 @@ const I18N_CONFIG = {
     TotalSaldoMensalCompetenciaComponent,
     TotalSaldoGeralCompetenciaComponent,
     InibeValoresComponent,
+    GraficoDespesasPorCategoriaComponent,
+    GraficoResumoAnualComponent,
   ],
   imports: [
     CommonModule,
