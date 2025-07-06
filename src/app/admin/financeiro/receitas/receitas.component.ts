@@ -47,6 +47,7 @@ export class ReceitasComponent {
 
   competenciasList: any[] = [];
   competenciaSelecionada: any;
+  competenciaSelecionadaBreadcrumb: any;
   competenciaSelecionadaParaPesquisa: any;
   exibirOutrasCompetencias: boolean = false;
 
@@ -62,12 +63,14 @@ export class ReceitasComponent {
   ngOnInit() {
     this.getCompeteciaSelecionada(false);
 
+    this.competenciaSelecionadaBreadcrumb = this.competenciaSelecionadaParaPesquisa;
+
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
       {label: 'Gerenciar Receitas'},
       {label: 'Competência Atual'},
-      {label: this.competenciaSelecionadaParaPesquisa.value}
+      {label: this.competenciaSelecionadaBreadcrumb.value}
     ];
 
     this.loading = false;
@@ -90,7 +93,7 @@ export class ReceitasComponent {
 
   getCompeteciaSelecionada(indPreencheObjeto: boolean) {
     const anoCorrente = new Date().getFullYear();
-    const mesAtual = new Date().getMonth(); // Retorna de 0 (Janeiro) a 11 (Dezembro)
+    const mesAtual = new Date().getMonth() - 1; // Retorna de 0 (Janeiro) a 11 (Dezembro)
 
     const meses = [
       'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -110,14 +113,10 @@ export class ReceitasComponent {
         }else{
           this.competenciaSelecionadaParaPesquisa = competencia;
         }
-
       }
 
       return competencia;
     });
-
-    console.log(this.competenciasList);
-
   }
 
   aplicarFiltroPadrao($event?: Event) {
