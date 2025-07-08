@@ -35,4 +35,9 @@ export class ReceitaService {
   buscarTodos() {
     return this.httpClient.get<Receita[]>(this.apiUrl + '/receitas');
   }
+
+  buscarTotalPorCompetencia(competencia: string) {
+    return this.httpClient.get(this.apiUrl + `/receitas/buscar-total-por-competencia/${competencia}`);
+  }
+
 }

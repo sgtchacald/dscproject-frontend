@@ -40,4 +40,8 @@ export class DespesaService {
   getUrlServicoUploadDespesa(){
     return this.apiUrl + '/despesas/importar-dados-cartao';
   }
+
+  buscarTotalPorCompetencia(competencia: string) {
+    return this.httpClient.get(this.apiUrl + `/despesas/buscar-total-por-competencia/${competencia}`);
+  }
 }

@@ -38,4 +38,8 @@ export class TransacaoBancariaService {
     return this.apiUrl + '/transacao-bancaria/importar-dados-bancarios';
   }
 
+  buscarSaldoPorCompetencia(competencia: string) {
+    return this.httpClient.get(this.apiUrl + `/transacao-bancaria/buscar-saldo-competencia/${competencia}`);
+  }
+
 }

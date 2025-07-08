@@ -23,4 +23,12 @@ export class UtilsService {
     return resultado ? resultado : undefined;
   }
 
+  getCompeteciaAtual() {
+    let anoCorrente = new Date().getFullYear();
+    let mesAtual = new Date().getMonth();
+    let competenciaAtual :string = `${anoCorrente}-${mesAtual.toString().padStart(2, '0')}`;
+
+    return competenciaAtual;
+  }
+
 }
