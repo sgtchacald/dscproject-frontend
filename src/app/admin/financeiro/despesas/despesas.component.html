@@ -31,8 +31,8 @@
                 </p-button>
 
                 <p-button id="excluir"
-                  label="{{ 'label.excluir' | translate }}"
-                  pTooltip="{{ 'label.excluirVarios' | translate }} {{ 'label.despesa.lbDespesas' | translate }}"
+                  label=""
+                  pTooltip="Excluir"
                   tooltipPosition="bottom"
                   icon="pi pi-trash"
                   size="small"
@@ -42,17 +42,30 @@
                   (click)="excluirSelecionados()">
                 </p-button>
 
-                <p-button id="compartilharVarios"
+               <!--<p-button id="compartilharVarios"
                           class="ml-3"
-                          label="Compartilhar"
-                          pTooltip="Clique para compartilhar as despesas selecionadas"
+                          label=""
+                          pTooltip="Compartilhar"
                           tooltipPosition="bottom"
-                          icon="fa fa-share-alt mr-3"
+                          icon="fa fa-share-alt"
                           size="small"
                           severity="success"
                           [raised]="true"
                           [disabled]="!despesasSelecionadasList || !despesasSelecionadasList.length"
                           (click)="compartilharSelecionados()">
+                </p-button>-->
+
+                <p-button id="pagarVarios"
+                          class="ml-3"
+                          label=""
+                          pTooltip="Efetuar pagamento"
+                          tooltipPosition="bottom"
+                          icon="fa fa-paypal"
+                          size="small"
+                          severity="help"
+                          [raised]="true"
+                          [disabled]="!despesasSelecionadasList || !despesasSelecionadasList.length"
+                          (click)="pagarSelecionados()">
                 </p-button>
 
 

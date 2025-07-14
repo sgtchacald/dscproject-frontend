@@ -591,7 +591,7 @@ export class DespesasComponent {
               const index = this.despesasList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
               if (index !== -1) {
                 this.despesasList.splice(index, 1);
-                this.atualizarTabela(false); // Atualiza a tabela após excluir
+                this.atualizarTabela(false); // Atualiza a tabela após compartilhar
                 this.messageService.add(
                   {
                     severity: 'success',
@@ -619,6 +619,54 @@ export class DespesasComponent {
       }
     });
 
+  }
+
+  pagarSelecionados() {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja pagar os itens selecionados?',
+      header: 'Confirmar Ação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: "p-button-primary mt-3",
+      rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
+      acceptLabel: "Sim",
+      rejectLabel: "Não",
+      accept: () => {
+
+        let idDespesaList: number[] = [];
+
+        for (let item of this.despesasSelecionadasList) {
+          if (item.id != null) {
+            idDespesaList.push(item.id);
+          }
+        }
+
+        this.despesaService.pagarDespesas(idDespesaList).subscribe(
+          () => {
+              this.atualizarTabela(true);
+              this.messageService.add(
+                {
+                  severity: 'success',
+                  summary: 'Sucesso',
+                  detail: 'Registro(s) pago(s) com sucesso',
+                }
+              );
+          },
+          (error: HttpErrorResponse) => {
+            let erro:string = this.erroService.retornaErroStatusCode(error);
+            if (erro !== "") {
+              this.existeErro = true;
+              this.messageService.add(
+                {
+                  severity: 'error',
+                  summary: 'Erro',
+                  detail: erro
+                }
+              );
+            }
+          }
+        );
+      }
+    });
   }
 
   atualizarTabela(consumirAPI: boolean) {

@@ -44,4 +44,8 @@ export class DespesaService {
   buscarTotalPorCompetencia(competencia: string) {
     return this.httpClient.get(this.apiUrl + `/despesas/buscar-total-por-competencia/${competencia}`);
   }
+
+  pagarDespesas(idDespesaList: number[]) {
+    return this.httpClient.post(this.apiUrl + '/despesas/pagar-despesas', idDespesaList);
+  }
 }
