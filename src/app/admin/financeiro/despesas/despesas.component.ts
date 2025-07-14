@@ -575,6 +575,52 @@ export class DespesasComponent {
 
   }
 
+  compartilharSelecionados() {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja compartilhar os itens selecionados?',
+      header: 'Confirmar Ação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: "p-button-primary mt-3",
+      rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
+      acceptLabel: "Sim",
+      rejectLabel: "Não",
+      accept: () => {
+        for (let item of this.despesasSelecionadasList) {
+          this.despesaService.excluir(item).subscribe(
+            () => {
+              const index = this.despesasList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
+              if (index !== -1) {
+                this.despesasList.splice(index, 1);
+                this.atualizarTabela(false); // Atualiza a tabela após excluir
+                this.messageService.add(
+                  {
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: item.descricao })
+                  }
+                );
+              }
+            },
+            (error: HttpErrorResponse) => {
+              let erro:string = this.erroService.retornaErroStatusCode(error);
+              if (erro !== "") {
+                this.existeErro = true;
+                this.messageService.add(
+                  {
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoErroCustom'), { registro: item.descricao }) + " " + erro
+                  }
+                );
+              }
+            }
+          );
+        }
+      }
+    });
+
+  }
+
   atualizarTabela(consumirAPI: boolean) {
     if(consumirAPI){
       this.despesaService.buscarTodos().subscribe(registrosList => {

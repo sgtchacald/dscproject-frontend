@@ -42,6 +42,19 @@
                   (click)="excluirSelecionados()">
                 </p-button>
 
+                <p-button id="compartilharVarios"
+                          class="ml-3"
+                          label="Compartilhar"
+                          pTooltip="Clique para compartilhar as despesas selecionadas"
+                          tooltipPosition="bottom"
+                          icon="fa fa-share-alt mr-3"
+                          size="small"
+                          severity="success"
+                          [raised]="true"
+                          [disabled]="!despesasSelecionadasList || !despesasSelecionadasList.length"
+                          (click)="compartilharSelecionados()">
+                </p-button>
+
 
               </ng-template>
 
