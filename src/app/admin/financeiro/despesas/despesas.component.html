@@ -42,7 +42,7 @@
                   (click)="excluirSelecionados()">
                 </p-button>
 
-               <!--<p-button id="compartilharVarios"
+               <p-button id="compartilharVarios"
                           class="ml-3"
                           label=""
                           pTooltip="Compartilhar"
@@ -52,8 +52,8 @@
                           severity="success"
                           [raised]="true"
                           [disabled]="!despesasSelecionadasList || !despesasSelecionadasList.length"
-                          (click)="compartilharSelecionados()">
-                </p-button>-->
+                          (click)="exibirModalUsuarios(true, true)">
+                </p-button>
 
                 <p-button id="pagarVarios"
                           class="ml-3"
@@ -489,7 +489,7 @@
                           label="Desejo dividir esta despesa."
                           [binary]="true"
                           [(ngModel)]="isDividirDespesa"
-                          (click)="exibirModalUsuarios()"
+                          (click)="exibirModalUsuarios(false, false)"
                           [disabled]="despesaTemp.id != null && despesaTemp.existeParcela == true"
                         ></p-checkbox>
                       </div>

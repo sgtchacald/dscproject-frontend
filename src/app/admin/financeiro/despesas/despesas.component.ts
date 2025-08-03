@@ -80,6 +80,8 @@ export class DespesasComponent {
 
   isDividirDespesa: boolean = false;
 
+  isModalUsuarioAberta: boolean = false;
+
   ref: DynamicDialogRef | undefined;
 
   usuarioLogadoObservable: Observable<Usuario | null> = new Observable<Usuario | null>();
@@ -572,53 +574,69 @@ export class DespesasComponent {
         }
       }
     });
-
   }
 
   compartilharSelecionados() {
     this.confirmationService.confirm({
-      message: 'Tem certeza que deseja compartilhar os itens selecionados?',
-      header: 'Confirmar Ação',
+      header: 'Confirmar divisão de itens por lote',
+
+      message: 'Tem certeza que deseja compartilhar os vários itens selecionados?' +
+        '<br><br>' +
+        '<span class="text-red-500">A divisão feita pelo botão compartilhar irá automáticamente dividir os valores dos itens por 2 duas partes iguais.</span>' +
+        '<br><br>' +
+        '<span class="text-red-500">Para Dividir um item de forma personalizada, faça a divisão editando um item de cada vez.</span>',
+
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: "p-button-primary mt-3",
       rejectButtonStyleClass: "p-button-danger mt-3 mr-3",
       acceptLabel: "Sim",
       rejectLabel: "Não",
       accept: () => {
+
+        let idDespesaList: number[] = [];
+        let idusuariosACompartilharList: number[] = [];
+
         for (let item of this.despesasSelecionadasList) {
-          this.despesaService.excluir(item).subscribe(
-            () => {
-              const index = this.despesasList.findIndex(itemAExcluir => itemAExcluir.id === item.id);
-              if (index !== -1) {
-                this.despesasList.splice(index, 1);
-                this.atualizarTabela(false); // Atualiza a tabela após compartilhar
-                this.messageService.add(
-                  {
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoSucessoCustom'), { registro: item.descricao })
-                  }
-                );
-              }
-            },
-            (error: HttpErrorResponse) => {
-              let erro:string = this.erroService.retornaErroStatusCode(error);
-              if (erro !== "") {
-                this.existeErro = true;
-                this.messageService.add(
-                  {
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: this.utils.substituiVariaveis(this.translate.instant('message.excluidoErroCustom'), { registro: item.descricao }) + " " + erro
-                  }
-                );
-              }
-            }
-          );
+          if (item.id != null) {
+            idDespesaList.push(item.id);
+          }
         }
+
+        for (let item of this.usuarioSelecionadoList) {
+          if (item.id != null) {
+            idusuariosACompartilharList.push(Number(item.id));
+          }
+        }
+
+        this.despesaService.compartilharDespesas(idDespesaList, idusuariosACompartilharList).subscribe(
+          () => {
+            this.atualizarTabela(true);
+            this.messageService.add(
+              {
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Registro(s) compartilhado(s) com sucesso',
+              }
+            );
+          },
+          (error: HttpErrorResponse) => {
+            let erro:string = this.erroService.retornaErroStatusCode(error);
+            if (erro !== "") {
+              this.existeErro = true;
+              this.messageService.add(
+                {
+                  severity: 'error',
+                  summary: 'Erro',
+                  detail: erro
+                }
+              );
+            }
+          }
+        );
+      },
+      reject: () => {
       }
     });
-
   }
 
   pagarSelecionados() {
@@ -795,24 +813,42 @@ export class DespesasComponent {
       });
   }
 
-  exibirModalUsuarios() {
+  exibirModalUsuarios(compartilharComVariosUsuarios: boolean, isModalUsuarioAberta: boolean) {
+    this.isModalUsuarioAberta = isModalUsuarioAberta;
+
+    if(compartilharComVariosUsuarios){
+      this.isDividirDespesa = true;
+    }
 
     if (this.isDividirDespesa){
       this.ref = this.dialogService.open(ModalSelecaoUsuarioComponent, {
-        header: 'Selecione um usuário para dividir a despesa',
+        header: 'Selecione o(s) usuário(s) para dividir a(s) despesa(s)',
         width: '50%',
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
         maximizable: true,
       });
 
-      this.ref.onClose.subscribe((usuarioSelecionadoList: Usuario[]) => {
-        this.usuarioSelecionadoList = usuarioSelecionadoList;
+      this.ref.onClose.subscribe((result: any) => {
+        if (result) {
+          this.usuarioSelecionadoList = result;
+          // Modal foi fechada com um resultado (ex: usuário confirmou algo)
+          console.log('Usuário selecionado:', result);
+        } else {
+          // Modal foi fechada pelo botão X ou cancelamento
+          console.log('Modal fechada sem ação');
+        }
+
       });
     }else{
       this.usuarioSelecionadoList = [];
       this.despesaTemp.usuariosResponsaveis = [];
     }
+
+    if(compartilharComVariosUsuarios && this.isModalUsuarioAberta){
+      this.compartilharSelecionados();
+    }
+
   }
 
   excluirDivisao(usuario: Usuario) {

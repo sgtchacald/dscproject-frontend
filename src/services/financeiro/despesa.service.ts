@@ -48,4 +48,14 @@ export class DespesaService {
   pagarDespesas(idDespesaList: number[]) {
     return this.httpClient.post(this.apiUrl + '/despesas/pagar-despesas', idDespesaList);
   }
+
+  compartilharDespesas(idDespesaList: number[], idusuariosACompartilharList: number[]) {
+    const body = {
+      idDespesaList: idDespesaList,
+      idusuariosACompartilharList: idusuariosACompartilharList
+    };
+
+    return this.httpClient.post(this.apiUrl + '/despesas/compartilhar-despesas', body);
+  }
+
 }
