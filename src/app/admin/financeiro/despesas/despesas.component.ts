@@ -576,13 +576,28 @@ export class DespesasComponent {
     });
   }
 
+  existeCompartilhamento(despesasSelecionadasList :Despesa[]) :boolean{
+
+    let idDespesaList: number[] = [];
+
+    for (let item of this.despesasSelecionadasList) {
+      if (item.existeDivisao != null) {
+        if (item.id != null) {
+          idDespesaList.push(item.id);
+        }
+      }
+    }
+
+    return idDespesaList.length > 0;
+  }
+
   compartilharSelecionados() {
     this.confirmationService.confirm({
       header: 'Confirmar divisão de itens por lote',
 
       message: 'Tem certeza que deseja compartilhar os vários itens selecionados?' +
         '<br><br>' +
-        '<span class="text-red-500">A divisão feita pelo botão compartilhar irá automáticamente dividir os valores dos itens por 2 duas partes iguais.</span>' +
+        '<span class="text-red-500">A divisão feita pelo botão compartilhar irá automáticamente dividir os valores dos itens por partes iguais.</span>' +
         '<br><br>' +
         '<span class="text-red-500">Para Dividir um item de forma personalizada, faça a divisão editando um item de cada vez.</span>',
 
