@@ -578,17 +578,16 @@ export class DespesasComponent {
 
   existeCompartilhamento(despesasSelecionadasList :Despesa[]) :boolean{
 
-    let idDespesaList: number[] = [];
+    let idDespesaCompartilhadaList: number[] = [];
 
     for (let item of this.despesasSelecionadasList) {
-      if (item.existeDivisao != null) {
-        if (item.id != null) {
-          idDespesaList.push(item.id);
-        }
+      if (item.existeDivisao != null && item.existeDivisao && item.id != null) {
+        idDespesaCompartilhadaList.push(item.id);
       }
     }
 
-    return idDespesaList.length > 0;
+    console.log(idDespesaCompartilhadaList);
+    return idDespesaCompartilhadaList.length > 0;
   }
 
   compartilharSelecionados() {
