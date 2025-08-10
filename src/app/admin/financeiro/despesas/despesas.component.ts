@@ -632,6 +632,7 @@ export class DespesasComponent {
                 detail: 'Registro(s) compartilhado(s) com sucesso',
               }
             );
+            window.location.reload();
           },
           (error: HttpErrorResponse) => {
             let erro:string = this.erroService.retornaErroStatusCode(error);
