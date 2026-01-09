@@ -26,8 +26,10 @@ export class TotalSaldoMensalCompetenciaComponent {
       // @ts-ignore
       next: (res: {valor: string}) => {
         this.saldo = res.valor;
+        console.log(this.saldo);
       },
       error: (error: any) => {
+        console.log(this.saldo);
         const erro: string = this.erroService.retornaErroStatusCode(error);
         if (erro) {
           this.messageService.add({ severity: 'error', summary: 'Erro', detail: erro });

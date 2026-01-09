@@ -129,8 +129,14 @@ export class DespesasImportarComponent {
   }
 
   getCompeteciaSelecionada(indPreencheObjeto: boolean) {
-    const anoCorrente = new Date().getFullYear();
-    const mesAtual = new Date().getMonth() - 1; // Retorna de 0 (Janeiro) a 11 (Dezembro)
+    const competencia = new Date().getMonth() - 1;
+    let anoCorrente = new Date().getFullYear();
+
+    if(competencia == -1){
+      anoCorrente = anoCorrente - 1;
+    }
+
+    const mesAtual = competencia == -1 ? 11 : competencia; // Retorna de 0 (Janeiro) a 11 (Dezembro)
 
     const meses = [
       'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
