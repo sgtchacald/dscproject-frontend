@@ -73,6 +73,32 @@ static getGeneros() {
     ];
   }
 
+  static getMesesCompetencia() :any {
+    return [
+      { key: '01', value: 'Janeiro'},
+      { key: '02', value: 'Fevereiro'},
+      { key: '03', value: 'Março'},
+      { key: '04', value: 'Maio'},
+      { key: '05', value: 'Abril'},
+      { key: '06', value: 'Junho'},
+      { key: '07', value: 'Julho'},
+      { key: '08', value: 'Agosto'},
+      { key: '09', value: 'Setembro'},
+      { key: '10', value: 'Outubro'},
+      { key: '11', value: 'Novembro'},
+      { key: '12', value: 'Dezembro'}
+    ];
+  }
+
+  static getAnosCompetencia() :any {
+    return [
+      { key: '2025', value: '2025'},
+      { key: '2026', value: '2026'},
+      { key: '2027', value: '2027'}
+
+    ];
+  }
+
   static getEnumPorKey(key: string | undefined | null, listaEnum: { key: string; value: string }[]) {
     let resultado: { key: string; value: string; } | null = null;
 

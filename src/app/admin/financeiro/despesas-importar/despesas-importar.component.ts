@@ -7,6 +7,7 @@ import {
 import {FileBeforeUploadEvent, FileUploadEvent} from "primeng/fileupload";
 import {DespesaService} from 'src/services/financeiro/despesa.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {EnumService} from "../../../../services/utils/enum.service";
 
 interface UploadEvent {
   originalEvent: Event;
@@ -27,8 +28,13 @@ export class DespesasImportarComponent {
 
   isSubmetido: boolean = false;
 
-  competenciasList: any[] = [];
   competenciaSelecionada: any;
+
+  anosCompetenciaList: any = [];
+  anoCompetenciaSelecionada: any;
+
+  mesesCompetenciaList: any = [];
+  mesCompetenciaSelecionada: any;
 
   dtVencimento: string | undefined | null | Date;
 
@@ -43,13 +49,15 @@ export class DespesasImportarComponent {
   ) {}
 
   ngOnInit() {
-    this.getCompeteciaSelecionada(false);
+    this.getCompeteciaSelecionada(true);
 
     this.breadcrumbItens = [
       {icon: 'pi pi-home', routerLink: '/admin'},
       {label:'Financeiro'},
       {label: 'Despesa'},
       {label: 'Importar Despesas'},
+      {label: 'Competência Atual'},
+      {label: this.getCompeteciaSelecionada(true).value}
     ];
 
     this.getInstituicoesFinanceirasUsuario();
@@ -74,7 +82,7 @@ export class DespesasImportarComponent {
 
     event.formData.append('dtVencimento', JSON.stringify(this.dtVencimento));
 
-    event.formData.append('competencia', this.competenciaSelecionada.key);
+    event.formData.append('competencia', this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada);
 
     // @ts-ignore
     event.formData.append('bancoCodigo', this.instituicaoFinanceiraUsuarioSelecionada?.instituicaoFinanceira?.codigo);
@@ -128,36 +136,67 @@ export class DespesasImportarComponent {
     });
   }
 
+
+
   getCompeteciaSelecionada(indPreencheObjeto: boolean) {
-    const competencia = new Date().getMonth() - 1;
-    let anoCorrente = new Date().getFullYear();
-
-    if(competencia == -1){
-      anoCorrente = anoCorrente - 1;
-    }
-
-    const mesAtual = competencia == -1 ? 11 : competencia; // Retorna de 0 (Janeiro) a 11 (Dezembro)
 
     const meses = [
       'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
-    this.competenciasList = meses.map((mes, index) => {
+    this.anosCompetenciaList = EnumService.getAnosCompetencia();
+    this.mesesCompetenciaList = EnumService.getMesesCompetencia();
+
+    let mesCompetencia = new Date().getMonth() - 1;
+    let anoCorrente = new Date().getFullYear();
+
+    if(mesCompetencia == -1){
+      anoCorrente = anoCorrente - 1;
+    }
+
+    const mesAtual = mesCompetencia == -1 ? 11 : mesCompetencia;
+
+    const competenciaAtual = meses.map((mes, index) => {
       const competencia = {
         key: `${anoCorrente}-${(index + 1).toString().padStart(2, '0')}`,
         value: `${mes} ${anoCorrente}`
       };
 
+      const competenciaAnoSelecionado = {
+        key: `${anoCorrente}`,
+        value: `${anoCorrente}`,
+      };
+
+      const competenciaMesSelecionado = {
+        key: `${(index + 1).toString().padStart(2, '0')}`,
+        value: `${mes}`,
+      };
+
+      console.log(competenciaMesSelecionado);
+
       // Define a competência do mês atual como selecionada
       if (index === mesAtual) {
-        if(indPreencheObjeto){
+        if (indPreencheObjeto) {
           this.competenciaSelecionada = competencia;
+          this.anoCompetenciaSelecionada = competenciaAnoSelecionado;
+          this.mesCompetenciaSelecionada = competenciaMesSelecionado;
         }
+        return competencia; // Retorna a competência atual
       }
 
-      return competencia;
-    });
+      return null;
+    }).find(comp => comp !== null); // Filtra e pega a competência encontrada
+
+
+
+      // Define a competência do mês atual como selecionada
+      if(indPreencheObjeto){
+        this.competenciaSelecionada = competenciaAtual;
+      }
+
+      return this.competenciaSelecionada;
+
   }
 
   private parseServerError(response: any): string {
