@@ -26,6 +26,7 @@
 
               <div class="flex justify-content-start flex-wrap">
                   <p-dropdown
+                    id="anosCompetenciaList"
                     [showClear]="true"
                     [options]="anosCompetenciaList"
                     [(ngModel)]="anoCompetenciaSelecionada"
@@ -37,6 +38,7 @@
                     class="w-fit mr-2"/>
 
                 <p-dropdown
+                  id="mesesCompetenciaList"
                   [showClear]="true"
                   [options]="mesesCompetenciaList"
                   [(ngModel)]="mesCompetenciaSelecionada"
@@ -45,7 +47,6 @@
                   tooltip="Mês da Competência"
                   tooltipPosition="top"
                   class="w-fit"/>
-
               </div>
 
               <small class="p-error" *ngIf="isSubmetido && !competenciaSelecionada">

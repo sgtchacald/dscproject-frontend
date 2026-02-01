@@ -8,9 +8,13 @@ import {TranslateService} from "@ngx-translate/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DespesaService} from "../../../../services/financeiro/despesa.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
-import {InstituicaoFinanceiraUsuarioService} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
+import {
+  InstituicaoFinanceiraUsuarioService
+} from "../../../../services/financeiro/instituicao-financeira-usuario.service";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {ModalSelecaoUsuarioComponent} from "../../component-util/modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
+import {
+  ModalSelecaoUsuarioComponent
+} from "../../component-util/modais-genericas/modal-selecao-usuario/modal-selecao-usuario.component";
 import {Usuario} from "../../../../models/usuario.model";
 import {Observable} from "rxjs";
 import {UsuarioService} from "../../../../services/usuario/usuario.service";
@@ -57,8 +61,12 @@ export class DespesasComponent {
 
   tipoRegistroFinanceiroList: any = [];
 
-  competenciasList: any[] = [];
+
+  anosCompetenciaList: any = [];
+  mesesCompetenciaList: any = [];
   competenciaSelecionada: any;
+  anoCompetenciaSelecionada: any;
+  mesCompetenciaSelecionada: any;
   competenciaSelecionadaParaPesquisa: any;
   competenciaSelecionadaBreadcrumb: any;
   exibirOutrasCompetencias: boolean = false;
@@ -139,38 +147,62 @@ export class DespesasComponent {
   }
 
   onCompetenciaChange() {
+
+    this.competenciaSelecionadaParaPesquisa = {
+      key: this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key,
+      value: this.mesCompetenciaSelecionada.value + " " + this.anoCompetenciaSelecionada.value,
+    };
+
     if (this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
       this.aplicarFiltroPadrao(); // Filtra pela competência ao ser selecionada
     }
   }
 
   getCompeteciaSelecionada(indPreencheObjeto: boolean) {
-    const competencia = new Date().getMonth() - 1;
-    let anoCorrente = new Date().getFullYear();
-
-    if(competencia == -1){
-      anoCorrente = anoCorrente - 1;
-    }
-
-    const mesAtual = competencia == -1 ? 11 : competencia; // Retorna de 0 (Janeiro) a 11 (Dezembro)
 
     const meses = [
       'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
-    this.competenciasList = meses.map((mes, index) => {
+    this.anosCompetenciaList = EnumService.getAnosCompetencia();
+    this.mesesCompetenciaList = EnumService.getMesesCompetencia();
+
+    let mesCompetencia = new Date().getMonth() - 1;
+    let anoCorrente = new Date().getFullYear();
+
+    if(mesCompetencia == -1){
+      anoCorrente = anoCorrente - 1;
+    }
+
+    const mesAtual = mesCompetencia == -1 ? 11 : mesCompetencia;
+
+    const competenciaAtual = meses.map((mes, index) => {
       const competencia = {
         key: `${anoCorrente}-${(index + 1).toString().padStart(2, '0')}`,
         value: `${mes} ${anoCorrente}`
+      };
+
+      const competenciaAnoSelecionado = {
+        key: `${anoCorrente}`,
+        value: `${anoCorrente}`,
+      };
+
+      const competenciaMesSelecionado = {
+        key: `${(index + 1).toString().padStart(2, '0')}`,
+        value: `${mes}`,
       };
 
       // Define a competência do mês atual como selecionada
       if (index === mesAtual) {
         if(indPreencheObjeto){
           this.competenciaSelecionada = competencia;
+          this.anoCompetenciaSelecionada = competenciaAnoSelecionado;
+          this.mesCompetenciaSelecionada = competenciaMesSelecionado;
         }else{
           this.competenciaSelecionadaParaPesquisa = competencia;
+          this.anoCompetenciaSelecionada = competenciaAnoSelecionado;
+          this.mesCompetenciaSelecionada = competenciaMesSelecionado;
         }
       }
 
@@ -236,12 +268,14 @@ export class DespesasComponent {
 
     if(despesaGrid?.id){
 
-      this.competenciaSelecionada = this.competenciasList[
-        EnumService.getPosicaoEnumPorKey(
-          despesaGrid.competencia,
-          this.competenciasList
-        )
-      ];
+      let competenciaStr = despesaGrid.competencia;
+      let competenciaSplit = competenciaStr?.split("-");
+
+      if(competenciaSplit){
+        this.competenciaSelecionada = despesaGrid.competencia;
+        this.anoCompetenciaSelecionada = competenciaSplit[0];
+        this.mesCompetenciaSelecionada = competenciaSplit[1];
+      }
 
       this.despesaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
         despesaGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()

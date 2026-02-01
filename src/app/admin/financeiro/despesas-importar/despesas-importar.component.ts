@@ -173,8 +173,6 @@ export class DespesasImportarComponent {
         value: `${mes}`,
       };
 
-      console.log(competenciaMesSelecionado);
-
       // Define a competência do mês atual como selecionada
       if (index === mesAtual) {
         if (indPreencheObjeto) {
@@ -186,9 +184,7 @@ export class DespesasImportarComponent {
       }
 
       return null;
-    }).find(comp => comp !== null); // Filtra e pega a competência encontrada
-
-
+    }).find(comp => comp !== null);
 
       // Define a competência do mês atual como selecionada
       if(indPreencheObjeto){
