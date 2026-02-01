@@ -45,10 +45,13 @@ export class ReceitasComponent {
   exibirDialogCadastroReceita: boolean = false;
   prefixoModal: string | undefined = "";
 
-  competenciasList: any[] = [];
+  anosCompetenciaList: any = [];
+  mesesCompetenciaList: any = [];
   competenciaSelecionada: any;
-  competenciaSelecionadaBreadcrumb: any;
+  anoCompetenciaSelecionada: any;
+  mesCompetenciaSelecionada: any;
   competenciaSelecionadaParaPesquisa: any;
+  competenciaSelecionadaBreadcrumb: any;
   exibirOutrasCompetencias: boolean = false;
 
   tipoRegistroFinanceiroList: any = [];
@@ -86,41 +89,63 @@ export class ReceitasComponent {
   }
 
   onCompetenciaChange() {
+    this.competenciaSelecionadaParaPesquisa = {
+      key: this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key,
+      value: this.mesCompetenciaSelecionada.value + " " + this.anoCompetenciaSelecionada.value,
+    };
+
     if (this.exibirOutrasCompetencias && this.competenciaSelecionadaParaPesquisa) {
       this.aplicarFiltroPadrao(); // Filtra pela competência ao ser selecionada
     }
   }
 
   getCompeteciaSelecionada(indPreencheObjeto: boolean) {
-    const competencia = new Date().getMonth() - 1;
-    let anoCorrente = new Date().getFullYear();
-
-    if(competencia == -1){
-      anoCorrente = anoCorrente - 1;
-    }
-
-    const mesAtual = competencia == -1 ? 11 : competencia; // Retorna de 0 (Janeiro) a 11 (Dezembro)
 
     const meses = [
       'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
-    this.competenciasList = meses.map((mes, index) => {
+    this.anosCompetenciaList = EnumService.getAnosCompetencia();
+    this.mesesCompetenciaList = EnumService.getMesesCompetencia();
+
+    let mesCompetencia = new Date().getMonth() - 1;
+    let anoCorrente = new Date().getFullYear();
+
+    if(mesCompetencia == -1){
+      anoCorrente = anoCorrente - 1;
+    }
+
+    const mesAtual = mesCompetencia == -1 ? 11 : mesCompetencia;
+
+    const competenciaAtual = meses.map((mes, index) => {
       const competencia = {
         key: `${anoCorrente}-${(index + 1).toString().padStart(2, '0')}`,
         value: `${mes} ${anoCorrente}`
+      };
+
+      const competenciaAnoSelecionado = {
+        key: `${anoCorrente}`,
+        value: `${anoCorrente}`,
+      };
+
+      const competenciaMesSelecionado = {
+        key: `${(index + 1).toString().padStart(2, '0')}`,
+        value: `${mes}`,
       };
 
       // Define a competência do mês atual como selecionada
       if (index === mesAtual) {
         if(indPreencheObjeto){
           this.competenciaSelecionada = competencia;
+          this.anoCompetenciaSelecionada = competenciaAnoSelecionado;
+          this.mesCompetenciaSelecionada = competenciaMesSelecionado;
         }else{
           this.competenciaSelecionadaParaPesquisa = competencia;
+          this.anoCompetenciaSelecionada = competenciaAnoSelecionado;
+          this.mesCompetenciaSelecionada = competenciaMesSelecionado;
         }
       }
-
       return competencia;
     });
   }
@@ -160,12 +185,31 @@ export class ReceitasComponent {
     this.getCompeteciaSelecionada(true);
 
     if(receitaGrid?.id){
-      this.competenciaSelecionada = this.competenciasList[
-        EnumService.getPosicaoEnumPorKey(
-          receitaGrid.competencia,
-          this.competenciasList
+
+      let competenciaSplit = receitaGrid.competencia?.split("-");
+      console.log(competenciaSplit);
+      // @ts-ignore
+      let ano = competenciaSplit[0];
+      // @ts-ignore
+      let mes = competenciaSplit[1];
+
+      if(competenciaSplit){
+        this.competenciaSelecionada = receitaGrid.competencia;
+
+        this.anoCompetenciaSelecionada =  EnumService.getEnumPorKey(
+          ano,
+          this.anosCompetenciaList
         )
-      ];
+
+        this.mesCompetenciaSelecionada =  EnumService.getEnumPorKey(
+          mes,
+          this.mesesCompetenciaList
+        )
+      }
+
+      console.log(this.competenciaSelecionada);
+      console.log(this.anoCompetenciaSelecionada);
+      console.log(this.mesCompetenciaSelecionada);
 
       this.receitaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(
         receitaGrid.tipoRegistroFinanceiro, EnumService.getCategoriaRegistroFinanceiro()

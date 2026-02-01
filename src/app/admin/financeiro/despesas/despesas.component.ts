@@ -273,8 +273,8 @@ export class DespesasComponent {
 
       if(competenciaSplit){
         this.competenciaSelecionada = despesaGrid.competencia;
-        this.anoCompetenciaSelecionada = competenciaSplit[0];
-        this.mesCompetenciaSelecionada = competenciaSplit[1];
+        this.anoCompetenciaSelecionada.key = competenciaSplit[0];
+        this.mesCompetenciaSelecionada.key = competenciaSplit[1];
       }
 
       this.despesaTemp.tipoRegistroFinanceiro = EnumService.getEnumPorKey(

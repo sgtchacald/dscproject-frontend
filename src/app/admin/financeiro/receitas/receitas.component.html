@@ -59,30 +59,31 @@
 
             <!-- Dropdown para selecionar a competência -->
             <div class="field col-12" *ngIf="exibirOutrasCompetencias">
-              <p-dropdown
-                id="competenciaPesquisa"
-                [options]="competenciasList"
-                [(ngModel)]="competenciaSelecionadaParaPesquisa"
-                [filter]="true"
-                [showClear]="true"
-                filterBy="value"
-                optionLabel="value"
-                placeholder="Selecione a Competência"
-                class="w-full"
-                (onChange)="onCompetenciaChange()">  <!-- Chama a função quando o usuário altera a seleção -->
+              <div class="flex justify-content-start flex-wrap">
+                <p-dropdown
+                  id="anosCompetenciaList"
+                  [showClear]="true"
+                  [options]="anosCompetenciaList"
+                  [(ngModel)]="anoCompetenciaSelecionada"
+                  optionLabel="value"
+                  placeholder="Ano"
+                  tooltip="Ano da Competência"
+                  tooltipPosition="top"
+                  styleClass="dropdown-small"
+                  class="w-fit mr-2"/>
 
-                <ng-template pTemplate="selectedItem">
-                  <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionadaParaPesquisa">
-                    <div>{{ competenciaSelecionadaParaPesquisa.value }}</div>
-                  </div>
-                </ng-template>
-                <ng-template let-competencia pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ competencia.value }}</div>
-                  </div>
-                </ng-template>
-
-              </p-dropdown>
+                <p-dropdown
+                  id="mesesCompetenciaList"
+                  [showClear]="true"
+                  [options]="mesesCompetenciaList"
+                  [(ngModel)]="mesCompetenciaSelecionada"
+                  optionLabel="value"
+                  placeholder="Mês"
+                  tooltip="Mês da Competência"
+                  tooltipPosition="top"
+                  class="w-fit"
+                  (onChange)="onCompetenciaChange()"/>
+              </div>
             </div>
 
             <div id="tabela">
@@ -166,29 +167,30 @@
 
                   <div class="field col-12">
                     <label for="categoria" class="font-semibold">Competência</label>
-                    <p-dropdown
-                      id="competencia"
-                      [options]="competenciasList"
-                      [(ngModel)]="competenciaSelecionada"
-                      [filter]="true"
-                      [showClear]="true"
-                      filterBy="value"
-                      optionLabel="value"
-                      placeholder="Selecione a Competência"
-                      class="w-full">
+                    <div class="flex justify-content-start flex-wrap">
+                      <p-dropdown
+                        id="anosCompetenciaList"
+                        [showClear]="true"
+                        [options]="anosCompetenciaList"
+                        [(ngModel)]="anoCompetenciaSelecionada"
+                        optionLabel="value"
+                        placeholder="Ano"
+                        tooltip="Ano da Competência"
+                        tooltipPosition="top"
+                        styleClass="dropdown-small"
+                        class="w-fit mr-2"/>
 
-                      <ng-template pTemplate="selectedItem">
-                        <div class="flex align-items-center gap-2" *ngIf="competenciaSelecionada">
-                          <div>{{ competenciaSelecionada.value }}</div>
-                        </div>
-                      </ng-template>
-                      <ng-template let-competencia pTemplate="item">
-                        <div class="flex align-items-center gap-2">
-                          <div>{{ competencia.value }}</div>
-                        </div>
-                      </ng-template>
-
-                    </p-dropdown>
+                      <p-dropdown
+                        id="mesesCompetenciaList"
+                        [showClear]="true"
+                        [options]="mesesCompetenciaList"
+                        [(ngModel)]="mesCompetenciaSelecionada"
+                        optionLabel="value"
+                        placeholder="Mês"
+                        tooltip="Mês da Competência"
+                        tooltipPosition="top"
+                        class="w-fit"/>
+                    </div>
 
                     <small class="p-error" *ngIf="isSubmetido && !categoriaRegistroFinanceiroSelecionado">{{ 'message.campoObrigatorio' | translate }}</small>
                   </div>
