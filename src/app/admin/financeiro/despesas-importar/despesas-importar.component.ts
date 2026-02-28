@@ -82,7 +82,7 @@ export class DespesasImportarComponent {
 
     event.formData.append('dtVencimento', JSON.stringify(this.dtVencimento));
 
-    event.formData.append('competencia', this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada);
+    event.formData.append('competencia', this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key);
 
     // @ts-ignore
     event.formData.append('bancoCodigo', this.instituicaoFinanceiraUsuarioSelecionada?.instituicaoFinanceira?.codigo);
