@@ -299,10 +299,6 @@ export class DespesasComponent {
       let partesDtLancamento = despesaGrid.dtLancamento?.toString().split('-');
       let partesDtVencimento = despesaGrid.dtVencimento?.toString().split('-');
 
-      console.log(partesDtVencimento);
-      console.log(partesDtLancamento);
-
-
       if (partesDtLancamento) {
         this.despesaTemp.dtLancamento = new Date(+partesDtLancamento[0], +partesDtLancamento[1] - 1, +partesDtLancamento[2]);
       }
@@ -332,7 +328,6 @@ export class DespesasComponent {
       }
 
       //Preenche a parte da divisão
-      console.log(despesaGrid);
       if(Number(despesaGrid.usuariosResponsaveis.length) > 1){
         this.isDividirDespesa = true;
         this.usuarioSelecionadoList = despesaGrid.usuariosResponsaveis;
@@ -374,6 +369,12 @@ export class DespesasComponent {
     this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
     this.despesaTemp.qtdParcela = this.parcelaSelecionada?.value;
     this.despesaTemp.statusPagamento = this.statusPagamentoSelecionado?.key;
+
+    this.competenciaSelecionada = {
+      key: this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key,
+      value: this.mesCompetenciaSelecionada.value + " " + this.anoCompetenciaSelecionada.value,
+    };
+
     this.despesaTemp.competencia = this.competenciaSelecionada?.key;
     this.despesaTemp.existeParcela = this.existePrestacaoSelecionada.key == "SIM";
     this.despesaTemp.nrParcela = 1;
@@ -449,11 +450,20 @@ export class DespesasComponent {
   }
 
   editar(tipoRegistroFinanceiro: string) {
+
     this.isSubmetido = true;
     let erro: string = "";
 
     this.despesaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+
+    this.competenciaSelecionada = {
+      key: this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key,
+      value: this.mesCompetenciaSelecionada.value + " " + this.anoCompetenciaSelecionada.value,
+    };
+
     this.despesaTemp.competencia = this.competenciaSelecionada?.key;
+
+    console.log(this.competenciaSelecionada?.key)
     this.despesaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.despesaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
@@ -625,8 +635,6 @@ export class DespesasComponent {
         idDespesaCompartilhadaList.push(item.id);
       }
     }
-
-    console.log(idDespesaCompartilhadaList);
     return idDespesaCompartilhadaList.length > 0;
   }
 
@@ -887,10 +895,7 @@ export class DespesasComponent {
       this.ref.onClose.subscribe((result: any) => {
         if (result) {
           this.usuarioSelecionadoList = result;
-          // Modal foi fechada com um resultado (ex: usuário confirmou algo)
-          console.log('Usuário selecionado:', result);
         } else {
-          // Modal foi fechada pelo botão X ou cancelamento
           console.log('Modal fechada sem ação');
         }
 

@@ -257,6 +257,11 @@ export class ReceitasComponent {
     this.receitaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
     this.receitaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.receitaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
+
+    this.competenciaSelecionada = {
+      key: this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key,
+      value: this.mesCompetenciaSelecionada.value + " " + this.anoCompetenciaSelecionada.value,
+    };
     this.receitaTemp.competencia = this.competenciaSelecionada?.key
 
     if (
@@ -295,7 +300,13 @@ export class ReceitasComponent {
     let erro: string = "";
 
     this.receitaTemp.tipoRegistroFinanceiro = tipoRegistroFinanceiro;
+
+    this.competenciaSelecionada = {
+      key: this.anoCompetenciaSelecionada.key + "-" + this.mesCompetenciaSelecionada.key,
+      value: this.mesCompetenciaSelecionada.value + " " + this.anoCompetenciaSelecionada.value,
+    };
     this.receitaTemp.competencia = this.competenciaSelecionada?.key;
+
     this.receitaTemp.categoriaRegistroFinanceiro = this.categoriaRegistroFinanceiroSelecionado?.key;
     this.receitaTemp.instituicaoFinanceiraUsuarioId = this.instituicaoFinanceiraUsuarioSelecionada?.id;
 
