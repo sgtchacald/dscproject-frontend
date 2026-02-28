@@ -37,23 +37,24 @@ static getGeneros() {
 
   static getCategoriaRegistroFinanceiro() {
     return [
-      { key: 'SALARIO',                 value: 'Salário',      tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-briefcase' },
-      { key: 'SALARIO_DECIMO_TERCEIRO', value: '13º Salário',  tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-gift' },
-      { key: 'EXTRA',                   value: 'Extra',        tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-plus-square' },
-      { key: 'FERIAS',                  value: 'Férias',       tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-umbrella' },
-      { key: 'INVESTIMENTO',            value: 'Investimento', tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-btc' },
-      { key: 'MORADIA',                 value: 'Moradia',      tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-home' },
-      { key: 'ALIMENTACAO',             value: 'Alimentação',  tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-cutlery' },
-      { key: 'LAZER',                   value: 'Lazer',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-gamepad' },
-      { key: 'VESTUARIO',               value: 'Vestuário',    tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-female' },
-      { key: 'TRANSPORTE',              value: 'Transporte',   tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-bus' },
-      { key: 'CARRO',                   value: 'Carro',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-car' },
-      { key: 'SAUDE',                   value: 'Saúde',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-heartbeat' },
-      { key: 'EDUCACAO',                value: 'Educação',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-graduation-cap' },
-      { key: 'SERVICOS',                value: 'Serviços',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-wrench' },
-      { key: 'EMPRESTIMOS',             value: 'Empréstimos',  tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-credit-card' },
-      { key: 'CARTAO_DE_CREDITO',       value: 'Cartão de Crédito',  tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-credit-card' },
-      { key: 'TAXAS_EMPRESA',           value: 'Taxas PJ',     tipoRegistroFinanceiro: 'DESPESA', icon: 'fa fa-percent' },
+      { key: 'EXTRA',                   value: 'Extra',         tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-plus-square' },
+      { key: 'FERIAS',                  value: 'Férias',        tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-umbrella' },
+      { key: 'INVESTIMENTO',            value: 'Investimento',  tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-btc' },
+      { key: 'SALARIO',                 value: 'Salário',       tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-briefcase' },
+      { key: 'SALARIO_DECIMO_TERCEIRO', value: '13º Salário',   tipoRegistroFinanceiro: 'RECEITA', icon: 'fa-gift' },
+      { key: 'ALIMENTACAO',       value: 'Alimentação',       tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-cutlery' },
+      { key: 'CARRO',             value: 'Carro',             tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-car' },
+      { key: 'CARTAO_DE_CREDITO', value: 'Cartão de Crédito', tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-credit-card' },
+      { key: 'EDUCACAO',          value: 'Educação',          tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-graduation-cap' },
+      { key: 'EMPRESA',           value: 'Empresa',           tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-briefcase' },
+      { key: 'TAXAS_EMPRESA',     value: 'Taxas PJ',          tipoRegistroFinanceiro: 'DESPESA', icon: 'fa fa-percent' },
+      { key: 'EMPRESTIMOS',       value: 'Empréstimos',       tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-credit-card' },
+      { key: 'LAZER',             value: 'Lazer',             tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-gamepad' },
+      { key: 'MORADIA',           value: 'Moradia',           tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-home' },
+      { key: 'SAUDE',             value: 'Saúde',             tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-heartbeat' },
+      { key: 'SERVICOS',          value: 'Serviços',          tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-wrench' },
+      { key: 'TRANSPORTE',        value: 'Transporte',        tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-bus' },
+      { key: 'VESTUARIO',         value: 'Vestuário',         tipoRegistroFinanceiro: 'DESPESA', icon: 'fa-female' }
 
     ];
   }
